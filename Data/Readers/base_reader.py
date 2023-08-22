@@ -5,10 +5,12 @@ class BaseReader:
         self._path_to_raw = path_to_data
 
     def read_data(self):
-        return
+        dic= self.dataset.copy()
+        del(dic['lengths'])
+        return dic
 
     def get_sentences_length(self):
-        return
+        return self.dataset['lengths']
 
     def get_observation_dim(self):
         return self.dim
