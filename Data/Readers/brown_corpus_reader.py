@@ -6,6 +6,9 @@ sys.path.append('../')
 class BCReader(BaseReader):
     def __init__(self, path_to_data='raw/ImmuneXpressoResults.csv'):
         super().__init__(path_to_data)
+        self.dim = 1
+        self.is_tagged = True
+        self.n_state =
 
     def read_data(self):
         return

@@ -13,7 +13,7 @@ class BaseReader:
     def get_observation_dim(self):
         return self.dim
 
-    def n_stat(self):
+    def get_n_state(self):
         return self.n_state
 
     def get_transition_matrix(self):
