@@ -1,6 +1,5 @@
 from Data.Readers.brown_corpus_reader import BCReader
 import Omission.utils as omitter
-from hmmlearn import hmm
 from Models.hmmlearn_wrapper import hmmlearn_wrapper
 from Evaluations import utils as evaluations
 
@@ -11,7 +10,8 @@ omission_prob = 0.7
 
 
 # import and prepare data
-brown_data = BCReader.read_data()
+brown_reader = BCReader()
+brown_data = hmmlearn_wrapper.convert_hmmlearn_format_data_to(brown_reader  .read_data())
 omitted_brown_data, omitted_brown_data_idx = omitter.bernoulli_experiments(omission_prob,brown_data)
 
 # fit models and get transition matrices
