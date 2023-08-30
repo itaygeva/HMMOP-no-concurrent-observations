@@ -11,7 +11,8 @@ omission_prob = 0.7
 
 # import and prepare data
 brown_reader = BCReader()
-brown_data = hmmlearn_wrapper.convert_hmmlearn_format_data_to(brown_reader  .read_data())
+brown_data = brown_reader.get_obs()
+brown_emission_prob = brown_reader.get_emission_prob()
 omitted_brown_data, omitted_brown_data_idx = omitter.bernoulli_experiments(omission_prob,brown_data)
 
 # fit models and get transition matrices

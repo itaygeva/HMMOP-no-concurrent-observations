@@ -3,15 +3,17 @@ import inspect
 import numpy as np
 class BaseReader:
     # This class is the parent of all reader and handles the basic query methods they all share
-    is_tagged = False
-    n_features = 1
-    n_states = 1
-    dataset={'sentences':[],'tags':[],'lengths':[]}
+
 
     def __init__(self, path_to_data):
         self._path_to_raw = path_to_data
         data_dir=os.path.dirname(os.path.dirname(inspect.getfile(BaseReader)))
         self.raw_dir=os.path.join(data_dir,'Raw')
+        self.is_tagged = False
+        self.n_features = 1
+        self.n_states = 1
+        self.dataset = {'sentences': [], 'tags': [], 'lengths': []}
+        self.emission_prob = []
 
     def get_obs(self):
         # returns the observations as a list of sentences. each sentence is a np.array of size (n_obs,n_features
@@ -36,6 +38,12 @@ class BaseReader:
     def get_if_tagged(self):
         # returns a boolean whether  the dataset is tagged or not.
         return self.is_tagged
+
+    def get_emission_prob(self):
+        if self.is_tagged:
+            return self.emission_prob
+        else:
+            return None
 
     def convert_to_our_format(self):
         # works on the datasets as one list of all words, with appropriate lengths and converts to the desired format(see above)
