@@ -24,7 +24,7 @@ class Utils:
             tags = f.read().split("\n")
         return frozenset(tags)
 
-    @staticmethod
+    """ @staticmethod
     def corpus_dataset(path_to_raw):
         tagset = Utils.corpus_read_tags(path_to_raw(1))
         sentences = Utils.corpus_read_data(path_to_raw(0))
@@ -47,4 +47,4 @@ class Utils:
 
         length_sequences = sum(1 for _ in chain(*(s.words for s in sentences.values())))
 
-        return {'words': words_sequences, 'tags': tag_sequences, 'lengths': length_sequences}
+        return {'words': words_sequences, 'tags': tag_sequences, 'lengths': length_sequences}"""
