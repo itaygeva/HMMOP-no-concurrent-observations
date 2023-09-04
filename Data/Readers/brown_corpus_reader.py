@@ -8,13 +8,13 @@ import snowballstemmer
 import string
 import inspect
 import numpy as np
+import pickle
 
 Sentence = namedtuple("Sentence", "words tags")
 inspect.getfile(BaseReader)
 
 
 class BCReader(BaseReader):
-
 
     def __init__(self, path_to_data=('brown-universal.txt', 'tags-universal.txt')):
         super().__init__(path_to_data)
@@ -23,10 +23,9 @@ class BCReader(BaseReader):
         self.tag_dict = {}
         self.word_dict = {}
         self.n_states = 11
-        self.tag_appearances = np.zeros((self.n_states , 1))  # list of number of time the tag exist per tag idx
+        self.tag_appearances = np.zeros((self.n_states, 1))  # list of number of time the tag exist per tag idx
         self._corpus_dataset()
         self._calculate_emission_prob()
-
 
     def _corpus_read_data(self, filename):
         """Read tagged sentence data"""
@@ -42,50 +41,65 @@ class BCReader(BaseReader):
         return frozenset(tags)
 
     def _corpus_dataset(self):
-        tagset = self._corpus_read_tags(self._path_to_raw[1])
-        sentences = self._corpus_read_data(self._path_to_raw[0])
-        keys = tuple(sentences.keys())
+        cache_filename = os.path.join(self.cache_dir, 'corpus_dataset.pkl')
+        # Check if the pickle file exists
+        if os.path.isfile(cache_filename):
+            # If the file exists, load the variable from the file
+            with open(cache_filename, 'rb') as file:
+                self.dataset = pickle.load(file)
+        else:
+            # If the file doesn't exist, create the variable and save it to the file
+            tagset = self._corpus_read_tags(self._path_to_raw[1])
+            sentences = self._corpus_read_data(self._path_to_raw[0])
+            keys = tuple(sentences.keys())
 
-        stemmer = snowballstemmer.stemmer('english')
-        num_to_symbol = lambda x: x if not x.isnumeric() else "#"
-        non_relevant_words = string.punctuation + '``' + '.' + '--' + "''" + ','
+            stemmer = snowballstemmer.stemmer('english')
+            num_to_symbol = lambda x: x if not x.isnumeric() else "#"
+            non_relevant_words = string.punctuation + '``' + '.' + '--' + "''" + ','
 
-        words_sequences = []
-        tag_sequences = []
+            words_sequences = []
+            tag_sequences = []
 
-        word_idx = 0
-        tag_idx = 0
-        for idx, sentence in sentences.items():
-            clean_tuples = [(num_to_symbol(stemmer.stemWord(word)), tag) for word, tag in zip(sentence.words,
-                                                                                              sentence.tags) if
-                            word not in non_relevant_words]
-            if len(clean_tuples) < 2: continue
+            word_idx = 0
+            tag_idx = 0
+            for idx, sentence in sentences.items():
+                clean_tuples = [(num_to_symbol(stemmer.stemWord(word)), tag) for word, tag in zip(sentence.words,
+                                                                                                  sentence.tags) if
+                                word not in non_relevant_words]
+                if len(clean_tuples) < 2: continue
 
+                for word, tag in clean_tuples:
+                    if word not in self.word_dict:
+                        self.word_dict[word] = word_idx
+                        word_idx += 1
+                    if tag not in self.tag_dict:
+                        self.tag_dict[tag] = tag_idx
+                        tag_idx += 1
+                    self.tag_appearances[self.tag_dict[tag]] += 1
 
-            for word, tag in clean_tuples:
-                if word not in self.word_dict:
-                    self.word_dict[word] = word_idx
-                    word_idx += 1
-                if tag not in self.tag_dict:
-                    self.tag_dict[tag] = tag_idx
-                    tag_idx += 1
-                self.tag_appearances[self.tag_dict[tag]] += 1
+                words_sequences.append(np.array([self.word_dict[word] for word, tag in clean_tuples]))
+                tag_sequences.append(np.array([self.tag_dict[tag] for word, tag in clean_tuples]))
 
-            words_sequences.append(np.array([self.word_dict[word] for word, tag in clean_tuples]))
-            tag_sequences.append(np.array([self.tag_dict[tag] for word, tag in clean_tuples]))
-
-        # length_sequences = sum(1 for _ in chain(*(s.words for s in sentences.values())))
-        lengths= np.array([len(sequence) for sequence in tag_sequences])
-        self.dataset = {'sentences': words_sequences, 'tags': tag_sequences, 'lengths': lengths}
+            # length_sequences = sum(1 for _ in chain(*(s.words for s in sentences.values())))
+            lengths = np.array([len(sequence) for sequence in tag_sequences])
+            self.dataset = {'sentences': words_sequences, 'tags': tag_sequences, 'lengths': lengths}
+            with open(cache_filename, 'wb') as file:
+                pickle.dump(self.dataset, file)
 
     def _calculate_emission_prob(self):
-        self.emission_prob=np.zeros((self.n_states,len(self.word_dict)))
-        for s_idx, sentence in enumerate(self.dataset['sentences']):
-            tag_seq = self.dataset['tags'][s_idx]
-            for o_idx , obs in enumerate(sentence):
-                tag = tag_seq[o_idx]
-                self.emission_prob[tag][obs] += 1 / self.tag_appearances[tag]
-
-
-
-
+        # Check if the emission probability is stored
+        cache_filename = os.path.join(self.cache_dir, 'corpus_emission_prob.pkl')
+        if os.path.isfile(cache_filename):
+            # If the file exists, load the variable from the file
+            with open(cache_filename, 'rb') as file:
+                self.emission_prob = pickle.load(file)
+        else:
+            # If the file doesn't exist, create the variable and save it to the file
+            self.emission_prob = np.zeros((self.n_states, len(self.word_dict)))
+            for s_idx, sentence in enumerate(self.dataset['sentences']):
+                tag_seq = self.dataset['tags'][s_idx]
+                for o_idx, obs in enumerate(sentence):
+                    tag = tag_seq[o_idx]
+                    self.emission_prob[tag][obs] += 1 / self.tag_appearances[tag]
+            with open(cache_filename, 'wb') as file:
+                pickle.dump(self.emission_prob, file)
