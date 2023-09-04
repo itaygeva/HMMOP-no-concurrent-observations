@@ -1,8 +1,9 @@
 
 class model_wrapper:
 
-    def __init__(self):
-        raise NotImplementedError("Must use an implementation for model wrapper")
+    def __init__(self, n_components, n_iter):
+        self.n_components = n_components
+        self.n_iter = n_iter
 
     def fit(self,data):
         raise NotImplementedError("Must use an implementation for model wrapper")

@@ -2,6 +2,7 @@ from Data.Readers.brown_corpus_reader import BCReader
 import Omission.utils as omitter
 from Models.hmmlearn_wrapper import hmmlearn_wrapper
 from Evaluations import utils as evaluations
+import numpy as np
 
 # test variables - temp
 n_states = 11
