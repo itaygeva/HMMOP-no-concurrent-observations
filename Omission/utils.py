@@ -17,12 +17,17 @@ def sample_n_points_from_traj_binom(vec, pc):
         if np.random.rand() < pc:
             relevant_obs.append(obs)
             w.append(i)
-    relevant_obs = np.vstack(relevant_obs)
 
-    if len(w) < 3:
+    if len(vec) < 3:
+        return np.array(vec), np.arange(len(vec))
+    elif len(w) < 3:
         return sample_n_points_from_traj_binom(vec, pc)
     else:
-        return relevant_obs, w
+        if vec.ndim == 1:
+            return np.array(relevant_obs), w
+        else:
+            return np.vstack(relevant_obs), w
+
 
 
 def bernoulli_experiments(p_prob_of_observation, all_full_sampled_trajs):

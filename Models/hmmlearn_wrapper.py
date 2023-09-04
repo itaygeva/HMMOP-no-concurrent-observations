@@ -5,12 +5,22 @@ from Models.model_wrapper import model_wrapper
 
 class hmmlearn_wrapper(model_wrapper):
 
-    def __init__(self, num_states, num_iter):
-        self._model = hmm.GaussianHMM(n_components=num_states, n_iter=num_iter)
+    def __init__(self, num_states, num_iter, emission_prob):
+        # we only want to find the startprob_ - 's' and the transmat_ 't
+        self._model = hmm.CategoricalHMM(n_components=num_states, n_iter=num_iter, init_params='st')
+        #self._model = hmm.CategoricalHMM(n_components=num_states, n_iter=num_iter)
+        self._model.emissionprob_= emission_prob
 
     def fit(self, data):
-        sentences, lengths = self.convert_data_to_hmmlearn_format(data)
-        self._model.fit(sentences, lengths)
+        try:
+            self.ndim = data[0].ndim
+        except Exception as e:
+            print(f"Incorrect data passed for fit. Raised exception {e}")
+        else:
+            sentences, lengths = self.convert_data_to_hmmlearn_format(data)
+            if self.ndim == 1:
+                sentences = sentences.reshape(-1,1)
+            self._model.fit(sentences, lengths)
 
     def convert_data_to_hmmlearn_format(self, data):
         """
@@ -18,8 +28,12 @@ class hmmlearn_wrapper(model_wrapper):
         :param data: the data to convert - list of numpy_array(shape=(n_obs,n_features))
         :return: the converted data - numpy_array(shape=(n_features,n_total_obs))
         """
-        data_hmmlearn_formatted = np.transpose(np.vstack(data))
-        sentences_length = [sentence.shape[0] for sentence in data].astype(int)
+        ndim = data[0].ndim
+        if self.ndim == 1:
+            data_hmmlearn_formatted = np.hstack(data)
+        else:  # for the case of multivariate hmm
+            data_hmmlearn_formatted = np.transpose(np.vstack(data))
+        sentences_length = [int(sentence.shape[0]) for sentence in data]
         return data_hmmlearn_formatted, sentences_length
 
     @property
