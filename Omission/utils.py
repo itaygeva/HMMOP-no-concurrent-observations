@@ -1,8 +1,5 @@
-## we can pretty much copy most of benny's code. However, we need to make sure that the format that we get is the same.
-## Also, do we need the locations of the omissions?
-## Also, benny's code works on 1-feature data. we want to work with n-feature data. We might need to make some changes there
-
 import numpy as np
+
 
 def sample_n_points_from_traj_binom(vec, pc):
     """
@@ -27,7 +24,6 @@ def sample_n_points_from_traj_binom(vec, pc):
             return np.array(relevant_obs), w
         else:
             return np.vstack(relevant_obs), w
-
 
 
 def bernoulli_experiments(p_prob_of_observation, all_full_sampled_trajs):
