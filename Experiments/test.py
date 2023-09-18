@@ -8,7 +8,7 @@ import time
 # test variables - temp
 n_states = 11
 n_iter = 20
-omission_prob = 0.7
+omission_prob = 1
 
 
 # Record the start time
@@ -31,7 +31,7 @@ pome_model.fit(brown_data)
 
 pome_transmat = pome_model.transmat
 print(pome_transmat)
-"""
+
 print("creating model")
 pome_model_omitted = pome_wrapper(n_states, n_iter, brown_emission_prob, freeze_distributions=True)
 print("fitting omitted data")
@@ -43,7 +43,6 @@ pome_transmat_omitted = pome_model_omitted.transmat
 print(pome_transmat_omitted)
 evaluations.compare_mat_l1(pome_transmat.numpy(), pome_transmat_omitted.numpy())
 evaluations.compare_mat_l1_norm(pome_transmat.numpy(), pome_transmat_omitted.numpy())
-"""
 
 
 # Record the end time

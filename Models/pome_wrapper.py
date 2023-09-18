@@ -78,21 +78,21 @@ class pome_wrapper(model_wrapper):
         else:
             data = [torch.from_numpy(arr).reshape(-1, 1) for arr in data]
 
-        #data = self.partition_sequences(data)
+        data = self.partition_sequences(data)
         self._model.fit(X=data)
 
 
     @property
     def transmat(self):
         try:
-            return self._model.edges
+            return torch.exp(self._model.edges)
         except AttributeError as e:
             print(f"Model not initialized with fit, exception was raised: {e}")
 
     @property
     def startprob(self):
         try:
-            return self._model.starts
+            return torch.exp(self._model.starts)
         except AttributeError as e:
             print(f"Model not initialized with fit, exception was raised: {e}")
 
@@ -106,10 +106,6 @@ class pome_wrapper(model_wrapper):
             emission_prob.append(np.array(prob.probs))
 
         return np.vstack(emission_prob)
-
-    def push_data_to_gpu(self, data):
-        tensors = [torch.tensor(sentence).float().cuda() for sentence in data]
-        return tensors
 
     def convert_data(self, data):
         data = [torch.from_numpy(arr).reshape(-1, 1) for arr in data]
