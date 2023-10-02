@@ -1,45 +1,54 @@
 import numpy as np
-from hmmlearn import hmm
-"""
-arr = []
-# this is the case for multi-feature. In this case 4 features. where the data is list of (n_words X n_features)
-arr.append(np.array([[1,2,3,4],[2,4,6,8]]))
-print(arr[0].shape)
-arr.append(np.array([5,6,7,8]))
-arr.append(np.array([9,10,11,12]))
-arr.append(np.array([20,21,22,23]))
-print(arr[0])
-sentence1 = []
-for word in arr[0]:
-    print(word)
-    sentence1.append(word)
-print(np.vstack(sentence1))
+import pomegranate.hmm as hmm
+import pomegranate.distributions as distributions
+from Data.Readers.brown_corpus_reader import BCReader
+import Omission.utils as omitter
+from Models.hmmlearn_wrapper import hmmlearn_wrapper
+from Evaluations import utils as evaluations
+import torch
+from torch.masked import MaskedTensor
+
+tensor1 = torch.randn(3, 1)
+tensor2 = torch.randn(2, 1)
+tensor3 = torch.randn(3, 1)
+tensor4 = torch.randn(2, 1)
+tensor5 = torch.randn(3, 1)
+tensor6 = torch.randn(2, 1)
+
+mask1 = torch.rand(3, 1) > 0.5
+mask2 = torch.rand(2, 1) > 0.5
+mask3 = torch.rand(3, 1) > 0.5
+mask4 = torch.rand(2, 1) > 0.5
+mask5 = torch.rand(3, 1) > 0.5
+mask6 = torch.rand(2, 1) > 0.5
+
+masked_tensor1 = MaskedTensor(tensor1, mask1)
+masked_tensor2 = MaskedTensor(tensor2, mask2)
+masked_tensor3 = MaskedTensor(tensor3, mask3)
+masked_tensor4 = MaskedTensor(tensor4, mask4)
+masked_tensor5 = MaskedTensor(tensor5, mask5)
+masked_tensor6 = MaskedTensor(tensor6, mask6)
 
 
 
-data_hmmlearn_formatted = np.transpose(np.vstack(arr))
-print(data_hmmlearn_formatted)
-print(data_hmmlearn_formatted.shape)
+tensors = []
+tensors.append(masked_tensor1)
+tensors.append(masked_tensor2)
+tensors.append(masked_tensor3)
+tensors.append(masked_tensor4)
+tensors.append(masked_tensor5)
+tensors.append(masked_tensor6)
 
-print("\nnew test")
 
-arr2 = []
-arr2.append(np.atleast_2d(np.array([1,2,3,4,5])))
-arr2.append(np.atleast_2d(np.array([6,7,8])))
-print(arr2[0].shape)
-data_hmmlearn_formatted = np.transpose(np.vstack(arr2))
-data_hmmlearn_formatted = np.squeeze(data_hmmlearn_formatted)
-print(data_hmmlearn_formatted)
+#new_tensor= torch.cat([torch.unsqueeze(masked_tensor, dim=0) for masked_tensor in tensors if masked_tensor.shape[0]==3], dim=0)
 
-"""
-"""
-arr2 = []
-arr2.append(np.array([1,2,3,4,5]))
-arr2.append(np.array([6,7,8]))
-sentences_length = [int(sentence.shape[0]) for sentence in arr2]
-print(sentences_length)
-"""
-model = hmm.GaussianHMM()
-model.fit(np.array([1,2,3,4,5,6,7,8,9,10]).reshape(-1,1),[3,4,3])
-print(model.startprob_)
 
+tensor_dict = {}
+for tensor in tensors:
+    if tensor.shape[0] not in tensor_dict:
+        tensor_dict[tensor.shape[0]] = torch.unsqueeze(tensor, dim=0)
+    else:
+        tensor_dict[tensor.shape[0]] = torch.cat((tensor_dict[tensor.shape[0]], torch.unsqueeze(tensor, dim=0)))
+values = list(tensor_dict.values())
+print(values[0].shape)
+print(values[1].shape)
