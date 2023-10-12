@@ -2,15 +2,31 @@ import numpy as np
 import torch
 
 def find_mat_diff(matrix1, matrix2):
+    """
+    finds the l1 distance between the matrices
+    :param matrix1: torch tensor
+    :param matrix2: a torch tensor to compare
+    :return: The l1 distance between the matrices
+    """
     matrix1 = matrix1.numpy()
     matrix2 = matrix2.numpy()
     return np.sum(np.abs(matrix1 - matrix2))
 
 def compare_mat_l1(matrix1, matrix2):
+    """
+    prints the l1 distance between the matrices
+    :param matrix1: torch tensor
+    :param matrix2: a torch tensor to compare
+    """
     print(find_mat_diff(matrix1, matrix2))
 
 
 def compare_mat_l1_norm(matrix1, matrix2):
+    """
+    prints the normalized l1 distance between the matrices
+    :param matrix1: torch tensor
+    :param matrix2: a torch tensor to compare
+    """
     print(find_mat_diff(matrix1, matrix2)/matrix1.shape[0])
 
 

@@ -5,15 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5816c4f2-9dc7-4ace-9705-7042f2d839c3" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/HMMOP-no-concurrent-observations.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/HMMOP-no-concurrent-observations.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Readers/synthetic_reader.py" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Readers/synthetic_reader.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Evaluations/test.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Evaluations/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Evaluations/utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Experiments/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/experiment.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Models/gibbs_sampler_wrapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/Models/gibbs_sampler_wrapper.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Models/hmmlearn_wrapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/Models/hmmlearn_wrapper.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Models/pome_wrapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/Models/pome_wrapper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/playground.py" beforeDir="false" afterPath="$PROJECT_DIR$/playground.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Notebooks/test.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../HMMOP/who_cell/models/gibbs_sampler.py" beforeDir="false" afterPath="$PROJECT_DIR$/../HMMOP/who_cell/models/gibbs_sampler.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -125,28 +123,21 @@
       </map>
     </option>
   </component>
+  <component name="VcsManagerConfiguration">
+    <option name="LAST_COMMIT_MESSAGE" value="" />
+  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Models/gibbs_sampler_wrapper.py</url>
-          <line>20</line>
+          <line>31</line>
           <option name="timeStamp" value="27" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Models/pome_wrapper.py</url>
-          <line>99</line>
-          <option name="timeStamp" value="32" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$USER_HOME$/AppData/Roaming/Python/Python39/site-packages/sklearn/cluster/_kmeans.py</url>
           <line>865</line>
           <option name="timeStamp" value="38" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Models/hmmlearn_wrapper.py</url>
-          <line>26</line>
-          <option name="timeStamp" value="39" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
