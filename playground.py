@@ -7,48 +7,111 @@ from Models.hmmlearn_wrapper import hmmlearn_wrapper
 from Evaluations import utils as evaluations
 import torch
 from torch.masked import MaskedTensor
+from numpy import random
+import itertools
+from Data.Readers.stocks_reader import StocksReader
 
-tensor1 = torch.randn(3, 1)
-tensor2 = torch.randn(2, 1)
-tensor3 = torch.randn(3, 1)
-tensor4 = torch.randn(2, 1)
-tensor5 = torch.randn(3, 1)
-tensor6 = torch.randn(2, 1)
-
-mask1 = torch.rand(3, 1) > 0.5
-mask2 = torch.rand(2, 1) > 0.5
-mask3 = torch.rand(3, 1) > 0.5
-mask4 = torch.rand(2, 1) > 0.5
-mask5 = torch.rand(3, 1) > 0.5
-mask6 = torch.rand(2, 1) > 0.5
-
-masked_tensor1 = MaskedTensor(tensor1, mask1)
-masked_tensor2 = MaskedTensor(tensor2, mask2)
-masked_tensor3 = MaskedTensor(tensor3, mask3)
-masked_tensor4 = MaskedTensor(tensor4, mask4)
-masked_tensor5 = MaskedTensor(tensor5, mask5)
-masked_tensor6 = MaskedTensor(tensor6, mask6)
+def convert_features_to_price(features):
+    pass
 
 
+"""def generate_initial_normal_params_pytorch(dims, n_components):
+    tensor_type = torch.float32
+    means = [torch.rand(dims, dtype=tensor_type) for i in range(n_components)]
 
-tensors = []
-tensors.append(masked_tensor1)
-tensors.append(masked_tensor2)
-tensors.append(masked_tensor3)
-tensors.append(masked_tensor4)
-tensors.append(masked_tensor5)
-tensors.append(masked_tensor6)
+    covariance_matrices = [torch.randn(dims, dims) for i in range(n_components)]
+
+    covariance_matrices = [torch.mm(covariance_matrix, covariance_matrix.t()) for
+                           covariance_matrix in covariance_matrices]
+    covariance_matrices = [covariance_matrix / torch.diag(covariance_matrix).sqrt().view(-1, 1) for
+                           covariance_matrix in covariance_matrices]
+    covariance_matrices = [covariance_matrix / torch.diag(covariance_matrix).sqrt().view(1, -1) for
+                           covariance_matrix in covariance_matrices]
+
+    return means, covariance_matrices
 
 
-#new_tensor= torch.cat([torch.unsqueeze(masked_tensor, dim=0) for masked_tensor in tensors if masked_tensor.shape[0]==3], dim=0)
+def generate_initial_model_pytorch(distributions, n_components, n_iter):
+    tensor_type = torch.float32
+    edges = torch.rand(n_components, n_components, dtype=tensor_type)
+    ends = torch.rand(n_components, dtype=tensor_type)
+
+    for s in range(n_components):
+        temp = np.random.choice(range(1000), n_components + 1, replace=False)
+        edges[s, :] = torch.from_numpy(temp[:-1] / np.sum(temp))
+        ends[s] = temp[-1] / np.sum(temp)
+
+    starts = torch.rand(n_components, dtype=tensor_type)
+    starts = starts / torch.sum(starts)
+
+    return hmm.DenseHMM(distributions, edges=edges, starts=starts, ends=ends, max_iter=n_iter)
 
 
-tensor_dict = {}
-for tensor in tensors:
-    if tensor.shape[0] not in tensor_dict:
-        tensor_dict[tensor.shape[0]] = torch.unsqueeze(tensor, dim=0)
-    else:
-        tensor_dict[tensor.shape[0]] = torch.cat((tensor_dict[tensor.shape[0]], torch.unsqueeze(tensor, dim=0)))
-values = list(tensor_dict.values())
-print(values[0].shape)
-print(values[1].shape)
+def partition_sequences(data):
+    lengths_dict = {}
+    for tensor in data:
+        if tensor.shape[0] not in lengths_dict:
+            lengths_dict[tensor.shape[0]] = torch.unsqueeze(tensor, dim=0)
+        else:
+            lengths_dict[tensor.shape[0]] = torch.cat(
+                (lengths_dict[tensor.shape[0]], torch.unsqueeze(tensor, dim=0)))
+    values = list(lengths_dict.values())
+    values = sorted(values, key=lambda x: x.shape[1])
+    return values
+
+
+n_iter = 100
+dims = 1
+n_states = 3
+freeze_distributions = False
+sample_num = 1000000
+
+means, covs = generate_initial_normal_params_pytorch(dims, n_states)
+dists = [distributions.Normal(means=means[i], covs=covs[i], frozen=freeze_distributions) for i in
+         range(n_states)]
+
+#samples = [dist.sample(sample_num) for dist in dists]
+
+tester_means, tester_covs = generate_initial_normal_params_pytorch(dims, n_states)
+tester_dists = [distributions.Normal(means=tester_means[i], covs=tester_covs[i], frozen=freeze_distributions) for i in
+                range(n_states)]"""
+"""for i, dist in enumerate(tester_dists):
+    dist.fit(samples[i])
+
+print("means:")
+print([dist.means for dist in dists])
+print([dist.means for dist in tester_dists])
+print("covs")
+print([dist.covs for dist in dists])
+print([dist.covs for dist in tester_dists])
+"""
+model = generate_initial_model_pytorch(dists, n_states, n_iter)
+samples = model.sample(sample_num)
+samples = partition_sequences(samples)
+samples = [samples[i] for i in range(1, len(samples))]
+
+
+
+tester_model = generate_initial_model_pytorch(tester_dists, n_states, n_iter)
+tester_model.fit(samples)
+
+transmat = torch.exp(model.edges)
+tester_transmat = torch.exp(tester_model.edges)
+
+means = [dist.means for dist in model.distributions]
+tester_means = [dist.means for dist in tester_model.distributions]
+
+covs = [dist.covs for dist in model.distributions]
+tester_covs = [dist.covs for dist in tester_model.distributions]
+
+print("transition matrix:")
+print(transmat)
+print(tester_transmat)
+
+print("means:")
+print(means)
+print(tester_means)
+
+print("covs:")
+print(covs)
+print(tester_covs)

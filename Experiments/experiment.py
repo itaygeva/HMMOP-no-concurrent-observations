@@ -1,16 +1,51 @@
+from multiprocessing import Pool
+from Data.Readers.stocks_reader import StocksReader
+from Data.Readers.synthetic_reader import SyntheticReader
 from Data.Readers.brown_corpus_reader import BCReader
 import Omission.utils as omitter
 from Models.pome_wrapper import pome_wrapper
+from Models.hmmlearn_wrapper import hmmlearn_wrapper
+from Models.gibbs_sampler_wrapper import gibbs_sampler_wrapper
 from Evaluations import utils as evaluations
 import numpy as np
 import time
+import torch
 
 # test variables - temp
-n_states = 11
-n_iter = 20
-omission_prob = 1
 
+if __name__ == '__main__':
+    n_states = 3
+    n_iter = 1000
+    omission_prob = 1
+    n_samples = 100000
 
+    print("generating data")
+    reader = SyntheticReader(n_states, n_samples, 6)
+    data = reader.get_obs()
+    data = [np.squeeze(sentence.numpy()) for sentence in data]
+
+    og_transmat = reader.transition_mat
+
+    print("fitting")
+    model = hmmlearn_wrapper(n_states, n_iter,"Gaussian")
+    model.fit(data)
+
+    found_transmat = torch.from_numpy(model.transmat)
+    print(og_transmat)
+    print(found_transmat)
+    print(torch.sum(found_transmat))
+    evaluations.compare_mat_l1_norm(og_transmat, found_transmat)
+
+"""
+    gibbs_sampler = gibbs_sampler_wrapper(n_components=n_states, n_iter=n_iter)
+    gibbs_sampler.fit(data)
+    found_transmat = gibbs_sampler.transmat
+    print(og_transmat)
+    print(found_transmat)
+    evaluations.compare_mat_l1_norm(og_transmat, found_transmat)
+"""
+
+"""
 # Record the start time
 start_time = time.time()
 
@@ -53,3 +88,4 @@ elapsed_time = end_time - start_time
 
 # Print the elapsed time in seconds
 print(f"Program executed in {elapsed_time:.2f} seconds")
+"""

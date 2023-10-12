@@ -5,17 +5,17 @@ from Models.model_wrapper import model_wrapper
 
 class hmmlearn_wrapper(model_wrapper):
 
-    def __init__(self, n_components, n_iter, emission_prob):
+    def __init__(self, n_components, n_iter, distribution, emission_prob=None):
         # we only want to find the startprob_ - 's' and the transmat_ 't
         # self._model = hmm.CategoricalHMM(n_components=num_states, n_iter=num_iter, init_params='st')
         super().__init__(n_components, n_iter)
-        self._model = None
+        self.distribution = distribution
+        self.create_model()
         self.emission_prob = emission_prob
 
-        # self._model.emissionprob_= emission_prob
+
 
     def fit(self, data):
-        self._model = hmm.CategoricalHMM(n_components=self.n_components, n_iter=self.n_iter)
         try:
             self.ndim = data[0].ndim
         except Exception as e:
@@ -73,3 +73,12 @@ class hmmlearn_wrapper(model_wrapper):
             start_idx = end_idx
 
         return data
+
+    def create_model(self):
+        if self.distribution == 'Categorical':
+            self._model = hmm.CategoricalHMM(n_components=self.n_components, n_iter=self.n_iter)
+        elif self.distribution == 'Gaussian':
+            self._model = hmm.GaussianHMM(n_components=self.n_components, n_iter=self.n_iter)
+        else:
+            raise NotImplementedError(f"No model implemented for {self.distribution} distribution")
+        pass

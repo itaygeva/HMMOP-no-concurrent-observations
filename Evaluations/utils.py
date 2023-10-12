@@ -1,12 +1,17 @@
 import numpy as np
+import torch
 
+def find_mat_diff(matrix1, matrix2):
+    matrix1 = matrix1.numpy()
+    matrix2 = matrix2.numpy()
+    return np.sum(np.abs(matrix1 - matrix2))
 
 def compare_mat_l1(matrix1, matrix2):
-    print(np.sum(np.abs(matrix1 - matrix2)))
+    print(find_mat_diff(matrix1, matrix2))
 
 
 def compare_mat_l1_norm(matrix1, matrix2):
-    print(np.average(np.abs(matrix1 - matrix2)))
+    print(find_mat_diff(matrix1, matrix2)/matrix1.shape[0])
 
 
 def find_temporal_info_ratio(matrix):

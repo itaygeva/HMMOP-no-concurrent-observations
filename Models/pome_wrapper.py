@@ -13,12 +13,13 @@ import torch
 
 
 class pome_wrapper(model_wrapper):
-    def __init__(self, n_components, n_iter, emission_prob, freeze_distributions=False):
+    def __init__(self, n_components, n_iter, distribution, dims, emission_prob=None, freeze_distributions=False):
         super().__init__(n_components, n_iter)
         self._model: hmm.DenseHMM = None
         self.emission_prob = emission_prob
         self.freeze_distributions = freeze_distributions
-
+        self.distribution = distribution
+        self.dims = dims
         # create model
         self.generate_initial_model_pytorch()
 
@@ -26,44 +27,13 @@ class pome_wrapper(model_wrapper):
         self.cache_dir = os.path.join(data_dir, 'Cache')
 
     def generate_initial_model_pytorch(self):
-        dists = [distributions.Categorical(torch.from_numpy(np.atleast_2d(dist)), frozen=self.freeze_distributions)
-                 for dist in self.emission_prob]
+        dists = self.create_distributions()
         tensor_type = torch.float32
         edges = torch.rand(self.n_components, self.n_components, dtype=tensor_type)
         starts = torch.rand(self.n_components, dtype=tensor_type)
         starts = starts / torch.sum(starts)
         ends = torch.rand(self.n_components, dtype=tensor_type)
         self._model = hmm.DenseHMM(dists, edges=edges, starts=starts, ends=ends, max_iter=self.n_iter)
-
-    def generate_initial_model(self):
-        dists = [distributions.Categorical(np.atleast_2d(dist), frozen=self.freeze_distributions)
-                 for dist in self.emission_prob]
-        edges = np.random.rand(self.n_components, self.n_components)
-        starts = np.random.rand(self.n_components)
-        starts = starts / np.sum(starts)
-        ends = np.random.rand(self.n_components)
-        self._model = hmm.DenseHMM(dists, edges=edges, starts=starts, ends=ends, max_iter=1)
-
-    def fit_data(self, data):
-        """
-        # need to add the tags in here
-        print("running fit")
-        cache_filename = os.path.join(self.cache_dir, 'model.pkl')
-        # Check if the pickle file exists
-        if os.path.isfile(cache_filename):
-            print("loading pickled model")
-            # If the file exists, load the variable from the file
-            with open(cache_filename, 'rb') as file:
-                self._model: hmm.DenseHMM = pickle.load(file)
-                # self._model = pickle.load(file)
-
-        else:
-            # data = self.push_data_to_gpu(data)
-            self._model.fit(X=self.convert_data(data))
-            with open(cache_filename, 'wb') as file:
-                pickle.dump(self._model, file)
-        """
-        self._model.fit(X=self.convert_data(data))
 
     def fit(self, data, omission_idx=None):
         if omission_idx is not None:
@@ -80,7 +50,8 @@ class pome_wrapper(model_wrapper):
 
         data = self.partition_sequences(data)
         self._model.fit(X=data)
-
+        dists = self._model.distributions
+        means = [dist.means for dist in dists]
 
     @property
     def transmat(self):
@@ -107,10 +78,6 @@ class pome_wrapper(model_wrapper):
 
         return np.vstack(emission_prob)
 
-    def convert_data(self, data):
-        data = [torch.from_numpy(arr).reshape(-1, 1) for arr in data]
-        return data
-
     def partition_sequences(self, data):
         lengths_dict = {}
         for tensor in data:
@@ -121,6 +88,34 @@ class pome_wrapper(model_wrapper):
         values = list(lengths_dict.values())
         values = sorted(values, key=lambda x: x.shape[1])
         return values
+
+    def create_distributions(self):
+        if self.distribution == 'Categorical':
+            # return [distributions.Categorical(torch.from_numpy(np.atleast_2d(dist)), frozen=self.freeze_distributions)
+            # for dist in self.emission_prob]
+             return [distributions.Categorical(frozen=self.freeze_distributions)
+                    for i in range(self.n_components)]
+        elif self.distribution == 'Gaussian':
+            means, covs = self.generate_initial_normal_params_pytorch()
+            return [distributions.Normal(means=means[i], covs=covs[i], frozen=self.freeze_distributions) for i in
+                    range(self.n_components)]
+        else:
+            raise NotImplementedError(f"No model implemented for {self.distribution} distribution")
+
+    def generate_initial_normal_params_pytorch(self):
+        tensor_type = torch.float32
+        means = [torch.rand(self.dims, dtype=tensor_type) for i in range(self.n_components)]
+
+        random_matrix = torch.randn(self.dims, self.dims)
+
+        covariance_matrices = [torch.mm(random_matrix, random_matrix.t()) for i in range(self.n_components)]
+        covariance_matrices = [covariance_matrix / torch.diag(covariance_matrix).sqrt().view(-1, 1) for
+                               covariance_matrix in covariance_matrices]
+        covariance_matrices = [covariance_matrix / torch.diag(covariance_matrix).sqrt().view(1, -1) for
+                               covariance_matrix in covariance_matrices]
+
+        return means, covariance_matrices
+
 
 """
     def add_states_with_dist(self):
