@@ -1,16 +1,16 @@
-from utils import *
+import Evaluations.utils as eval
 from Experiments.utils import *
 from Experiments.Base_Creator import Base_Creator
 import json
 
-class Evaluation_Manager(Base_Creator):
+class Evaluations_Manager(Base_Creator):
     def __init__(self, models_dict,config_path=None):
         config_path = "Evaluations.JSON" if config_path is None else config_path
         super().__init__(config_path)
         self.instances_type = "evaluations"
         self.models_dict = models_dict
         self.key_name = "Test"
-        self.name_to_test_dict = {
+        self.class_to_builder_dict = {
             "L1 Normalized": self._l1_normalized
         }
 
@@ -19,9 +19,9 @@ class Evaluation_Manager(Base_Creator):
         if len(models) != 2:
             raise ValueError(f"L1 Normalized test expects 2 models, but got {len(models)}  instead")
         else:
-            matrix1 = models[0].transmat
-            matrix2 = models[1].transmat
-            compare_mat_l1_norm(matrix1, matrix2)
+            matrix1 = self.models_dict[models[0]["Name"]].transmat
+            matrix2 = self.models_dict[models[1]["Name"]].transmat
+            eval.compare_mat_l1_norm(matrix1, matrix2)
             return True
 
 

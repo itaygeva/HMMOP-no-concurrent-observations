@@ -85,7 +85,7 @@ print("covs")
 print([dist.covs for dist in dists])
 print([dist.covs for dist in tester_dists])
 """
-model = generate_initial_model_pytorch(dists, n_states, n_iter)
+"""model = generate_initial_model_pytorch(dists, n_states, n_iter)
 samples = model.sample(sample_num)
 samples = partition_sequences(samples)
 samples = [samples[i] for i in range(1, len(samples))]
@@ -114,4 +114,4 @@ print(tester_means)
 
 print("covs:")
 print(covs)
-print(tester_covs)
+print(tester_covs)"""

@@ -9,15 +9,16 @@ class Base_Creator:
         self.default = None
         self.instances_type = None
         self.class_to_builder_dict = {}
+        self.key_name = "Class"
 
     def _create_instance(self, instance_config):
-        if instance_config["Class"] in self.class_to_builder_dict.keys():
-            return self.class_to_builder_dict[instance_config["Class"]](instance_config)
+        if instance_config[self.key_name] in self.class_to_builder_dict.keys():
+            return self.class_to_builder_dict[instance_config[self.key_name]](instance_config)
         else:
-            raise NotImplementedError(f'No class {instance_config["Class"]} implemented')
+            raise NotImplementedError(f'{instance_config[self.key_name]} not implemented')
 
     def create_instances_dict(self):
-        with open("config.json", "r") as json_file:
+        with open(self.config_path, "r") as json_file:
             config = json.load(json_file)
         instances_config = config[self.instances_type]
         self.default = config["default"]

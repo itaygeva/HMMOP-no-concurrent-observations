@@ -2,15 +2,16 @@
   "evaluations": [
     {
       "Name": "L1 of Gibbs Sampler - Synthetic Data",
-      "Test": "L1_Normalized",
+      "Test": "L1 Normalized",
       "Models": [
         {
           "Name": "Synthetic Ground Truth"
         },
         {
-          "Name":"Synthetic Gibbs - No Omissions"
+          "Name":"Synthetic BW - No Omissions"
         }
       ]
     }
-  ]
+  ],
+  "default": null
 }

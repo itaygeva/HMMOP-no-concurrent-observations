@@ -3,6 +3,7 @@ from Experiments.Readers_Creator import Readers_Creator
 from Experiments.Omitters_Creator import Omitters_Creator
 from Experiments.Models_Creator import Models_Creator
 
+from Evaluations.Evaluations_Manager import Evaluations_Manager
 # test variables - temp
 
 def create_models():
@@ -15,10 +16,9 @@ def create_models():
 
 if __name__ == '__main__':
     models = create_models()
-    print(models)
-    print([(name,model.transmat) for name, model in models.items()])
     # TODO: add cache for models & omitters & data!!!
-
+    evaluations_manager = Evaluations_Manager(models)
+    print(evaluations_manager.create_instances_dict()) # This is not the most indicative function name in the case of the tests
 
 
 
