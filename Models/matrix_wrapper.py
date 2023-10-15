@@ -12,8 +12,10 @@ class matrix_wrapper(model_wrapper):
         self._transmat = transmat
         # TODO : Add get startprob to synthetic reader
 
+    @property
     def transmat(self):
         return self._transmat
 
+    @property
     def startprob(self):
         return self._startprob

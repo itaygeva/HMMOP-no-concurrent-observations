@@ -34,11 +34,6 @@
       "Number of Features": 1
     },
     {
-      "Name": "Synthetic Gibbs - No Omissions",
-      "Class": "gibbs_sampler_wrapper",
-      "Reader": "Synthetic"
-    },
-    {
       "Name": "Synthetic Ground Truth",
       "Class": "matrix_wrapper",
       "Reader": "Synthetic"

@@ -5,18 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5816c4f2-9dc7-4ace-9705-7042f2d839c3" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Experiments/Base_Creator.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Experiments/Config.JSON" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Experiments/Evaluations.JSON" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Experiments/Models_Creator.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Experiments/Omitters_Creator.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Experiments/Readers_Creator.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Experiments/utils.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Models/matrix_wrapper.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Omission/omitters.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Experiments/experiment.py" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/experiment.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Models/pome_wrapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/Models/pome_wrapper.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Experiments/Config.JSON" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/Config.JSON" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models/matrix_wrapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/Models/matrix_wrapper.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../HMMOP/who_cell/models/gibbs_sampler.py" beforeDir="false" afterPath="$PROJECT_DIR$/../HMMOP/who_cell/models/gibbs_sampler.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -135,19 +126,9 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Models/gibbs_sampler_wrapper.py</url>
-          <line>31</line>
-          <option name="timeStamp" value="27" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$USER_HOME$/AppData/Roaming/Python/Python39/site-packages/sklearn/cluster/_kmeans.py</url>
-          <line>865</line>
-          <option name="timeStamp" value="38" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Data/Readers/synthetic_reader.py</url>
-          <line>38</line>
-          <option name="timeStamp" value="42" />
+          <url>file://$PROJECT_DIR$/Experiments/Models_Creator.py</url>
+          <line>70</line>
+          <option name="timeStamp" value="43" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
