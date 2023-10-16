@@ -37,6 +37,24 @@
       "Name": "Synthetic Ground Truth",
       "Class": "matrix_wrapper",
       "Reader": "Synthetic"
+    },
+    {
+      "Name": "Synthetic Gibbs - No Omissions",
+      "Class": "gibbs_sampler_wrapper",
+      "Reader": "Synthetic"
+    },
+    {
+      "Name": "Synthetic BW - Bernoulli Omissions",
+      "Class": "pome_wrapper",
+      "Reader": "Synthetic",
+      "Omitter": "Bernoulli",
+      "Number of Features": 1
+    },
+    {
+      "Name": "Synthetic Gibbs - Bernoulli Omissions",
+      "Class": "gibbs_sampler_wrapper",
+      "Reader": "Synthetic",
+      "Omitter": "Bernoulli"
     }
   ],
   "default": {
@@ -46,6 +64,6 @@
     "Pass Emission Probabilities": false,
     "Freeze Distributions": false,
     "Number of States": 3,
-    "Reinitialize" : false
+    "Reinitialize": false
   }
 }

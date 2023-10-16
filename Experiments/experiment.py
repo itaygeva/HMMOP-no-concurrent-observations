@@ -1,7 +1,6 @@
-from multiprocessing import Pool
-from Experiments.Readers_Creator import Readers_Creator
-from Experiments.Omitters_Creator import Omitters_Creator
-from Experiments.Models_Creator import Models_Creator
+from Experiments.Creators.Readers_Creator import Readers_Creator
+from Experiments.Creators.Omitters_Creator import Omitters_Creator
+from Experiments.Creators.Models_Creator import Models_Creator
 
 from Evaluations.Evaluations_Manager import Evaluations_Manager
 # test variables - temp
@@ -13,12 +12,12 @@ def create_models():
     omitters = omitters_creator.create_instances_dict()
     models_creator = Models_Creator(readers, omitters)
     return models_creator.create_instances_dict()
+def run_evaluations(model):
+    evaluations_manager = Evaluations_Manager(models)
 
 if __name__ == '__main__':
     models = create_models()
-    # TODO: add cache for models & omitters & data!!!
-    evaluations_manager = Evaluations_Manager(models)
-    print(evaluations_manager.create_instances_dict()) # This is not the most indicative function name in the case of the tests
+    run_evaluations(models)
 
 
 

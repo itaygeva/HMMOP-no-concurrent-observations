@@ -1,7 +1,7 @@
 import Evaluations.utils as eval
-from Experiments.utils import *
-from Experiments.Base_Creator import Base_Creator
-import json
+from Experiments.Creators.utils import *
+from Experiments.Creators.Base_Creator import Base_Creator
+
 
 class Evaluations_Manager(Base_Creator):
     def __init__(self, models_dict,config_path=None):

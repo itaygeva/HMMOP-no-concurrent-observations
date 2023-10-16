@@ -2,7 +2,7 @@ import numpy as np
 import pomegranate.hmm as hmm
 import pomegranate.distributions as distributions
 from Data.Readers.brown_corpus_reader import BCReader
-import Omission.utils as omitter
+import Omitters.utils as omitter
 from Models.hmmlearn_wrapper import hmmlearn_wrapper
 from Evaluations import utils as evaluations
 import torch

@@ -6,14 +6,31 @@
   <component name="ChangeListManager">
     <list default="true" id="5816c4f2-9dc7-4ace-9705-7042f2d839c3" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Readers/Cache/corpus_dataset.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Readers/Cache/corpus_emission_prob.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Readers/Cache/stocks_dataset.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Readers/Cache/synthetic_model_0.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Readers/Cache/synthetic_model_1.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/test.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Evaluations/Evaluations_Manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/Evaluations/Evaluations_Manager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Experiments/Base_Creator.py" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/Base_Creator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Experiments/Base_Creator.py" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/Creators/Base_Creator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Experiments/Cache/evaluations/L1 of Gibbs Sampler - Synthetic Data.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Experiments/Cache/models/Synthetic BW - No Omissions.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Experiments/Cache/models/Synthetic Ground Truth.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Experiments/Cache/omitters/Bernoulli.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Experiments/Cache/omitters/Pass All.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Experiments/Cache/readers/Brown Corpus.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Experiments/Cache/readers/Stocks.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Experiments/Cache/readers/Synthetic.pkl" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Experiments/Config.JSON" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/Config.JSON" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Experiments/Evaluations.JSON" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/Evaluations.JSON" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Experiments/Models_Creator.py" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/Models_Creator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Experiments/Omitters_Creator.py" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/Omitters_Creator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Experiments/Readers_Creator.py" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/Readers_Creator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Experiments/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Experiments/Models_Creator.py" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/Creators/Models_Creator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Experiments/Omitters_Creator.py" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/Creators/Omitters_Creator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Experiments/Readers_Creator.py" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/Creators/Readers_Creator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Experiments/experiment.py" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/experiment.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Experiments/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/Creators/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Omission/omitters.py" beforeDir="false" afterPath="$PROJECT_DIR$/Omitters/omitters.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Omission/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Omitters/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/playground.py" beforeDir="false" afterPath="$PROJECT_DIR$/playground.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../HMMOP/who_cell/models/gibbs_sampler.py" beforeDir="false" afterPath="$PROJECT_DIR$/../HMMOP/who_cell/models/gibbs_sampler.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -53,6 +70,11 @@
     &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PythonContentEntriesConfigurable&quot;
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\liadm\Code\HMMOP-no-concurrent-observations\Experiments\Creators" />
+    </key>
+  </component>
   <component name="RunManager" selected="Python.experiment">
     <configuration name="experiment" type="PythonConfigurationType" factoryName="Python">
       <module name="HMMOP-no-concurrent-observations" />
@@ -132,21 +154,21 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Experiments/experiment.py</url>
-          <line>20</line>
-          <option name="timeStamp" value="46" />
+          <url>file://$PROJECT_DIR$/Experiments/Creators/Base_Creator.py</url>
+          <line>39</line>
+          <option name="timeStamp" value="50" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Evaluations/utils.py</url>
-          <line>10</line>
-          <option name="timeStamp" value="47" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Experiments/Base_Creator.py</url>
-          <line>18</line>
-          <option name="timeStamp" value="48" />
+          <url>file://$PROJECT_DIR$/Data/Readers/brown_corpus_reader.py</url>
+          <line>85</line>
+          <option name="timeStamp" value="51" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="instances[instance_config[&quot;Name&quot;]]" language="Python" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>
