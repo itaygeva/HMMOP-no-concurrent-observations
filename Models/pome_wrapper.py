@@ -15,6 +15,8 @@ import torch
 class pome_wrapper(model_wrapper):
     # TODO: Test support of multivariate data
     def __init__(self, n_components, n_iter, distribution, n_features, emission_prob=None, freeze_distributions=False):
+        # TODO: get rid of the need for n_features. Seems like it is needed in order to initialize the means and covs.
+
         """
         :param n_components: the number of states the HMM has
         :param n_iter: the number of iterations to have the fit do
@@ -60,6 +62,7 @@ class pome_wrapper(model_wrapper):
             #  TODO: Export this to a method
             masked_data = []
             for sentence, ws in zip(data, omission_idx):
+                # TODO: change this to get tensor data (if that is the format we agree on)
                 sentence_with_zeros = np.full(max(ws) + 1, 0)
                 sentence_with_zeros[ws] = sentence
                 mask = np.full(max(ws) + 1, False)
@@ -67,7 +70,7 @@ class pome_wrapper(model_wrapper):
                 masked_data.append(torch.masked.MaskedTensor(torch.from_numpy(sentence_with_zeros), torch.from_numpy(mask)).reshape(-1, 1))
             data = masked_data
         else:
-            data = [torch.from_numpy(arr).reshape(-1, 1) for arr in data]
+            data = [arr.reshape(-1, 1) for arr in data] # assuming that the data is tensors
 
         data = self.partition_sequences(data) # We need to do this ourselves in order to bypass a bug in pomegranate 1.0.3
         self._model.fit(X=data)

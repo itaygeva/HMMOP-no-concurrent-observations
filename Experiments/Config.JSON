@@ -1,0 +1,69 @@
+{
+  "readers": [
+    {
+      "Name": "Brown Corpus",
+      "Class": "brown_corpus_reader"
+    },
+    {
+      "Name": "Synthetic",
+      "Class": "synthetic_reader",
+      "Number of States for Generation": 3,
+      "Number of Samples": 10000
+    },
+    {
+      "Name": "Stocks",
+      "Class": "stocks_reader"
+    }
+  ],
+  "omitters": [
+    {
+      "Name": "Pass All",
+      "Class": "base_omitter"
+    },
+    {
+      "Name": "Bernoulli",
+      "Class": "bernoulli_omitter",
+      "Probability of Observation": 0.7
+    }
+  ],
+  "models": [
+    {
+      "Name": "Synthetic BW - No Omissions",
+      "Class": "pome_wrapper",
+      "Reader": "Synthetic",
+      "Number of Features": 1
+    },
+    {
+      "Name": "Synthetic Ground Truth",
+      "Class": "matrix_wrapper",
+      "Reader": "Synthetic"
+    },
+    {
+      "Name": "Synthetic Gibbs - No Omissions",
+      "Class": "gibbs_sampler_wrapper",
+      "Reader": "Synthetic"
+    },
+    {
+      "Name": "Synthetic BW - Bernoulli Omissions",
+      "Class": "pome_wrapper",
+      "Reader": "Synthetic",
+      "Omitter": "Bernoulli",
+      "Number of Features": 1
+    },
+    {
+      "Name": "Synthetic Gibbs - Bernoulli Omissions",
+      "Class": "gibbs_sampler_wrapper",
+      "Reader": "Synthetic",
+      "Omitter": "Bernoulli"
+    }
+  ],
+  "default": {
+    "Number of Iterations": 20,
+    "Omitter": "Pass All",
+    "Distribution Type": "Gaussian",
+    "Pass Emission Probabilities": false,
+    "Freeze Distributions": false,
+    "Number of States": 3,
+    "Reinitialize": false
+  }
+}

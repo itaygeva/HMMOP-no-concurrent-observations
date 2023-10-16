@@ -1,19 +1,28 @@
-from multiprocessing import Pool
-from Data.Readers.stocks_reader import StocksReader
-from Data.Readers.synthetic_reader import SyntheticReader
-from Data.Readers.brown_corpus_reader import BCReader
-import Omission.utils as omitter
-from Models.pome_wrapper import pome_wrapper
-from Models.hmmlearn_wrapper import hmmlearn_wrapper
-from Models.gibbs_sampler_wrapper import gibbs_sampler_wrapper
-from Evaluations import utils as evaluations
-import numpy as np
-import time
-import torch
+from Experiments.Creators.Readers_Creator import Readers_Creator
+from Experiments.Creators.Omitters_Creator import Omitters_Creator
+from Experiments.Creators.Models_Creator import Models_Creator
 
+from Evaluations.Evaluations_Manager import Evaluations_Manager
 # test variables - temp
 
+def create_models():
+    readers_creator = Readers_Creator()
+    readers = readers_creator.create_instances_dict()
+    omitters_creator = Omitters_Creator()
+    omitters = omitters_creator.create_instances_dict()
+    models_creator = Models_Creator(readers, omitters)
+    return models_creator.create_instances_dict()
+def run_evaluations(model):
+    evaluations_manager = Evaluations_Manager(models)
+
 if __name__ == '__main__':
+    models = create_models()
+    run_evaluations(models)
+
+
+
+
+    """
     n_states = 3
     n_iter = 1000
     omission_prob = 1
@@ -35,7 +44,7 @@ if __name__ == '__main__':
     print(found_transmat)
     print(torch.sum(found_transmat))
     evaluations.compare_mat_l1_norm(og_transmat, found_transmat)
-
+"""
 """
     gibbs_sampler = gibbs_sampler_wrapper(n_components=n_states, n_iter=n_iter)
     gibbs_sampler.fit(data)
