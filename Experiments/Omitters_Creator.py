@@ -8,8 +8,7 @@ import json
 class Omitters_Creator(Base_Creator):
 
     def __init__(self, config_path=None):
-        super().__init__(config_path)
-        self.instances_type = "omitters"
+        super().__init__(config_path, instances_type = "omitters")
         self.class_to_builder_dict = {
             "base_omitter": self._build_base_omitter,
             "bernoulli_omitter": self._build_bernoulli_omitter

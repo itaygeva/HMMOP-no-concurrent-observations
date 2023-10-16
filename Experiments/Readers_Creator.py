@@ -9,8 +9,7 @@ import json
 class Readers_Creator(Base_Creator):
 
     def __init__(self, config_path=None):
-        super().__init__(config_path)
-        self.instances_type = "readers"
+        super().__init__(config_path, "readers")
         self.class_to_builder_dict = {
             "brown_corpus_reader": self._build_brown_corpus_reader,
             "synthetic_reader": self._build_synthetic_reader,

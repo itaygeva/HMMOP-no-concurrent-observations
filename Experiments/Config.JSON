@@ -45,6 +45,7 @@
     "Distribution Type": "Gaussian",
     "Pass Emission Probabilities": false,
     "Freeze Distributions": false,
-    "Number of States": 3
+    "Number of States": 3,
+    "Reinitialize" : false
   }
 }

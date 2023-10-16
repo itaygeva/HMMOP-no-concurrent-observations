@@ -6,8 +6,7 @@ import json
 class Evaluations_Manager(Base_Creator):
     def __init__(self, models_dict,config_path=None):
         config_path = "Evaluations.JSON" if config_path is None else config_path
-        super().__init__(config_path)
-        self.instances_type = "evaluations"
+        super().__init__(config_path, "evaluations")
         self.models_dict = models_dict
         self.key_name = "Test"
         self.class_to_builder_dict = {

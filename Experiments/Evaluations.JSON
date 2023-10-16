@@ -8,10 +8,12 @@
           "Name": "Synthetic Ground Truth"
         },
         {
-          "Name":"Synthetic BW - No Omissions"
+          "Name": "Synthetic BW - No Omissions"
         }
       ]
     }
   ],
-  "default": null
+  "default": {
+    "Reinitialize": false
+  }
 }

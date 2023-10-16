@@ -9,8 +9,7 @@ import json
 
 class Models_Creator(Base_Creator):
     def __init__(self, readers_dict, omitters_dict, config_path=None):
-        super().__init__(config_path)
-        self.instances_type = "models"
+        super().__init__(config_path, "models")
         self.readers_dict = readers_dict
         self.omitters_dict = omitters_dict
         self.class_to_builder_dict = {
