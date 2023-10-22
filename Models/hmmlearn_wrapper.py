@@ -13,23 +13,23 @@ class hmmlearn_wrapper(model_wrapper):
         """
         super().__init__(n_components, n_iter)
         self.distribution = distribution
-        self.create_model() # create model based on the dist type
 
-
-
-    def fit(self, data):
-        """
-        Fits the hmmlearn HMM model to the given data.
-        :param data: the data to fit - list of numpy_array(shape=(n_obs,n_features))
-        :return:
-        """
+    def _iter_fit(self, data, n_iter):
         try:
             self.ndim = data[0].ndim
         except Exception as e:
             print(f"Incorrect data passed for fit. Raised exception {e}")
         else:
+            self.create_model()  # create model based on the dist type
             sentences, lengths = self.convert_data_to_hmmlearn_format(data)
             self._model.fit(sentences, lengths)
+            return self._model.transmat_, self._model.startprob_
+
+    def fit(self, data):
+        for i in range(self.n_iter):
+            transmat, start_prob = self._iter_fit(data, i)
+            self._transmat_list.append(transmat)
+            self._startprob_list.append(start_prob)
 
     def convert_data_to_hmmlearn_format(self, data):
         """
@@ -44,20 +44,6 @@ class hmmlearn_wrapper(model_wrapper):
             data_hmmlearn_formatted = np.transpose(np.vstack(data))
         sentences_length = [int(sentence.shape[0]) for sentence in data]
         return data_hmmlearn_formatted, sentences_length
-
-    @property
-    def transmat(self):
-        try:
-            return self._model.transmat_
-        except AttributeError as e:
-            print(f"Model not initialized with fit, exception was raised: {e}")
-
-    @property
-    def startprob(self):
-        try:
-            return self._model.startprob_
-        except AttributeError as e:
-            print(f"Model not initialized with fit, exception was raised: {e}")
 
     # This method should not be used in the end. Just a patch for now
     @staticmethod

@@ -11,10 +11,6 @@ from numpy import random
 import itertools
 from Data.Readers.stocks_reader import StocksReader
 
-def convert_features_to_price(features):
-    pass
-
-
 """def generate_initial_normal_params_pytorch(dims, n_components):
     tensor_type = torch.float32
     means = [torch.rand(dims, dtype=tensor_type) for i in range(n_components)]
@@ -115,3 +111,11 @@ print(tester_means)
 print("covs:")
 print(covs)
 print(tester_covs)"""
+
+x1 = np.linspace(0, 1, 10)
+x2 = [StocksReader(), StocksReader(), StocksReader()]
+x3 = 1
+grid = np.squeeze(np.meshgrid(x1, x2, x3))
+print(grid)
+
+
