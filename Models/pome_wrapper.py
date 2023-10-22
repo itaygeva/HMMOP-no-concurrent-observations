@@ -32,13 +32,11 @@ class pome_wrapper(model_wrapper):
         self.freeze_distributions = freeze_distributions
         self.distribution = distribution
         self.n_features = n_features
-        # create model
-        self.generate_initial_model_pytorch()
 
         data_dir = os.path.dirname(inspect.getfile(model_wrapper))
         self.cache_dir = os.path.join(data_dir, 'Cache')
 
-    def generate_initial_model_pytorch(self):
+    def generate_initial_model_pytorch(self, n_iter):
         """
         Generates random parameters for the pomegranate model
         """
@@ -48,15 +46,11 @@ class pome_wrapper(model_wrapper):
         starts = torch.rand(self.n_components, dtype=tensor_type)
         starts = starts / torch.sum(starts)
         ends = torch.rand(self.n_components, dtype=tensor_type)
-        self._model = hmm.DenseHMM(dists, edges=edges, starts=starts, ends=ends, max_iter=self.n_iter)
+        self._model = hmm.DenseHMM(dists, edges=edges, starts=starts, ends=ends, max_iter=n_iter)
 
-    def fit(self, data, omission_idx=None):
-        """
-        Fits the hmmlearn HMM model to the given data.
-        :param data: the data to fit - list of numpy_array(shape=(n_obs,n_features))
-        :param omission_idx: the indexes of the emission. This is in the case of omissions in the data.
-        If there are no omissions: omission_idx should be None.
-        """
+    def _iter_fit(self, data, n_iter, omission_idx=None):
+
+        self.generate_initial_model_pytorch(n_iter)
         #  TODO: Support multivariate data (n_features>1)
         if omission_idx is not None:
             #  TODO: Export this to a method
@@ -67,27 +61,23 @@ class pome_wrapper(model_wrapper):
                 sentence_with_zeros[ws] = sentence
                 mask = np.full(max(ws) + 1, False)
                 mask[ws] = True
-                masked_data.append(torch.masked.MaskedTensor(torch.from_numpy(sentence_with_zeros), torch.from_numpy(mask)).reshape(-1, 1))
+                masked_data.append(
+                    torch.masked.MaskedTensor(torch.from_numpy(sentence_with_zeros), torch.from_numpy(mask)).reshape(-1,
+                                                                                                                     1))
             data = masked_data
         else:
-            data = [arr.reshape(-1, 1) for arr in data] # assuming that the data is tensors
+            data = [arr.reshape(-1, 1) for arr in data]  # assuming that the data is tensors
 
-        data = self.partition_sequences(data) # We need to do this ourselves in order to bypass a bug in pomegranate 1.0.3
+        data = self.partition_sequences(
+            data)  # We need to do this ourselves in order to bypass a bug in pomegranate 1.0.3
         self._model.fit(X=data)
+        return torch.exp(self._model.edges), torch.exp(self._model.starts)
 
-    @property
-    def transmat(self):
-        try:
-            return torch.exp(self._model.edges)  # we get the log of the probabilities
-        except AttributeError as e:
-            print(f"Model not initialized with fit, exception was raised: {e}")
-
-    @property
-    def startprob(self):
-        try:
-            return torch.exp(self._model.starts)  # we get the log of the probabilities
-        except AttributeError as e:
-            print(f"Model not initialized with fit, exception was raised: {e}")
+    def fit(self, data, omission_idx=None):
+        for i in range(1, self.n_iter + 1):
+            transmat, start_prob = self._iter_fit(data, i, omission_idx)
+            self._transmat_list.append(transmat)
+            self._startprob_list.append(start_prob)
 
     @property
     def emissionprob(self):
@@ -117,7 +107,8 @@ class pome_wrapper(model_wrapper):
             if tensor.shape[0] not in lengths_dict:
                 lengths_dict[tensor.shape[0]] = torch.unsqueeze(tensor, dim=0)
             else:
-                lengths_dict[tensor.shape[0]] = torch.cat((lengths_dict[tensor.shape[0]], torch.unsqueeze(tensor, dim=0)))
+                lengths_dict[tensor.shape[0]] = torch.cat(
+                    (lengths_dict[tensor.shape[0]], torch.unsqueeze(tensor, dim=0)))
         values = list(lengths_dict.values())
         values = sorted(values, key=lambda x: x.shape[1])
         return values
@@ -132,7 +123,7 @@ class pome_wrapper(model_wrapper):
         """
         if self.distribution == 'Categorical':
             return [distributions.Categorical(torch.from_numpy(np.atleast_2d(dist)), frozen=self.freeze_distributions)
-            for dist in self.emission_prob]
+                    for dist in self.emission_prob]
         elif self.distribution == 'Gaussian':
             means, covs = self.generate_initial_normal_params_pytorch()
             return [distributions.Normal(means=means[i], covs=covs[i], frozen=self.freeze_distributions) for i in

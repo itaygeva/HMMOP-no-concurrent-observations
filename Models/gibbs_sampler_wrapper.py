@@ -27,8 +27,9 @@ class gibbs_sampler_wrapper(model_wrapper):
         all_states, all_observations_sum, all_sampled_transitions, all_mues, all_ws, all_transitions, all_omitting_probs \
             = self.model_.sample(data, start_probs, known_mues, sigmas, self.n_iter, N=sentences_lengths)
 
-        transmat = self.create_transmat(all_transitions)
-        self.model_.transmat_ = transmat
+        self._transmat_list = self.create_transmat_list(all_transitions)
+        # TODO: Implement startprob
+        self._startprob_list = None
 
     def generate_initial_parameters(self, data):
         """
@@ -52,28 +53,22 @@ class gibbs_sampler_wrapper(model_wrapper):
 
         return data, known_mues, sigmas_dict, start_probs, sentences_lengths
 
-    def create_transmat(self, all_transitions):
+    def create_transmat_list(self, all_transitions):
         """
         Creates a transition matrix of our format (torch tenor of shape (n_states, n_states))
         from the last element of the gibbs_sampler all_transitions parameter
         :param all_transitions:  A list of n_iter length of the dictionary of found edges weights.
         :return: The final transition matrix
         """
-        last_transition_matrix = all_transitions[-1]
-        transmat = torch.zeros(self.n_components, self.n_components)
-        for index_start in last_transition_matrix.keys():
-            if index_start != 'end' and index_start != 'start':
+        transmat_list = []
+        for transition_matrix in all_transitions:
+            transmat = torch.zeros(self.n_components, self.n_components)
+            for index_start in transition_matrix.keys():
+                if index_start != 'end' and index_start != 'start':
+                    for index_end in transition_matrix[index_start].keys():
+                        if index_end != 'end' and index_end != 'start':
+                            transmat[int(eval(index_start)[1])][int(eval(index_end)[1])] = \
+                                transition_matrix[index_start][index_end]
+            transmat_list.append(transmat)
+        return transmat_list
 
-                for index_end in last_transition_matrix[index_start].keys():
-                    if index_end != 'end' and index_end != 'start':
-                        transmat[int(eval(index_start)[1])][int(eval(index_end)[1])] = \
-                        last_transition_matrix[index_start][index_end]
-        return transmat
-
-    @property
-    def transmat(self):
-        return self.model_.transmat_
-
-    @property
-    def startprob(self):
-        pass

@@ -4,18 +4,12 @@ from Models.model_wrapper import model_wrapper
 
 
 class matrix_wrapper(model_wrapper):
-    def __init__(self):
+    def __init__(self, n_iter):
         self._transmat = None
         self._startprob = None
+        self.n_iter = n_iter
 
     def fit(self, transmat):
-        self._transmat = transmat
+        self._transmat_list = [transmat for i in range(self.n_iter)]
         # TODO : Add get startprob to synthetic reader
-
-    @property
-    def transmat(self):
-        return self._transmat
-
-    @property
-    def startprob(self):
-        return self._startprob
+        self._startprob = [None for i in range(self.n_iter)]

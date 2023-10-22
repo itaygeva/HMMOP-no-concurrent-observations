@@ -99,7 +99,8 @@ class Models_Creator(Base_Creator):
         :return: a fitted matrix wrapper model
         """
         reader_name = get_value_or_default("Reader", model_config, self.default)
+        n_iter = get_value_or_default("Number of Iterations", model_config, self.default)
         reader = self.readers_dict[reader_name]
-        model = matrix_wrapper()
+        model = matrix_wrapper(n_iter)
         model.fit(reader.transition_mat)  # TODO: fix this to be normal (like get_transition_mat or something)
         return model

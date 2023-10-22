@@ -25,6 +25,7 @@ class Evaluations_Manager(Base_Creator):
         """
         models = get_value_or_default("Models", test_config, self.default)
         if len(models) != 2:
+            # TODO: return false instead of exception
             raise ValueError(f"L1 Normalized test expects 2 models, but got {len(models)}  instead")
         else:
             matrix1 = self.models_dict[models[0]["Name"]].transmat  # the transmat of the first model

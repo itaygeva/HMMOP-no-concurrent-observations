@@ -14,6 +14,8 @@ def create_models():
     return models_creator.create_instances_dict()
 def run_evaluations(model):
     evaluations_manager = Evaluations_Manager(models)
+    res = evaluations_manager.create_instances_dict()
+    print(res)
 
 if __name__ == '__main__':
     models = create_models()
