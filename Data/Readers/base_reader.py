@@ -1,15 +1,17 @@
 import os
 import inspect
 import numpy as np
+from Config.Config import Config
+
+
 class BaseReader:
     # This class is the parent of all reader and handles the basic query methods they all share
 
-
-    def __init__(self, path_to_data):
-        self._path_to_raw = path_to_data
+    def __init__(self, config: Config, **kwargs):
+        self._config = config
         data_dir = os.path.dirname(os.path.dirname(inspect.getfile(BaseReader)))
-        self.cache_dir = os.path.join(data_dir,'Readers','Cache')
-        self.raw_dir = os.path.join(data_dir,'Raw')
+        self.cache_dir = os.path.join(data_dir, 'Readers', 'Cache')
+        self.raw_dir = os.path.join(data_dir, 'Raw')
         self.is_tagged = False
         self.n_features = 1
         self.n_states = 1
@@ -68,3 +70,6 @@ class BaseReader:
         self.dataset['words'] = sentences
         if self.is_tagged:
             self.dataset['tags'] = tags
+
+    def __str__(self):
+        return str(self._config)

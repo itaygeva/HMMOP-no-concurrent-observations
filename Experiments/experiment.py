@@ -1,26 +1,13 @@
-from Experiments.Creators.Readers_Creator import Readers_Creator
-from Experiments.Creators.Omitters_Creator import Omitters_Creator
-from Experiments.Creators.Models_Creator import Models_Creator
-
-from Evaluations.Evaluations_Manager import Evaluations_Manager
+from Evaluations import Tests
 # test variables - temp
+import time
+import cProfile
 
-def create_models():
-    readers_creator = Readers_Creator()
-    readers = readers_creator.create_instances_dict()
-    omitters_creator = Omitters_Creator()
-    omitters = omitters_creator.create_instances_dict()
-    models_creator = Models_Creator(readers, omitters)
-    return models_creator.create_instances_dict()
-def run_evaluations(model):
-    evaluations_manager = Evaluations_Manager(models)
-    res = evaluations_manager.create_instances_dict()
-    print(res)
+def your_function_to_profile():
+    Tests.l1_vs_p()
 
 if __name__ == '__main__':
-    models = create_models()
-    run_evaluations(models)
-
+    cProfile.run('your_function_to_profile()', filename='profile_results.prof')
 
 
 

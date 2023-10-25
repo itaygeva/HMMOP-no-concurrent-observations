@@ -1,15 +1,18 @@
+from dataclasses import dataclass, fields, field
+import json
 import numpy as np
 import pomegranate.hmm as hmm
 import pomegranate.distributions as distributions
 from Data.Readers.brown_corpus_reader import BCReader
 import Omitters.utils as omitter
-from Models.hmmlearn_wrapper import hmmlearn_wrapper
+from Pipelines.hmmlearn_pipeline import hmmlearn_pipeline
 from Evaluations import utils as evaluations
 import torch
 from torch.masked import MaskedTensor
 from numpy import random
 import itertools
 from Data.Readers.stocks_reader import StocksReader
+import inspect
 
 """def generate_initial_normal_params_pytorch(dims, n_components):
     tensor_type = torch.float32
@@ -112,10 +115,61 @@ print("covs:")
 print(covs)
 print(tester_covs)"""
 
-x1 = np.linspace(0, 1, 10)
-x2 = [StocksReader(), StocksReader(), StocksReader()]
-x3 = 1
-grid = np.squeeze(np.meshgrid(x1, x2, x3))
-print(grid)
+"""
+
+@dataclass
+class Synthetic_Reader_Config:
+    n_components: int
+    n_samples: int
+    Name: str = field(default="synthetic_reader", compare=False)
+    Class: str = field(default="synthetic_reader", repr=False)
 
 
+
+json_data = '{"Name":"Synthetic Reader","Class":"synthetic_reader","n_samples":10000,"n_components":3}'
+data_dict = json.loads(json_data)
+config = Synthetic_Reader_Config(**data_dict)
+config_str = str(config)
+new_config = eval(config_str)
+new_config.Name = "Other Reader"
+print(new_config)
+
+field_list = fields(Synthetic_Reader_Config)"""
+"""
+# Access and print the field names
+field_names = [field.name for field in field_list]
+print(field_names)
+"""
+"""class_attributes = vars(self.__class__)
+
+properties = {key: value.fget(self)
+              for key, value in class_attributes.items() if isinstance(value, property)}
+print(properties)"""
+
+from dataclasses import dataclass, fields, field
+import json
+
+
+@dataclass
+class ParentDataClass:
+    Name: str = field(default="synthetic_reader", compare=False)
+    Class: str = field(default="synthetic_reader", repr=False)
+
+
+@dataclass
+class Synthetic_Reader_Config(ParentDataClass):
+    Name: str = field(default="synthetic_reader", compare=False)
+    n_components: int = field(default=0)
+    n_samples: int = field(default=0)
+
+import os
+class Person:
+    def __init__(self, kwargs):
+        print(kwargs)
+
+file_path = os.path.join(".", "directory","file_name")
+
+if os.path.exists(file_path):
+    print(f"The file '{file_path}' exists.")
+else:
+    print(f"The file '{file_path}' does not exist.")

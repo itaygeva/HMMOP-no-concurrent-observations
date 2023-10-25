@@ -9,6 +9,7 @@ import string
 import inspect
 import numpy as np
 import pickle
+from Config.Config import brown_corpus_reader_config
 
 Sentence = namedtuple("Sentence", "words tags")
 inspect.getfile(BaseReader)
@@ -16,8 +17,8 @@ inspect.getfile(BaseReader)
 
 class BCReader(BaseReader):
 
-    def __init__(self, path_to_data=('brown-universal.txt', 'tags-universal.txt')):
-        super().__init__(path_to_data)
+    def __init__(self, config: brown_corpus_reader_config, **kwargs):
+        super().__init__(config, **kwargs)
         self.n_features = 1
         self.is_tagged = True
         self.tag_dict = {}
@@ -49,8 +50,8 @@ class BCReader(BaseReader):
                 self.dataset = pickle.load(file)
         else:
             # If the file doesn't exist, create the variable and save it to the file
-            tagset = self._corpus_read_tags(self._path_to_raw[1])
-            sentences = self._corpus_read_data(self._path_to_raw[0])
+            tagset = self._corpus_read_tags(self._config.path_to_raw[1])
+            sentences = self._corpus_read_data(self._config.path_to_raw[0])
             keys = tuple(sentences.keys())
 
             stemmer = snowballstemmer.stemmer('english')

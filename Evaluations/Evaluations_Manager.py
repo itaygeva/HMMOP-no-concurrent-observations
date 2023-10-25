@@ -23,7 +23,7 @@ class Evaluations_Manager(Base_Creator):
         :param test_config: the evaluator configuration loaded from the JSON file
         :return: whether the test has run successfully
         """
-        models = get_value_or_default("Models", test_config, self.default)
+        models = get_value_or_default("Pipelines", test_config, self.default)
         if len(models) != 2:
             # TODO: return false instead of exception
             raise ValueError(f"L1 Normalized test expects 2 models, but got {len(models)}  instead")

@@ -1,6 +1,6 @@
-from Models.pome_wrapper import pome_wrapper
-from Models.gibbs_sampler_wrapper import gibbs_sampler_wrapper
-from Models.matrix_wrapper import matrix_wrapper
+from Pipelines.pome_pipeline import pome_pipeline
+from Pipelines.gibbs_sampler_pipeline import gibbs_sampler_pipeline
+from Pipelines.matrix_pipeline import matrix_pipeline
 
 from Experiments.Creators.Base_Creator import Base_Creator
 from Experiments.Creators.utils import *
@@ -63,7 +63,7 @@ class Models_Creator(Base_Creator):
         omitted_data = self._create_omitted_data(model_config)
         n_states = get_value_or_default("Number of States", model_config, self.default)
         n_iter = get_value_or_default("Number of Iterations", model_config, self.default)
-        model = gibbs_sampler_wrapper(n_states, n_iter)
+        model = gibbs_sampler_pipeline(n_states, n_iter)
         model.fit(omitted_data)
         return model
 
@@ -84,10 +84,10 @@ class Models_Creator(Base_Creator):
         pass_emission_prob = get_value_or_default("Pass Emission Probabilities", model_config, self.default)
         if pass_emission_prob:  # passing emission probability matrix
             omitted_data, emission_prob = self._create_omitted_data_and_emission_prob(model_config)
-            model = pome_wrapper(n_states, n_iter, distribution_type, n_features, emission_prob, freeze_distributions)
+            model = pome_pipeline(n_states, n_iter, distribution_type, n_features, emission_prob, freeze_distributions)
         else:  # not passing emission probability matrix
             omitted_data = self._create_omitted_data(model_config)
-            model = pome_wrapper(n_states, n_iter, distribution_type, n_features)
+            model = pome_pipeline(n_states, n_iter, distribution_type, n_features)
 
         model.fit(omitted_data)
         return model
@@ -101,6 +101,6 @@ class Models_Creator(Base_Creator):
         reader_name = get_value_or_default("Reader", model_config, self.default)
         n_iter = get_value_or_default("Number of Iterations", model_config, self.default)
         reader = self.readers_dict[reader_name]
-        model = matrix_wrapper(n_iter)
+        model = matrix_pipeline(n_iter)
         model.fit(reader.transition_mat)  # TODO: fix this to be normal (like get_transition_mat or something)
         return model

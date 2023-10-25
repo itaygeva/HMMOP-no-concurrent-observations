@@ -1,5 +1,5 @@
 from Data.Readers.stocks_reader import StocksReader
-from Data.Readers.synthetic_reader import SyntheticReader
+from Data.Readers.synthetic_reader import synthetic_reader
 from Data.Readers.brown_corpus_reader import BCReader
 from Experiments.Creators.Base_Creator import Base_Creator
 from Experiments.Creators.utils import *
@@ -34,7 +34,7 @@ class Readers_Creator(Base_Creator):
         """
         n_states = get_value_or_default("Number of States for Generation", reader_config, self.default)
         n_samples = get_value_or_default("Number of Samples", reader_config, self.default)
-        return SyntheticReader(n_states, n_samples, 1)
+        return synthetic_reader(n_states, n_samples, 1)
 
     def _build_stocks_reader(self, reader_config):
         """

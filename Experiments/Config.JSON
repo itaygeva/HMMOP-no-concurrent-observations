@@ -7,8 +7,9 @@
     {
       "Name": "Synthetic",
       "Class": "synthetic_reader",
-      "Number of States for Generation": 3,
-      "Number of Samples": 10000
+      "n_components": 3,
+      "n_samples": 10000,
+      "args" : [1]
     },
     {
       "Name": "Stocks",
@@ -22,35 +23,32 @@
     },
     {
       "Name": "Bernoulli",
-      "Class": "bernoulli_omitter",
-      "Probability of Observation": 0.7
+      "Class": "bernoulli_omitter"
     }
   ],
   "models": [
     {
-      "Name": "Synthetic BW - No Omissions",
-      "Class": "pome_wrapper",
-      "Reader": "Synthetic",
-      "Number of Features": 1
+      "Name": "Pomegranate",
+      "Class": "pome_pipeline",
+      "distribution" : "Gaussian",
+      "n_components" : 3,
+      "n_features" : 1,
+      "n_iter": 20,
+      "freeze_distributions" : false
     },
     {
-      "Name": "Synthetic Ground Truth",
-      "Class": "matrix_wrapper",
-      "Reader": "Synthetic"
+      "Name": "Ground Truth",
+      "Class": "matrix_pipeline",
+      "n_components" : 3,
+      "n_iter": 20
     },
     {
       "Name": "Synthetic Gibbs - No Omissions",
-      "Class": "gibbs_sampler_wrapper",
-      "Reader": "Synthetic"
+      "Class": "gibbs_sampler_pipeline"
     }
   ],
   "default": {
-    "Number of Iterations": 20,
-    "Omitter": "Pass All",
-    "Distribution Type": "Gaussian",
-    "Pass Emission Probabilities": false,
-    "Freeze Distributions": false,
-    "Number of States": 3,
-    "Reinitialize": false
+    "Reinitialize": false,
+    "Path_to_Data" : ""
   }
 }

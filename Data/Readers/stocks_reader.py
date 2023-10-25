@@ -12,15 +12,18 @@ import inspect
 import numpy as np
 import pickle
 import pandas as pd
+from Config.Config import stocks_reader_config
 
 inspect.getfile(BaseReader)
 
 MAX_LEN = 30
 MIN_LEN = 10
+
+
 class StocksReader(BaseReader):
 
-    def __init__(self, path_to_data='all_stocks_5yr.csv'):
-        super().__init__(path_to_data)
+    def __init__(self, config: stocks_reader_config, **kwargs):
+        super().__init__(config, **kwargs)
         self.n_features = 3
         self.is_tagged = False
         self.n_states = "not inherent in data"
@@ -50,7 +53,7 @@ class StocksReader(BaseReader):
             stocks = pd.read_csv(os.path.join(self.raw_dir, self._path_to_raw))
             stocks_values = stocks.values
             company = 'AAL'
-            stock_values = stocks_values[stocks_values[:,6] == company]
+            stock_values = stocks_values[stocks_values[:, 6] == company]
             stock_features = self._get_features_from_stocks(stock_values)
             sentences = []
             lengths = []
@@ -58,16 +61,17 @@ class StocksReader(BaseReader):
             end_idx = random.randint(MIN_LEN, MAX_LEN)
 
             while end_idx <= stock_values.shape[0]:
-                sentences.append(stock_features[start_idx:(end_idx-1), :])
-                lengths.append(end_idx-start_idx-1)
+                sentences.append(stock_features[start_idx:(end_idx - 1), :])
+                lengths.append(end_idx - start_idx - 1)
                 start_idx = end_idx
                 end_idx = start_idx + random.randint(MIN_LEN, MAX_LEN)
 
             sentences.append(stock_features[start_idx:-1, :])
-            lengths.append(stock_values.shape[0]-start_idx-1)
+            lengths.append(stock_values.shape[0] - start_idx - 1)
             self.dataset = {'sentences': sentences, 'tags': None, 'lengths': lengths}
             with open(cache_filename, 'wb') as file:
                 pickle.dump(self.dataset, file)
+
 
 if __name__ == '__main__':
     s = StocksReader()

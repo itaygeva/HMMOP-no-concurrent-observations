@@ -15,24 +15,23 @@ from scipy.stats import binom
 import pprint
 import pomegranate
 from pomegranate.hmm import DenseHMM
+from Config.Config import synthetic_reader_config
 
 inspect.getfile(BaseReader)
 
 
-class SyntheticReader(BaseReader):
+class synthetic_reader(BaseReader):
 
-    def __init__(self, n_states, n_samples,  *args):
-        super().__init__('')
+    def __init__(self, config: synthetic_reader_config, **kwargs):
+        super().__init__(config, **kwargs)
         self.n_features = 1
         self.is_tagged = True
         self.tag_dict = {}
         self.word_dict = {}
-        self.n_states = n_states
-        self.transition_mat = torch.zeros([self.n_states, self.n_states])
-        self.end_probs = torch.zeros([self.n_states, 1])
-        self._init_hmm_model(*args)
-        self._generate_samples(n_samples)
-
+        self.transition_mat = torch.zeros([self._config.n_components, self._config.n_components])
+        self.end_probs = torch.zeros([self._config.n_components, 1])
+        self._init_hmm_model(*self._config.args)
+        self._generate_samples(self._config.n_samples)
     def _generate_samples(self, n_samples):
         self.dataset['sentences'] = self.model.sample(n_samples)
         self.dataset['lengths'] = [sample.shape[0] for sample in self.dataset['sentences']]
@@ -56,19 +55,19 @@ class SyntheticReader(BaseReader):
                 sigma = 1
             else:
                 min_mu_gap, sigma = args
-            N = self.n_states * 3
+            N = self._config.n_components * 3
             mues = list(range(N))
-            mues = [mue*min_mu_gap for mue in mues]
-            total_distributions = np.array([pomegranate.distributions.Normal([float(mues[i])], [float(sigma)],'diag') for i in range(N)])
-            self.distributions = total_distributions[np.random.choice(range(N), self.n_states, replace=False)]
+            mues = [mue * min_mu_gap for mue in mues]
+            total_distributions = np.array(
+                [pomegranate.distributions.Normal([float(mues[i])], [float(sigma)], 'diag') for i in range(N)])
+            self.distributions = total_distributions[np.random.choice(range(N), self._config.n_components, replace=False)]
 
-
-            for s in range(self.n_states):
-                temp = np.random.choice(range(1000), self.n_states + 1, replace=False)
+            for s in range(self._config.n_components):
+                temp = np.random.choice(range(1000), self._config.n_components + 1, replace=False)
                 self.transition_mat[s, :] = torch.from_numpy(temp[:-1] / np.sum(temp))
                 self.end_probs[s] = temp[-1] / np.sum(temp)
 
-            temp = np.random.choice(range(1000), self.n_states, replace=False)
+            temp = np.random.choice(range(1000), self._config.n_components, replace=False)
             self.start_probs = torch.from_numpy(temp / np.sum(temp))
 
             # temp = np.random.choice(range(1000), self.n_states, replace=False)
@@ -88,11 +87,12 @@ class SyntheticReader(BaseReader):
                 i += 1
 
     def delete_one_word_sentences(self):
-        no_one_word_data = [(length, sentences) for (length, sentences) in zip(self.dataset['lengths'], self.dataset['sentences']) if length > 3]
-        self.dataset['lengths'],self.dataset['sentences'] = zip(*no_one_word_data)
+        no_one_word_data = [(length, sentences) for (length, sentences) in
+                            zip(self.dataset['lengths'], self.dataset['sentences']) if length > 3]
+        self.dataset['lengths'], self.dataset['sentences'] = zip(*no_one_word_data)
 
 
 if __name__ == '__main__':
-    reader = SyntheticReader(10, 5, 1)
+    reader = synthetic_reader(10, 5, 1)
     b = reader.get_obs()
     print(b)
