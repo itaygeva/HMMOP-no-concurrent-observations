@@ -1,6 +1,4 @@
 from Config.Config import pipeline_config
-from Data.Readers import *
-from Omitters import *
 
 
 class pipeline:

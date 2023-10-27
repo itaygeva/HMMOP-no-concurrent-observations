@@ -3,7 +3,7 @@ from Config.Config import base_omitter_config, bernoulli_omitter_config
 
 
 class base_omitter:
-    def __init__(self, config: base_omitter_config, **kwargs):
+    def __init__(self, config: base_omitter_config):
         self._config = config
 
     def omit(self, data):
@@ -14,8 +14,8 @@ class base_omitter:
 
 
 class bernoulli_omitter(base_omitter):
-    def __init__(self, config: bernoulli_omitter_config, **kwargs):
-        super().__init__(config, **kwargs)
+    def __init__(self, config: bernoulli_omitter_config):
+        super().__init__(config)
 
     # TODO: check if this still works with new data format.
     # TODO: Also, make sure that all the readers are outputting the same format(torch or numpy?)

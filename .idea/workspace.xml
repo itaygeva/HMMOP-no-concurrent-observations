@@ -5,42 +5,35 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5816c4f2-9dc7-4ace-9705-7042f2d839c3" name="Changes" comment="Finished Basic flow: Tests creating readers, omitters and pipelines. Loading and dumping accordingly. Not fully tested yet">
-      <change afterPath="$PROJECT_DIR$/Config/Config.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Evaluations/Tests.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Experiments/Cache/omitters/base_omitter_config(Name='Pass All')" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Experiments/Cache/readers/synthetic_reader_config(Name='Synthetic', Path_to_Data='', n_components=3, n_samples=10000, args=[1])" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Experiments/profile_results.prof" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Experiments/settings.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Pipelines/matrix_pipeline.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Config/Config.py" beforeDir="false" afterPath="$PROJECT_DIR$/Config/Config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Readers/Cache/corpus_dataset.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Readers/Cache/corpus_emission_prob.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Readers/Cache/stocks_dataset.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Readers/Cache/synthetic_model_0.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Readers/Cache/synthetic_model_1.pkl" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Data/Readers/base_reader.py" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Readers/base_reader.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Data/Readers/brown_corpus_reader.py" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Readers/brown_corpus_reader.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Data/Readers/stocks_reader.py" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Readers/stocks_reader.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Data/Readers/synthetic_reader.py" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Readers/synthetic_reader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Evaluations/Evaluations_Manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/Evaluations/Evaluations_Manager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Experiments/Cache/evaluations/L1 of Gibbs Sampler - Synthetic Data.pkl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Experiments/Cache/models/Synthetic BW - No Omissions.pkl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Experiments/Cache/models/Synthetic Gibbs - No Omissions.pkl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Experiments/Cache/models/Synthetic Ground Truth.pkl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Experiments/Cache/omitters/Bernoulli.pkl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Experiments/Cache/omitters/Pass All.pkl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Experiments/Cache/readers/Brown Corpus.pkl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Experiments/Cache/readers/Stocks.pkl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Experiments/Cache/readers/Synthetic.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Readers/utils.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Evaluations/Tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/Evaluations/Tests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Experiments/Cache/readers/synthetic_reader_config(Name='Synthetic', Path_to_Data='', n_components=3, n_samples=10000, args=[1])" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Experiments/Config.JSON" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/Config.JSON" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Experiments/Creators/Models_Creator.py" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/Creators/Models_Creator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Experiments/Creators/Readers_Creator.py" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/Creators/Readers_Creator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Experiments/Creators/Base_Creator.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Experiments/Creators/Models_Creator.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Experiments/Creators/Omitters_Creator.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Experiments/Creators/Readers_Creator.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Experiments/Creators/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/Creators/utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Experiments/experiment.py" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/experiment.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Models/gibbs_sampler_wrapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pipelines/gibbs_sampler_pipeline.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Models/hmmlearn_wrapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pipelines/hmmlearn_pipeline.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Models/matrix_wrapper.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Models/model_wrapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pipelines/pipeline.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Models/pome_wrapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pipelines/pome_pipeline.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Experiments/profile_results.prof" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/profile_results.prof" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Omitters/omitters.py" beforeDir="false" afterPath="$PROJECT_DIR$/Omitters/omitters.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pipelines/gibbs_sampler_pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pipelines/gibbs_sampler_pipeline.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pipelines/hmmlearn_pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pipelines/hmmlearn_pipeline.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pipelines/matrix_pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pipelines/matrix_pipeline.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pipelines/pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pipelines/pipeline.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pipelines/pome_pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pipelines/pome_pipeline.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ThirdParty/Infras.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/playground.py" beforeDir="false" afterPath="$PROJECT_DIR$/playground.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../HMMOP/who_cell/models/gibbs_sampler.py" beforeDir="false" afterPath="$PROJECT_DIR$/../HMMOP/who_cell/models/gibbs_sampler.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -143,6 +136,14 @@
       <option name="presentableId" value="Default" />
       <updated>1694648385403</updated>
     </task>
+    <task id="LOCAL-00001" summary="Finished Basic flow: Tests creating readers, omitters and pipelines. Loading and dumping accordingly. Not fully tested yet">
+      <created>1698234288495</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1698234288495</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -164,14 +165,9 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Data/Readers/brown_corpus_reader.py</url>
-          <line>86</line>
-          <option name="timeStamp" value="51" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Pipelines/pome_pipeline.py</url>
-          <line>67</line>
-          <option name="timeStamp" value="56" />
+          <url>file://$PROJECT_DIR$/Pipelines/hmmlearn_pipeline.py</url>
+          <line>38</line>
+          <option name="timeStamp" value="66" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

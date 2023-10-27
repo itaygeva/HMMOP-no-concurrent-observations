@@ -2,18 +2,29 @@
   "readers": [
     {
       "Name": "Brown Corpus",
-      "Class": "brown_corpus_reader"
+      "Class": "brown_corpus_reader",
+      "n_components": 11,
+      "is_tagged": true,
+      "path_to_data": "brown-universal.txt",
+      "path_to_tags": "tags-universal.txt",
+      "n_features": 1
     },
     {
       "Name": "Synthetic",
       "Class": "synthetic_reader",
       "n_components": 3,
       "n_samples": 10000,
-      "args" : [1]
+      "is_tagged": false,
+      "n_features": 1
     },
     {
       "Name": "Stocks",
-      "Class": "stocks_reader"
+      "Class": "stocks_reader",
+      "company": "AAL",
+      "min_length": 10,
+      "max_length": 30,
+      "is_tagged": false,
+      "n_features": 3
     }
   ],
   "omitters": [
@@ -23,32 +34,42 @@
     },
     {
       "Name": "Bernoulli",
-      "Class": "bernoulli_omitter"
+      "Class": "bernoulli_omitter",
+      "prob_of_observation": 0.7
     }
   ],
   "models": [
     {
       "Name": "Pomegranate",
       "Class": "pome_pipeline",
-      "distribution" : "Gaussian",
-      "n_components" : 3,
-      "n_features" : 1,
+      "distribution": "Gaussian",
+      "n_components": 3,
+      "n_features": 1,
       "n_iter": 20,
-      "freeze_distributions" : false
+      "freeze_distributions": false
     },
     {
       "Name": "Ground Truth",
       "Class": "matrix_pipeline",
-      "n_components" : 3,
+      "n_components": 3,
       "n_iter": 20
     },
     {
-      "Name": "Synthetic Gibbs - No Omissions",
-      "Class": "gibbs_sampler_pipeline"
+      "Name": "Gibbs Sampler",
+      "Class": "gibbs_sampler_pipeline",
+      "n_components": 3
+    },
+    {
+      "Name": "Hmmlearn",
+      "Class": "hmmlearn_pipeline",
+      "n_components": 3,
+      "distribution" : "Gaussian"
+
     }
   ],
   "default": {
     "Reinitialize": false,
-    "Path_to_Data" : ""
+    "raw_dir": "..\\Data\\Raw",
+    "n_iter": 20
   }
 }

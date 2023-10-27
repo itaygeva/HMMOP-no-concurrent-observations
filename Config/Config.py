@@ -1,6 +1,10 @@
-from dataclasses import dataclass, fields, field
-from typing import List
-import json
+import os
+from dataclasses import dataclass, field
+
+
+def default_raw_data():
+    data_dir = "../Data"
+    return os.path.join(data_dir, 'Raw')
 
 
 @dataclass
@@ -9,27 +13,32 @@ class Config:
     Class: str = field(default="Undefined", repr=False)
     Reinitialize: bool = field(default=False, repr=False, compare=False)
 
+@dataclass
+class base_reader_config(Config):
+    n_features: int = 1
+    n_components: int = 1
+    is_tagged: bool = False
+    raw_dir: str = field(default_factory=default_raw_data, repr=False)
+
 
 # region readers configs
 @dataclass
-class brown_corpus_reader_config(Config):
-    Class: str = field(default="brown_corpus_reader", repr=False)
-    Path_to_Data: str = ""
+class brown_corpus_reader_config(base_reader_config):
+    path_to_data: str = ""
+    path_to_tags: str = ""
 
 
 @dataclass
-class stocks_reader_config(Config):
-    Class: str = field(default="stocks_reader", repr=False)
-    Path_to_Data: str = ""
+class stocks_reader_config(base_reader_config):
+    path_to_data: str = ""
+    company: str = ""
+    min_length: int = 0
+    max_length: int = 0
 
 
 @dataclass
-class synthetic_reader_config(Config):
-    Class: str = field(default="synthetic_reader", repr=False)
-    Path_to_Data: str = ""
-    n_components: int = 0
+class synthetic_reader_config(base_reader_config):
     n_samples: int = 0
-    args: List[int] = field(default_factory=list)
 
 
 # endregion
@@ -38,6 +47,7 @@ class synthetic_reader_config(Config):
 @dataclass
 class base_omitter_config(Config):
     pass
+
 
 @dataclass
 class bernoulli_omitter_config(Config):
@@ -52,9 +62,12 @@ class pipeline_config(Config):
     n_components: int = 0
     n_iter: int = 0
 
+
 @dataclass
 class gibbs_sampler_pipeline_config(pipeline_config):
     pass
+
+
 @dataclass
 class hmmlearn_pipeline_config(pipeline_config):
     distribution: int = ""

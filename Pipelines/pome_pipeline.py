@@ -1,39 +1,18 @@
-import os
-
-import pomegranate.hmm as hmm
-import pomegranate.distributions as distributions
-import random
 import numpy as np
-from torch.masked import masked_tensor
-
-from Pipelines.pipeline import pipeline
-import pickle
-import inspect
+import pomegranate.distributions as distributions
+import pomegranate.hmm as hmm
 import torch
+
 from Config.Config import *
-from Data.Readers import *
-from Omitters import *
+from Pipelines.pipeline import pipeline
+
 
 class pome_pipeline(pipeline):
     # TODO: Test support of multivariate data
     # TODO: Fix emission Prob (now I dont think it supports getting it in the framework. It should still work in pome)
-    def __init__(self, reader, omitter, config: pome_pipeline_config, **kwargs):
+    def __init__(self, reader, omitter, config: pome_pipeline_config):
         # TODO: get rid of the need for n_features. Seems like it is needed in order to initialize the means and covs.
-
-        """
-        :param n_components: the number of states the HMM has
-        :param n_iter: the number of iterations to have the fit do
-        :param distribution: the distribution type. Currently, supports - Gaussian, Categorical
-        :param n_features: the number of features in order to initialize means and covs
-        :param emission_prob: the emission probability matrix.
-        This is in case of a known one for a categorical distribution
-        :param freeze_distributions: whether to freeze the distributions for the states.
-        """
-        super().__init__(reader, omitter, config, **kwargs)
-        self._model: hmm.DenseHMM = None
-
-        data_dir = os.path.dirname(inspect.getfile(pipeline))
-        self.cache_dir = os.path.join(data_dir, 'Cache')
+        super().__init__(reader, omitter, config)
 
     def generate_initial_model_pytorch(self, n_iter):
         """
@@ -47,37 +26,36 @@ class pome_pipeline(pipeline):
         ends = torch.rand(self._config.n_components, dtype=tensor_type)
         self._model = hmm.DenseHMM(dists, edges=edges, starts=starts, ends=ends, max_iter=n_iter)
 
-    def _iter_fit(self, data, n_iter, omission_idx=None):
+    def create_masked_tensor(self, sentence, ws):
+        sentence_with_zeros = torch.full((max(ws) + 1,), 0)
+        sentence_with_zeros[ws] = sentence
+        mask = torch.full((max(ws) + 1,), False)
+        mask[ws] = True
+        return torch.masked.MaskedTensor(sentence_with_zeros,mask)
+
+    def _iter_fit(self, data, n_iter, ws=None):
 
         self.generate_initial_model_pytorch(n_iter)
         #  TODO: Support multivariate data (n_features>1)
-        if omission_idx is not None:
+        if ws is not None:
             #  TODO: Export this to a method
             masked_data = []
-            for sentence, ws in zip(data, omission_idx):
-                # TODO: change this to get tensor data (if that is the format we agree on)
-                sentence_with_zeros = np.full(max(ws) + 1, 0)
-                sentence_with_zeros[ws] = sentence
-                mask = np.full(max(ws) + 1, False)
-                mask[ws] = True
-                masked_data.append(
-                    torch.masked.MaskedTensor(torch.from_numpy(sentence_with_zeros), torch.from_numpy(mask)).reshape(-1,
-                                                                                                                     1))
+            for sentence, ws in zip(data, ws):
+                masked_data.append(self.create_masked_tensor(sentence, ws))
             data = masked_data
-        else:
-            data = [arr.reshape(-1, 1) for arr in data]  # assuming that the data is tensors
 
-        data = self.partition_sequences(
-            data)  # We need to do this ourselves in order to bypass a bug in pomegranate 1.0.3
+        data = [arr.reshape(-1, 1) for arr in data]  # assuming that the data is tensors
+        data = self.partition_sequences(data)  # We need to do this ourselves in order to bypass a bug in pomegranate 1.0.3
         self._model.fit(X=data)
         return torch.exp(self._model.edges), torch.exp(self._model.starts)
 
     def fit(self):
-        data, omission_idx = self.omitter.omit(self.reader.get_obs())
+        data, ws = self.omitter.omit(self.reader.get_obs())
         ## TODO: Take care of omission_idx later.
-        omission_idx = None
+        ws = None
+        data = [torch.from_numpy(sentence) for sentence in data]
         for i in range(1, self._config.n_iter + 1):
-            transmat, start_prob = self._iter_fit(data, i, omission_idx)
+            transmat, start_prob = self._iter_fit(data, i, ws)
             self._transmat_list.append(transmat)
             self._startprob_list.append(start_prob)
 
@@ -124,6 +102,7 @@ class pome_pipeline(pipeline):
         :return: the initialized distributions
         """
         if self._config.distribution == 'Categorical':
+            ## TODO: support categorical and emission_prob
             return [distributions.Categorical(torch.from_numpy(np.atleast_2d(dist)), frozen=self._config.freeze_distributions)
                     for dist in self._config.emission_prob]
         elif self._config.distribution == 'Gaussian':

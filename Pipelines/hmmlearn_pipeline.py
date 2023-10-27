@@ -1,24 +1,18 @@
-from hmmlearn import hmm
 import numpy as np
-from Pipelines.pipeline import pipeline
+from hmmlearn import hmm
+
 from Config.Config import *
-from Data.Readers import *
-from Omitters import *
+from Pipelines.pipeline import pipeline
+
 
 class hmmlearn_pipeline(pipeline):
 
-    def __init__(self, reader, omitter, config: hmmlearn_pipeline_config, **kwargs):
-        """
-        :param n_components: the number of states the HMM has
-        :param n_iter: the number of iterations to have the fit do
-        :param distribution: the distribution type. Currently, supports - Gaussian, Categorical
-        """
-        super().__init__(reader, omitter, config, **kwargs)
-        ## TODO: probably could get rid of kwargs across the board
+    def __init__(self, reader, omitter, config: hmmlearn_pipeline_config):
+        super().__init__(reader, omitter, config)
 
     def _iter_fit(self, data, n_iter):
         try:
-            self.ndim = data[0].ndim
+            self.ndim = data[0].shape[1]
         except Exception as e:
             print(f"Incorrect data passed for fit. Raised exception {e}")
         else:
@@ -28,8 +22,8 @@ class hmmlearn_pipeline(pipeline):
             return self._model.transmat_, self._model.startprob_
 
     def fit(self):
-        data = self.omitter.omit(self.reader.get_obs())
-        for i in range(self._config.n_iter):
+        data, ws = self.omitter.omit(self.reader.get_obs())
+        for i in range(1, self._config.n_iter + 1):
             transmat, start_prob = self._iter_fit(data, i)
             self._transmat_list.append(transmat)
             self._startprob_list.append(start_prob)
@@ -41,7 +35,8 @@ class hmmlearn_pipeline(pipeline):
         :return: the converted data - numpy_array(shape=(n_features,n_total_obs))
         """
         if self.ndim == 1:
-            data_hmmlearn_formatted = np.hstack(data)
+            data_squeezed = [np.squeeze(sentence) for sentence in data]
+            data_hmmlearn_formatted = np.hstack(data_squeezed)
             data_hmmlearn_formatted = data_hmmlearn_formatted.reshape(-1, 1)
         else:  # for the case of multivariate hmm
             data_hmmlearn_formatted = np.transpose(np.vstack(data))

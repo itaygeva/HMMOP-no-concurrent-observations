@@ -7,10 +7,13 @@ import json
 from dataclasses import dataclass, fields, field
 from Config.Config import *
 from Data.Readers.synthetic_reader import synthetic_reader
-from Data.Readers.base_reader import BaseReader
+from Data.Readers.base_reader import base_reader
 from Omitters.omitters import base_omitter
 from Pipelines.pome_pipeline import pome_pipeline
 from Pipelines.matrix_pipeline import matrix_pipeline
+from Pipelines.gibbs_sampler_pipeline import gibbs_sampler_pipeline
+from Pipelines.hmmlearn_pipeline import hmmlearn_pipeline
+## TODO: See if we can import in runtime
 
 
 def get_value_or_default(var_name, config, default):
@@ -20,7 +23,7 @@ def get_value_or_default(var_name, config, default):
         return default[var_name]
 
     else:
-        raise NotImplementedError(f"No default value set for {var_name}")
+        raise NotImplementedError(f"No default value set for {var_name} in config: {config}, with default: {default}")
 
 
 def load_initialized_class(file_path):

@@ -3,7 +3,7 @@ import json
 import numpy as np
 import pomegranate.hmm as hmm
 import pomegranate.distributions as distributions
-from Data.Readers.brown_corpus_reader import BCReader
+from Data.Readers.brown_corpus_reader import brown_corpus_reader
 import Omitters.utils as omitter
 from Pipelines.hmmlearn_pipeline import hmmlearn_pipeline
 from Evaluations import utils as evaluations
@@ -11,8 +11,9 @@ import torch
 from torch.masked import MaskedTensor
 from numpy import random
 import itertools
-from Data.Readers.stocks_reader import StocksReader
+from Data.Readers.stocks_reader import stocks_reader
 import inspect
+from hmmlearn import hmm
 
 """def generate_initial_normal_params_pytorch(dims, n_components):
     tensor_type = torch.float32
@@ -146,30 +147,10 @@ properties = {key: value.fget(self)
               for key, value in class_attributes.items() if isinstance(value, property)}
 print(properties)"""
 
-from dataclasses import dataclass, fields, field
-import json
 
-
-@dataclass
-class ParentDataClass:
-    Name: str = field(default="synthetic_reader", compare=False)
-    Class: str = field(default="synthetic_reader", repr=False)
-
-
-@dataclass
-class Synthetic_Reader_Config(ParentDataClass):
-    Name: str = field(default="synthetic_reader", compare=False)
-    n_components: int = field(default=0)
-    n_samples: int = field(default=0)
-
-import os
-class Person:
-    def __init__(self, kwargs):
-        print(kwargs)
-
-file_path = os.path.join(".", "directory","file_name")
-
-if os.path.exists(file_path):
-    print(f"The file '{file_path}' exists.")
-else:
-    print(f"The file '{file_path}' does not exist.")
+data = np.random.rand(30).reshape(-1,1)
+print(data)
+lengths = np.array([10, 10, 10])
+print(lengths)
+model = hmm.GaussianHMM(n_components=3, n_iter=10)
+model.fit(data, lengths)

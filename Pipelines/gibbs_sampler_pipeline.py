@@ -1,23 +1,24 @@
-import torch
+import random
 
+import numpy as np
+
+from Config.Config import *
 from Pipelines.pipeline import pipeline
 from who_cell.models import gibbs_sampler
-import numpy as np
-import random
-from Config.Config import *
-from Data.Readers import *
-from Omitters import *
 
 
 class gibbs_sampler_pipeline(pipeline):
-    def __init__(self, reader, omitter, config: gibbs_sampler_pipeline_config, **kwargs):
+    def __init__(self, reader, omitter, config: gibbs_sampler_pipeline_config):
         """
         Currently supports only Gaussian distributions
         :param n_components: the number of states the HMM has
         :param n_iter: the number of iterations to have the fit do
         """
-        super().__init__(reader, omitter, config, **kwargs)
-        self.model_ = gibbs_sampler.GibbsSampler(length_of_chain=10)
+        super().__init__(reader, omitter, config)
+
+        # the gibbs sampler needs to know the length of the sentence.
+        # this is the length of chain. we give a list of the length in the fit
+        self.model_ = gibbs_sampler.GibbsSampler(length_of_chain=None)
 
     def fit(self):
         """
@@ -26,7 +27,7 @@ class gibbs_sampler_pipeline(pipeline):
         :param data: list of hidden markovian sentences. Currently, supports gaussian emissions,
          with single feature sentences.
         """
-        data = self.omitter.omit(self.reader.get_obs())
+        data, ws = self.omitter.omit(self.reader.get_obs())
         data, known_mues, sigmas, start_probs, sentences_lengths = self.generate_initial_parameters(data)
         all_states, all_observations_sum, all_sampled_transitions, all_mues, all_ws, all_transitions, all_omitting_probs \
             = self.model_.sample(data, start_probs, known_mues, sigmas, self._config.n_iter, N=sentences_lengths)
@@ -42,7 +43,6 @@ class gibbs_sampler_pipeline(pipeline):
         :return: return the initial parameters for the gibbs sampler:
         data, known_mues, sigmas_dict, start_probs, sentences_lengths
         """
-        data = [sentence.numpy() for sentence in data]
         sentences_lengths = [sentence.shape[0] for sentence in data]
 
         known_mues = None
@@ -53,7 +53,7 @@ class gibbs_sampler_pipeline(pipeline):
         sum_start_probs = sum(start_probs.values())
         start_probs = {state: prob / sum_start_probs for state, prob in start_probs.items()}
 
-        data = [np.squeeze(sentence) for sentence in data]
+        data = [np.squeeze(sentence) for sentence in data] # is this needed?
 
         return data, known_mues, sigmas_dict, start_probs, sentences_lengths
 
@@ -66,13 +66,15 @@ class gibbs_sampler_pipeline(pipeline):
         """
         transmat_list = []
         for transition_matrix in all_transitions:
-            transmat = torch.zeros(self._config.n_components, self._config.n_components)
+            transmat = np.zeros((self._config.n_components, self._config.n_components))
             for index_start in transition_matrix.keys():
                 if index_start != 'end' and index_start != 'start':
                     for index_end in transition_matrix[index_start].keys():
                         if index_end != 'end' and index_end != 'start':
                             transmat[int(eval(index_start)[1])][int(eval(index_end)[1])] = \
                                 transition_matrix[index_start][index_end]
+                    transmat[int(eval(index_start)[1])] = \
+                        transmat[int(eval(index_start)[1])] / np.sum(transmat[int(eval(index_start)[1])])
             transmat_list.append(transmat)
         return transmat_list
 

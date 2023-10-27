@@ -1,6 +1,7 @@
 from Experiments.Creators.utils import create_config_dataclass_objects as create_config
 from Experiments.Creators.utils import create_and_fit_pipeline as create_pipeline
 from Experiments.Creators.utils import load_or_initialize_pipeline as create_pipeline_from_configs
+from Pipelines.pipeline import pipeline
 from Pipelines.pome_pipeline import pome_pipeline
 from Pipelines.matrix_pipeline import matrix_pipeline
 import numpy as np
@@ -11,9 +12,9 @@ def l1_vs_p():
     # Create dict of attributes from the dataclass, and fill it up using json and default.
     # Then create the dataclass and pass to the object
     # and then the model etc will hold a config obj
-    pipeline_pome: pome_pipeline = create_pipeline("Synthetic", "Pass All", "Pomegranate")
+    pipeline_hmmlearn: pipeline = create_pipeline("Synthetic", "Pass All", "Hmmlearn")
     pipeline_ground_truth: matrix_pipeline = create_pipeline("Synthetic", "Pass All", "Ground Truth")
 
-    print(np.array([transmat.numpy() for transmat in pipeline_pome.transmat_list]))
+    print(pipeline_hmmlearn.transmat)
 
 

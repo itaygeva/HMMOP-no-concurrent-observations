@@ -1,25 +1,17 @@
-import os
-import inspect
 import numpy as np
 from Config.Config import Config
 
 
-class BaseReader:
+class base_reader:
     # This class is the parent of all reader and handles the basic query methods they all share
 
-    def __init__(self, config: Config, **kwargs):
+    def __init__(self, config: Config):
         self._config = config
-        data_dir = os.path.dirname(os.path.dirname(inspect.getfile(BaseReader)))
-        self.cache_dir = os.path.join(data_dir, 'Readers', 'Cache')
-        self.raw_dir = os.path.join(data_dir, 'Raw')
-        self.is_tagged = False
-        self.n_features = 1
-        self.n_states = 1
         self.dataset = {'sentences': [], 'tags': [], 'lengths': []}
         self.emission_prob = []
 
     def get_obs(self):
-        # returns the observations as a list of sentences. each sentence is a np.array of size (n_obs,n_features
+        # returns the observations as a list of sentences. each sentence is a np.array of size (n_obs,n_features)
         return self.dataset['sentences']
 
     def get_tags(self):
@@ -32,44 +24,21 @@ class BaseReader:
 
     def get_n_features(self):
         # returns the number of features per observation.
-        return self.n_features
+        return self._config.n_features
 
-    def get_n_states(self):
+    def get_n_components(self):
         # returns the number of states in the HMM model.
-        return self.n_states
+        return self._config.n_components
 
     def get_if_tagged(self):
         # returns a boolean whether  the dataset is tagged or not.
-        return self.is_tagged
+        return self._config.is_tagged
 
     def get_emission_prob(self):
-        if self.is_tagged:
+        if self._config.is_tagged:
             return self.emission_prob
         else:
             return None
-
-    def convert_to_our_format(self):
-        # works on the datasets as one list of all words, with appropriate lengths and converts to the desired format(see above)
-        idx = 0
-        total_length = 0
-        sentences = []
-        tags = []
-        for length in self.dataset['lengths']:
-            total_length += length
-            sentence = []
-            s_tags = []
-            while idx < total_length:
-                idx += 1
-                sentence.append(self.dataset['words'][idx,:])
-                if self.is_tagged:
-                    s_tags.append(self.dataset['tags'][idx])
-            np_sentence=np.array(sentence)
-            np_s_tags = np.array(s_tags)
-        sentences.append(np_sentence)
-        tags.append(np_s_tags)
-        self.dataset['words'] = sentences
-        if self.is_tagged:
-            self.dataset['tags'] = tags
 
     def __str__(self):
         return str(self._config)
