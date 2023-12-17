@@ -31,10 +31,10 @@ class gibbs_sampler_pipeline(pipeline):
         data, known_mues, sigmas, start_probs, sentences_lengths = self.generate_initial_parameters(data)
         all_states, all_observations_sum, all_sampled_transitions, all_mues, all_ws, all_transitions, all_omitting_probs \
             = self.model_.sample(data, start_probs, known_mues, sigmas, self._config.n_iter, N=sentences_lengths)
-
+        self._means_list = self.create_means_list(all_mues)
         self._transmat_list = self.create_transmat_list(all_transitions)
         # TODO: Implement startprob
-        self._startprob_list = None
+        self._startprob_list = self.create_startprob_list(all_transitions)
 
     def generate_initial_parameters(self, data):
         """
@@ -53,9 +53,32 @@ class gibbs_sampler_pipeline(pipeline):
         sum_start_probs = sum(start_probs.values())
         start_probs = {state: prob / sum_start_probs for state, prob in start_probs.items()}
 
-        data = [np.squeeze(sentence) for sentence in data] # is this needed?
+        data = [np.squeeze(sentence) for sentence in data]  # is this needed?
 
         return data, known_mues, sigmas_dict, start_probs, sentences_lengths
+
+    def create_startprob_list(self, all_transitions):
+        """
+        Creates a transition matrix of our format (torch tenor of shape (n_states, n_states))
+        from the last element of the gibbs_sampler all_transitions parameter
+        :param all_transitions:  A list of n_iter length of the dictionary of found edges weights.
+        :return: The final transition matrix
+        """
+        # # TODO: There seems to maybe a bug in Benny's code, where after the first iteration (the initialization),
+        #  the start prob is zero for all states. We can see that this is because in the walk, we don't start with the 'start' state, and therefore we don't count the transitions from it.
+        #   Also notice than he returns iter+1
+
+        startprob_list = []
+        for transition_matrix in all_transitions:
+            startprob = np.zeros(self._config.n_components)
+            for index_end in transition_matrix['start'].keys():
+                if index_end != 'end' and index_end != 'start':
+                    startprob[int(eval(index_end)[1])] = \
+                        transition_matrix['start'][index_end]
+            startprob = startprob / np.sum(startprob)
+            startprob_list.append(startprob)
+        return startprob_list
+
 
     def create_transmat_list(self, all_transitions):
         """
@@ -77,4 +100,7 @@ class gibbs_sampler_pipeline(pipeline):
                         transmat[int(eval(index_start)[1])] / np.sum(transmat[int(eval(index_start)[1])])
             transmat_list.append(transmat)
         return transmat_list
+
+    def create_means_list(self, all_mues):
+        return [np.array(list(mues.values())) for mues in all_mues]
 

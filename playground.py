@@ -9,148 +9,199 @@ from Pipelines.hmmlearn_pipeline import hmmlearn_pipeline
 from Evaluations import utils as evaluations
 import torch
 from torch.masked import MaskedTensor
+from Data.Readers.utils import *
 from numpy import random
 import itertools
 from Data.Readers.stocks_reader import stocks_reader
 import inspect
 from hmmlearn import hmm
+import matplotlib.pyplot as plt
+from itertools import permutations
 
-"""def generate_initial_normal_params_pytorch(dims, n_components):
-    tensor_type = torch.float32
-    means = [torch.rand(dims, dtype=tensor_type) for i in range(n_components)]
+import numpy as np
 
-    covariance_matrices = [torch.randn(dims, dims) for i in range(n_components)]
+x = [1,2,3]
+y = np.array([[1,2], [2,3], [3,4]])
+plt.figure(1)
+plt.plot(x,y,)
 
-    covariance_matrices = [torch.mm(covariance_matrix, covariance_matrix.t()) for
-                           covariance_matrix in covariance_matrices]
-    covariance_matrices = [covariance_matrix / torch.diag(covariance_matrix).sqrt().view(-1, 1) for
-                           covariance_matrix in covariance_matrices]
-    covariance_matrices = [covariance_matrix / torch.diag(covariance_matrix).sqrt().view(1, -1) for
-                           covariance_matrix in covariance_matrices]
+plt.show()
+"""
+# creating the hmm samples from random
+model = hmm.GaussianHMM(n_components=3 ,n_iter=20, covariance_type="full")
+model.startprob_ = generate_random_normalized_vector(3)
+model.transmat_ = generate_random_normalized_matrix((3,3))
+model.means_ = np.expand_dims(np.random.uniform(1, 10, size=3), axis=1)
+model.covars_ = np.tile(np.identity(1), (3, 1, 1))
+data,Z = model.sample(100000)
+data = np.array_split(data.astype(np.float32), data.shape[0]//10)
+"""
 
-    return means, covariance_matrices
-
-
-def generate_initial_model_pytorch(distributions, n_components, n_iter):
-    tensor_type = torch.float32
-    edges = torch.rand(n_components, n_components, dtype=tensor_type)
-    ends = torch.rand(n_components, dtype=tensor_type)
-
-    for s in range(n_components):
-        temp = np.random.choice(range(1000), n_components + 1, replace=False)
-        edges[s, :] = torch.from_numpy(temp[:-1] / np.sum(temp))
-        ends[s] = temp[-1] / np.sum(temp)
-
-    starts = torch.rand(n_components, dtype=tensor_type)
-    starts = starts / torch.sum(starts)
-
-    return hmm.DenseHMM(distributions, edges=edges, starts=starts, ends=ends, max_iter=n_iter)
-
-
-def partition_sequences(data):
-    lengths_dict = {}
-    for tensor in data:
-        if tensor.shape[0] not in lengths_dict:
-            lengths_dict[tensor.shape[0]] = torch.unsqueeze(tensor, dim=0)
-        else:
-            lengths_dict[tensor.shape[0]] = torch.cat(
-                (lengths_dict[tensor.shape[0]], torch.unsqueeze(tensor, dim=0)))
-    values = list(lengths_dict.values())
-    values = sorted(values, key=lambda x: x.shape[1])
-    return values
+"""# creating the hmm samples from random
+model = hmm.GaussianHMM(n_components=3, covariance_type="full")
+model.startprob_ = np.array([0, 0.2, 0.8])
+model.transmat_ = np.array([[0, 0.5, 0.5], [0.5, 0.1, 0.4], [0.1, 0.5, 0.4]])
+model.means_ = np.array([[10], [20], [30]])
+model.covars_ = np.tile(0.01*np.identity(1), (3, 1, 1))
+X, Z = model.sample(100000)
+# data = np.array_split(X.astype(np.float32), X.shape[0]//10)
 
 
-n_iter = 100
-dims = 1
+# creating the hmm model
+
+model_learn = hmm.GaussianHMM(n_components=3, n_iter=20)
+# data_squeezed = [np.squeeze(sentence) for sentence in data]
+# data_hmmlearn_formatted = np.hstack(data_squeezed)
+# data_hmmlearn_formatted = data_hmmlearn_formatted.reshape(-1, 1)
+# sentences_length = [int(sentence.shape[0]) for sentence in data]
+sentences_length = [10] * 10000
+print(X)
+print(sentences_length)
+model_learn.fit(X, sentences_length)
+print(model.transmat_)
+print(model_learn.transmat_)
+print(evaluations.compare_mat_l1_norm(model_learn.transmat_, model.transmat_))
+print(model_learn.means_)
+"""
+"""
+# %% create markov chain
+
+SENTENCE_NUM = 100000
+typical_sentence_len = 20
+typical_sentence_len_var = 1
+initial_dist = [0, 0.2, 0.8]
+transition_matrix = [[0, 0.5, 0.5], [0.5, 0.1, 0.4], [0.1, 0.5, 0.4]]
+sentences = []
+sentences_len = np.random.normal(typical_sentence_len, typical_sentence_len_var, SENTENCE_NUM).astype(int)
+alternate_length = typical_sentence_len * np.ones(sentences_len.shape).astype(int)
+sentences_len = np.where(sentences_len > 0, sentences_len, alternate_length)
+
+for sentence_len in sentences_len:
+
+    sentence = []
+    initial_state = np.random.choice([1, 2, 3], p=initial_dist)
+    current_state = initial_state
+
+    for _ in range(sentence_len):
+        sentence.append(current_state)
+        current_state = np.random.choice([1, 2, 3], p=transition_matrix[current_state - 1])
+    sentences.append(sentence)
+
+# %% create observations
+
+A_mu = 10
+B_mu = 20
+C_mu = 30
+mu = [A_mu, B_mu, C_mu]
+
+A_sigma = 0.01
+B_sigma = 0.01
+C_sigma = 0.01
+sigma = [A_sigma, B_sigma, C_sigma]
+
+total_observations = []
+
+for sentence in sentences:
+
+    observations = []
+
+    for word in sentence:
+        observation = np.random.normal(mu[word - 1], sigma[word - 1])
+        observations.append(observation)
+    total_observations.append(observations)
+
+# %% split train and test
 n_states = 3
-freeze_distributions = False
-sample_num = 1000000
 
-means, covs = generate_initial_normal_params_pytorch(dims, n_states)
-dists = [distributions.Normal(means=means[i], covs=covs[i], frozen=freeze_distributions) for i in
-         range(n_states)]
+train = np.array([])
+test = np.array([])
+train_lengths = np.array([])
+test_lengths = np.array([])
 
-#samples = [dist.sample(sample_num) for dist in dists]
+percent = 100
 
-tester_means, tester_covs = generate_initial_normal_params_pytorch(dims, n_states)
-tester_dists = [distributions.Normal(means=tester_means[i], covs=tester_covs[i], frozen=freeze_distributions) for i in
-                range(n_states)]"""
-"""for i, dist in enumerate(tester_dists):
-    dist.fit(samples[i])
+for observations in total_observations[:(percent * len(total_observations)) // 100]:
+    train = np.append(train, observations)
+    train_lengths = np.append(train_lengths, len(observations))
 
-print("means:")
-print([dist.means for dist in dists])
-print([dist.means for dist in tester_dists])
-print("covs")
-print([dist.covs for dist in dists])
-print([dist.covs for dist in tester_dists])
-"""
-"""model = generate_initial_model_pytorch(dists, n_states, n_iter)
-samples = model.sample(sample_num)
-samples = partition_sequences(samples)
-samples = [samples[i] for i in range(1, len(samples))]
+for observations in total_observations[1 + (percent * len(total_observations)) // 100:]:
+    test = np.append(test, observations)
+    test_lengths = np.append(test_lengths, len(observations))
+
+train = train.astype(float)
+test = test.astype(float)
+
+# %% analyze HMM
 
 
-
-tester_model = generate_initial_model_pytorch(tester_dists, n_states, n_iter)
-tester_model.fit(samples)
-
-transmat = torch.exp(model.edges)
-tester_transmat = torch.exp(tester_model.edges)
-
-means = [dist.means for dist in model.distributions]
-tester_means = [dist.means for dist in tester_model.distributions]
-
-covs = [dist.covs for dist in model.distributions]
-tester_covs = [dist.covs for dist in tester_model.distributions]
-
-print("transition matrix:")
-print(transmat)
-print(tester_transmat)
-
-print("means:")
-print(means)
-print(tester_means)
-
-print("covs:")
-print(covs)
-print(tester_covs)"""
+model = hmm.GaussianHMM(n_components=n_states, n_iter=20)
+model.fit(train.reshape(-1, 1), train_lengths.astype(int))
+score = model.score(train.reshape(-1, 1), train_lengths.astype(int))
+print(transition_matrix)
+print(model.transmat_)
+print(model.means_)
+print(evaluations.compare_mat_l1_norm(model.transmat_, transition_matrix))
 
 """
-
-@dataclass
-class Synthetic_Reader_Config:
-    n_components: int
-    n_samples: int
-    Name: str = field(default="synthetic_reader", compare=False)
-    Class: str = field(default="synthetic_reader", repr=False)
-
-
-
-json_data = '{"Name":"Synthetic Reader","Class":"synthetic_reader","n_samples":10000,"n_components":3}'
-data_dict = json.loads(json_data)
-config = Synthetic_Reader_Config(**data_dict)
-config_str = str(config)
-new_config = eval(config_str)
-new_config.Name = "Other Reader"
-print(new_config)
-
-field_list = fields(Synthetic_Reader_Config)"""
 """
-# Access and print the field names
-field_names = [field.name for field in field_list]
-print(field_names)
+# %%
+
+
+test_sentence1 = np.array([30, 10, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20])
+test_sentence_states1 = test_sentence1 // 10
+test_sentence2 = np.array([20, 30, 10, ])
+test_sentence_states2 = test_sentence2 // 10
+test_log_likelihood1, _ = model.score_samples(np.array(test_sentence1).reshape(-1, 1))
+print(test_log_likelihood1)
+print(MM_log_likelyhood(test_sentence_states1, transition_matrix, initial_dist))
+
+test_log_likelihood2, _ = model.score_samples(np.array(test_sentence2).reshape(-1, 1))
+print(test_log_likelihood2)
+print(MM_log_likelyhood(test_sentence_states2, transition_matrix, initial_dist))
+
+test_sentence = np.array([])
+prev_log_likelyhood = 0
+for i in range(15):
+    test_sentence = np.append(test_sentence, 20)
+    test_log_likelihood, _ = model.score_samples(np.array(test_sentence).reshape(-1, 1))
+    print(test_log_likelihood - prev_log_likelyhood)
+    prev_log_likelyhood = test_log_likelihood
+
+test_sentence = np.array([])
+prev_log_likelyhood = 0
+for i in range(15):
+    test_sentence = np.append(test_sentence, 30)
+    test_log_likelihood, posterior = model.score_samples(np.array(test_sentence).reshape(-1, 1))
+    print(test_log_likelihood - prev_log_likelyhood)
+    prev_log_likelyhood = test_log_likelihood
+
+result = -0.5 * (np.log(2 * np.pi)
+                 + np.log(model.covars_[:, 0, 0]).sum(axis=-1)
+                 + ((np.array(test_sentence).reshape(-1, 1)[:, None, :] - model.means_) ** 2 / model.covars_[:, 0,
+                                                                                               0]).sum(axis=-1))
+print(result)
+
+result = -0.5 * (np.log(2 * np.pi)
+                 + np.log(C_sigma ** 2)
+                 + ((np.array(test_sentence).reshape(-1, 1)[:, None, :] - model.means_) ** 2 / model.covars_[:, 0,
+                                                                                               0]).sum(axis=-1))
+print(result)
+
+
+
+
+# %% likelyhood function
+
+def MM_log_likelyhood(X, T, start):
+    log_likelyhood = np.log(start[X[0] - 1])
+
+    for i in range(len(X) - 1):
+        log_likelyhood += np.log(T[X[i] - 1][X[i + 1] - 1])
+
+    return log_likelyhood
+
+
+# %%
+for observations in total_observations[1 + (percent * len(total_observations)) // 100:]:
+    print()
 """
-"""class_attributes = vars(self.__class__)
-
-properties = {key: value.fget(self)
-              for key, value in class_attributes.items() if isinstance(value, property)}
-print(properties)"""
-
-
-data = np.random.rand(30).reshape(-1,1)
-print(data)
-lengths = np.array([10, 10, 10])
-print(lengths)
-model = hmm.GaussianHMM(n_components=3, n_iter=10)
-model.fit(data, lengths)

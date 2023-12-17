@@ -6,6 +6,14 @@ import torch
 from Config.Config import *
 from Pipelines.pipeline import pipeline
 
+def is_positive_definite(matrix):
+    try:
+        np.linalg.cholesky(matrix)
+        return True
+    except np.linalg.LinAlgError:
+        return False
+
+    # Test a matrix
 
 class pome_pipeline(pipeline):
     # TODO: Test support of multivariate data
@@ -44,20 +52,50 @@ class pome_pipeline(pipeline):
                 masked_data.append(self.create_masked_tensor(sentence, ws))
             data = masked_data
 
-        data = [arr.reshape(-1, 1) for arr in data]  # assuming that the data is tensors
+        if data[0].ndim == 1:
+            data = [arr.reshape(-1, 1) for arr in data]  # adding dimension to 1 dimensional array
+
         data = self.partition_sequences(data)  # We need to do this ourselves in order to bypass a bug in pomegranate 1.0.3
         self._model.fit(X=data)
-        return torch.exp(self._model.edges), torch.exp(self._model.starts)
+        means = [dist.means.item() for dist in self._model.distributions]
+        return torch.exp(self._model.edges), torch.exp(self._model.starts), means
+    def _iter_fit_alt(self, data, n_iter, ws):
+        self.generate_initial_model_pytorch(n_iter)
+        #  TODO: Support multivariate data (n_features>1)
+        if ws is not None:
+            #  TODO: Export this to a method
+            masked_data = []
+            for sentence, ws in zip(data, ws):
+                masked_data.append(self.create_masked_tensor(sentence, ws))
+            data = masked_data
+
+        if data[0].ndim == 1:
+            data = [arr.reshape(-1, 1) for arr in data]  # adding dimension to 1 dimensional array
+
+        data = self.partition_sequences(
+            data)  # We need to do this ourselves in order to bypass a bug in pomegranate 1.0.3
+        for i in range(n_iter):
+            self._model.fit(X=data)
+            means = [dist.means.item() for dist in self._model.distributions]
+            self._transmat_list.append(torch.exp(self._model.edges).numpy())
+            self._startprob_list.append(torch.exp(self._model.starts).numpy())
+            self._means_list.append(means)
+
 
     def fit(self):
         data, ws = self.omitter.omit(self.reader.get_obs())
         ## TODO: Take care of omission_idx later.
         ws = None
         data = [torch.from_numpy(sentence) for sentence in data]
-        for i in range(1, self._config.n_iter + 1):
-            transmat, start_prob = self._iter_fit(data, i, ws)
-            self._transmat_list.append(transmat)
-            self._startprob_list.append(start_prob)
+
+        self._iter_fit_alt(data, self._config.n_iter, ws)
+
+        """for i in range(1, self._config.n_iter + 1):
+            #transmat, start_prob, means = self._iter_fit(data, i, ws)
+            transmat, start_prob, means = self._iter_fit_alt(data, i, ws)
+            self._transmat_list.append(transmat.numpy())
+            self._startprob_list.append(start_prob.numpy())
+            self._means_list.append(means)"""
 
     @property
     def emissionprob(self):
@@ -77,6 +115,7 @@ class pome_pipeline(pipeline):
 
     def partition_sequences(self, data):
         # TODO: test of this supports multivariate data
+        # TODO: check if maybe we can use itertools.groupby instead
         """
         groups sentences of the same length together.
         :param data: list of tensors or masked tensors of shape (n_obs,n_features)
@@ -104,7 +143,7 @@ class pome_pipeline(pipeline):
         if self._config.distribution == 'Categorical':
             ## TODO: support categorical and emission_prob
             return [distributions.Categorical(torch.from_numpy(np.atleast_2d(dist)), frozen=self._config.freeze_distributions)
-                    for dist in self._config.emission_prob]
+                    for dist in self.reader.get_emission_prob()]
         elif self._config.distribution == 'Gaussian':
             means, covs = self.generate_initial_normal_params_pytorch()
             return [distributions.Normal(means=means[i], covs=covs[i], frozen=self._config.freeze_distributions) for i in
@@ -124,10 +163,17 @@ class pome_pipeline(pipeline):
 
         # This ensures that the cov matrix is a legal cov matrix
         covariance_matrices = [torch.mm(random_matrix, random_matrix.t()) for i in range(self._config.n_components)]
-        covariance_matrices = [covariance_matrix / torch.diag(covariance_matrix).sqrt().view(-1, 1) for
+        """covariance_matrices = [covariance_matrix / torch.diag(covariance_matrix).sqrt().view(-1, 1) for
                                covariance_matrix in covariance_matrices]
         covariance_matrices = [covariance_matrix / torch.diag(covariance_matrix).sqrt().view(1, -1) for
-                               covariance_matrix in covariance_matrices]
+                               covariance_matrix in covariance_matrices]"""
 
+        # This is just because i wanted to check if the cov is actually positive definite
+        test = [is_positive_definite(covariance_matrix) for
+                               covariance_matrix in covariance_matrices]
+        if not np.any(test):
+            print(self.__str__())
         return means, covariance_matrices
+
+
 

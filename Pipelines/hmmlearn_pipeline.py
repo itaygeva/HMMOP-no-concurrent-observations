@@ -10,6 +10,19 @@ class hmmlearn_pipeline(pipeline):
     def __init__(self, reader, omitter, config: hmmlearn_pipeline_config):
         super().__init__(reader, omitter, config)
 
+    def _iter_fit_alt(self, data, n_iter):
+        try:
+            self.ndim = data[0].shape[1]
+        except Exception as e:
+            print(f"Incorrect data passed for fit. Raised exception {e}")
+        else:
+            self.create_model()  # create model based on the dist type
+            sentences, lengths = self.convert_data_to_hmmlearn_format(data)
+            for i in range(n_iter):
+                self._model.fit(sentences, lengths)
+            return self._model.transmat_, self._model.startprob_, self._model.means_
+
+
     def _iter_fit(self, data, n_iter):
         try:
             self.ndim = data[0].shape[1]
@@ -19,14 +32,16 @@ class hmmlearn_pipeline(pipeline):
             self.create_model()  # create model based on the dist type
             sentences, lengths = self.convert_data_to_hmmlearn_format(data)
             self._model.fit(sentences, lengths)
-            return self._model.transmat_, self._model.startprob_
+            return self._model.transmat_, self._model.startprob_, self._model.means_
 
     def fit(self):
         data, ws = self.omitter.omit(self.reader.get_obs())
         for i in range(1, self._config.n_iter + 1):
-            transmat, start_prob = self._iter_fit(data, i)
+            transmat, start_prob, means = self._iter_fit(data, i)
             self._transmat_list.append(transmat)
             self._startprob_list.append(start_prob)
+            self._means_list.append(means)
+            print(f"finished iteration #{i}")
 
     def convert_data_to_hmmlearn_format(self, data):
         """

@@ -24,13 +24,13 @@ class base_reader_config(Config):
 # region readers configs
 @dataclass
 class brown_corpus_reader_config(base_reader_config):
-    path_to_data: str = ""
-    path_to_tags: str = ""
+    path_to_data: str = field(default="", repr=False)
+    path_to_tags: str = field(default="", repr=False)
 
 
 @dataclass
 class stocks_reader_config(base_reader_config):
-    path_to_data: str = ""
+    path_to_data: str = field(default="", repr=False)
     company: str = ""
     min_length: int = 0
     max_length: int = 0
@@ -38,6 +38,16 @@ class stocks_reader_config(base_reader_config):
 
 @dataclass
 class synthetic_reader_config(base_reader_config):
+    n_samples: int = 0
+    transmat: str = field(default="", repr=False)
+    endprobs: str = field(default="", repr=False)
+    startprobs: str = field(default="", repr=False)
+    sigma: str = field(default="", repr=False)
+    mues: str = field(default="", repr=False)
+    params_dir: str = field(default="", repr=False)
+
+@dataclass
+class hmm_synthetic_reader_config(base_reader_config):
     n_samples: int = 0
 
 

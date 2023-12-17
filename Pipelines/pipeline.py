@@ -1,4 +1,5 @@
 from Config.Config import pipeline_config
+import numpy as np
 
 
 class pipeline:
@@ -9,6 +10,7 @@ class pipeline:
         self._config = config
         self._transmat_list = []
         self._startprob_list = []
+        self._means_list = []
 
     def fit(self):
         raise NotImplementedError("Must use an implementation of pipeline")
@@ -20,7 +22,19 @@ class pipeline:
     @property
     def transmat(self):
         try:
-            return self._transmat_list[-1]  # return the last of the transition matrices
+            return self._transmat_list[-1] / np.sum(self._transmat_list[-1], axis=1,
+                                                    keepdims=True)  # return the last of the transition matrices
+        except AttributeError as e:
+            print(f"Model not initialized with fit, exception was raised: {e}")
+
+    @property
+    def means_list(self):
+        return self._means_list
+
+    @property
+    def means(self):
+        try:
+            return self._means_list[-1] # return the last of the means matrices
         except AttributeError as e:
             print(f"Model not initialized with fit, exception was raised: {e}")
 
@@ -31,7 +45,7 @@ class pipeline:
     @property
     def startprob(self):
         try:
-            return self._startprob_list[-1]  # return the last of the transition matrices
+            return self._startprob_list[-1]  # return the last of the starting probability
         except AttributeError as e:
             print(f"Model not initialized with fit, exception was raised: {e}")
 

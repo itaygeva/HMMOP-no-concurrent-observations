@@ -10,8 +10,35 @@
       "n_features": 1
     },
     {
-      "Name": "Synthetic",
+      "Name": "Synthetic 1",
       "Class": "synthetic_reader",
+      "n_components": 3,
+      "n_samples": 10000,
+      "is_tagged": false,
+      "n_features": 1,
+	  "sigma": "sigma1"
+    },
+	{
+      "Name": "Synthetic 01",
+      "Class": "synthetic_reader",
+      "n_components": 3,
+      "n_samples": 10000,
+      "is_tagged": false,
+      "n_features": 1,
+	  "sigma": "sigma01"
+    },
+	{
+      "Name": "Synthetic 001",
+      "Class": "synthetic_reader",
+      "n_components": 3,
+      "n_samples": 1000,
+      "is_tagged": false,
+      "n_features": 1,
+	  "sigma": "sigma001"
+    },
+    {
+      "Name": "HMM - Synthetic",
+      "Class": "hmm_synthetic_reader",
       "n_components": 3,
       "n_samples": 10000,
       "is_tagged": false,
@@ -23,8 +50,10 @@
       "company": "AAL",
       "min_length": 10,
       "max_length": 30,
+      "n_components": 3,
       "is_tagged": false,
-      "n_features": 3
+      "n_features": 3,
+      "path_to_data" : "all_stocks_5yr.csv"
     }
   ],
   "omitters": [
@@ -40,36 +69,157 @@
   ],
   "models": [
     {
-      "Name": "Pomegranate",
+      "Name": "Pomegranate - Synthetic1",
       "Class": "pome_pipeline",
       "distribution": "Gaussian",
       "n_components": 3,
       "n_features": 1,
-      "n_iter": 20,
+      "freeze_distributions": false
+    },
+	{
+      "Name": "Pomegranate - Synthetic2",
+      "Class": "pome_pipeline",
+      "distribution": "Gaussian",
+      "n_components": 3,
+      "n_features": 1,
+      "freeze_distributions": false
+    },
+	{
+      "Name": "Pomegranate - Synthetic3",
+      "Class": "pome_pipeline",
+      "distribution": "Gaussian",
+      "n_components": 3,
+      "n_features": 1,
+      "freeze_distributions": false
+    },
+	{
+      "Name": "Pomegranate - Synthetic4",
+      "Class": "pome_pipeline",
+      "distribution": "Gaussian",
+      "n_components": 3,
+      "n_features": 1,
+      "freeze_distributions": false
+    },
+	{
+      "Name": "Pomegranate - Synthetic5",
+      "Class": "pome_pipeline",
+      "distribution": "Gaussian",
+      "n_components": 3,
+      "n_features": 1,
       "freeze_distributions": false
     },
     {
-      "Name": "Ground Truth",
-      "Class": "matrix_pipeline",
-      "n_components": 3,
-      "n_iter": 20
+      "Name": "Pomegranate - Brown",
+      "Class": "pome_pipeline",
+      "distribution": "Categorical",
+      "n_components": 11,
+      "n_features": 1
     },
     {
-      "Name": "Gibbs Sampler",
-      "Class": "gibbs_sampler_pipeline",
+      "Name": "Pomegranate - Stocks",
+      "Class": "pome_pipeline",
+      "distribution": "Gaussian",
+      "n_components": 3,
+      "n_features": 3,
+      "freeze_distributions": false
+    },
+    {
+      "Name": "Ground Truth1",
+      "Class": "matrix_pipeline",
+      "n_components": 3
+    },
+	{
+      "Name": "Ground Truth2",
+      "Class": "matrix_pipeline",
+      "n_components": 3
+    },
+	{
+      "Name": "Ground Truth3",
+      "Class": "matrix_pipeline",
+      "n_components": 3
+    },
+	{
+      "Name": "Ground Truth4",
+      "Class": "matrix_pipeline",
+      "n_components": 3
+    },
+	{
+      "Name": "Ground Truth5",
+      "Class": "matrix_pipeline",
       "n_components": 3
     },
     {
-      "Name": "Hmmlearn",
+      "Name": "Gibbs Sampler1",
+      "Class": "gibbs_sampler_pipeline",
+      "n_components": 3,
+	  "n_iter": 20
+    },
+	{
+      "Name": "Gibbs Sampler2",
+      "Class": "gibbs_sampler_pipeline",
+      "n_components": 3,
+	  "n_iter": 20
+    },
+	{
+      "Name": "Gibbs Sampler3",
+      "Class": "gibbs_sampler_pipeline",
+      "n_components": 3,
+	  "n_iter": 20
+    },
+	{
+      "Name": "Gibbs Sampler4",
+      "Class": "gibbs_sampler_pipeline",
+      "n_components": 3,
+	  "n_iter": 20
+    },
+	{
+      "Name": "Gibbs Sampler5",
+      "Class": "gibbs_sampler_pipeline",
+      "n_components": 3,
+	  "n_iter": 20
+	  
+    },
+	
+    {
+      "Name": "Hmmlearn1",
       "Class": "hmmlearn_pipeline",
       "n_components": 3,
-      "distribution" : "Gaussian"
-
+      "distribution": "Gaussian"
+    },
+	{
+      "Name": "Hmmlearn2",
+      "Class": "hmmlearn_pipeline",
+      "n_components": 3,
+      "distribution": "Gaussian"
+    },
+	{
+      "Name": "Hmmlearn3",
+      "Class": "hmmlearn_pipeline",
+      "n_components": 3,
+      "distribution": "Gaussian"
+    },
+	{
+      "Name": "Hmmlearn4",
+      "Class": "hmmlearn_pipeline",
+      "n_components": 3,
+      "distribution": "Gaussian"
+    },
+	{
+      "Name": "Hmmlearn5",
+      "Class": "hmmlearn_pipeline",
+      "n_components": 3,
+      "distribution": "Gaussian"
     }
   ],
   "default": {
     "Reinitialize": false,
     "raw_dir": "..\\Data\\Raw",
-    "n_iter": 20
+	"params_dir": "..\\Data\\Params",
+    "n_iter": 50,
+    "sigma": null,
+    "startprobs": null,
+    "endprobs": null,
+    "mues": null,
+    "transmat": null
   }
 }

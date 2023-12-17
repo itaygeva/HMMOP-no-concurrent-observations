@@ -13,7 +13,6 @@ class brown_corpus_reader(base_reader):
 
     def __init__(self, config: brown_corpus_reader_config):
         super().__init__(config)
-        self.sentence = namedtuple("Sentence", "words tags")
         self.tag_dict = {}
         self.word_dict = {}
         self.tag_appearances = np.zeros(
@@ -21,11 +20,13 @@ class brown_corpus_reader(base_reader):
         self._corpus_dataset()
         self._calculate_emission_prob()
 
+
     def _corpus_read_data(self, filename):
         """Read tagged sentence data"""
-        with open(os.path.join(self._config.raw_dir, filename), 'r') as f:
+        with open(os.join(self._config.raw_dir, filename), 'r') as f:
             sentence_lines = [l.split("\n") for l in f.read().split("\n\n")]
-        return OrderedDict(((s[0], self.sentence(*zip(*[l.strip().split("\t")
+        Sentence = namedtuple("Sentence", "words tags")
+        return OrderedDict(((s[0], Sentence(*zip(*[l.strip().split("\t")
                                                    for l in s[1:]]))) for s in sentence_lines if s[0]))
 
     def _corpus_read_tags(self, filename):
@@ -73,7 +74,7 @@ class brown_corpus_reader(base_reader):
 
     def _calculate_emission_prob(self):
         # If the file doesn't exist, create the variable and save it to the file
-        self.emission_prob = np.zeros((self.n_states, len(self.word_dict)))
+        self.emission_prob = np.zeros((self._config.n_components, len(self.word_dict)))
         for s_idx, sentence in enumerate(self.dataset['sentences']):
             tag_seq = self.dataset['tags'][s_idx]
             for o_idx, obs in enumerate(sentence):

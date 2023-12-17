@@ -16,10 +16,10 @@ class stocks_reader(base_reader):
 
     @staticmethod
     def _get_features_from_stocks(stocks_values):
-        stocks_open = stocks_values[:, 1]
-        stocks_close = stocks_values[:, 4]
-        stocks_high = stocks_values[:, 2]
-        stocks_low = stocks_values[:, 3]
+        stocks_open = stocks_values[:, 1].astype(float)
+        stocks_close = stocks_values[:, 4].astype(float)
+        stocks_high = stocks_values[:, 2].astype(float)
+        stocks_low = stocks_values[:, 3].astype(float)
         frac_change = (stocks_close - stocks_open) / stocks_open
         frac_high = (stocks_high - stocks_open) / stocks_open
         frac_low = (stocks_open - stocks_low) / stocks_open
