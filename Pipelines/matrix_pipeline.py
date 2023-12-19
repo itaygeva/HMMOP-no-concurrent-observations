@@ -11,6 +11,6 @@ class matrix_pipeline(pipeline):
         self._startprob = None
 
     def fit(self):
-        self._transmat_list = [self.reader.transmat for i in range(self._config.n_iter)]
-        self._startprob_list = [self.reader.startprob for i in range(self._config.n_iter)]
-        self._means_list = [self.reader.means for i in range(self._config.n_iter)]
+        self._transmat_list = [self.reader.transmat for i in range(self._config.n_iter+1)]
+        self._startprob_list = [self.reader.startprob for i in range(self._config.n_iter+1)]
+        self._means_list = [self.reader.means for i in range(self._config.n_iter+1)]

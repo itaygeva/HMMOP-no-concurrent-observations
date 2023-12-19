@@ -20,12 +20,8 @@ from itertools import permutations
 
 import numpy as np
 
-x = [1,2,3]
-y = np.array([[1,2], [2,3], [3,4]])
-plt.figure(1)
-plt.plot(x,y,)
 
-plt.show()
+print(random.uniform(1, 2))
 """
 # creating the hmm samples from random
 model = hmm.GaussianHMM(n_components=3 ,n_iter=20, covariance_type="full")

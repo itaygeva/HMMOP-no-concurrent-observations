@@ -29,9 +29,10 @@ class synthetic_reader(base_reader):
 
     def _init_hmm_model_from_config(self):
         self._mues = self.generate_param_from_config(self._config.mues)
-        sigma = self.generate_param_from_config(self._config.sigma)
+        self._sigmas = self.generate_param_from_config(self._config.sigma)
         self._distributions = np.array(
-            [pomegranate.distributions.Normal([float(mu)], [float(sigma)], 'diag') for mu in self._mues])
+            [pomegranate.distributions.Normal([float(mu)], [float(self._sigmas[i])], 'diag') for i, mu in
+             enumerate(self._mues)])
         self._transition_mat = self.generate_param_from_config(self._config.transmat)
         self._start_prob = self.generate_param_from_config(self._config.startprob)
         self._end_probs = self.generate_param_from_config(self._config.endprobs)
@@ -46,33 +47,15 @@ class synthetic_reader(base_reader):
         ## TODO: verify that the distribution is created as we want
         # generating distributions
         self.generate_mues()
-        self.generate_sigma()
+        self.generate_sigmas()
         self.generate_transmat_and_endprobs()
         self.generate_startprobs()
-        """
-        min_mu_gap = 10
-        sigma = 0.01
-        self._mues = [i * min_mu_gap for i in range(self._config.n_components)]
-        self._distributions = np.array(
-            [pomegranate.distributions.Normal([float(mu)], [float(self._sigma)], 'diag') for mu in self._mues])
-
-        # generating transitions probs
-        for i in range(self._config.n_components):
-            random_line = torch.rand(self._config.n_components + 1)
-            random_line = random_line / torch.sum(random_line)
-            self._transition_mat[i, :] = random_line[:-1]
-            self._end_probs[i] = random_line[-1]
-
-        self._start_prob = torch.rand(self._config.n_components)
-        self._start_prob = self._start_prob / torch.sum(self._start_prob)
-
-        self._end_probs = self._end_probs.squeeze()  # why is this needed?"""
 
         # generating model
         self._distributions = np.array(
-            [pomegranate.distributions.Normal([float(mu)], [float(self._sigma)], 'diag') for mu in self._mues])
+            [pomegranate.distributions.Normal([float(mu)], [float(self._sigmas[i])], 'diag') for i, mu in
+             enumerate(self._mues)])
         self._model = DenseHMM(self._distributions, self._transition_mat, self._start_prob, self._end_probs)
-
 
     def delete_one_word_sentences(self):
         no_one_word_data = [(length, sentences) for (length, sentences) in
@@ -91,14 +74,14 @@ class synthetic_reader(base_reader):
         else:
             self._mues = self.generate_param_from_config(self._config.mues)
 
-    def generate_sigma(self):
+    def generate_sigmas(self):
         if self._config.sigma is None:
-            self._sigma = 1
+            self._sigmas = [1 for i in range(self._config.n_components)]
         else:
-            self._sigma = self.generate_param_from_config(self._config.sigma)
+            self._sigmas = self.generate_param_from_config(self._config.sigma)
 
     def generate_transmat_and_endprobs(self):
-        if self._config.transmat is None or self._config.endprobs is None :
+        if self._config.transmat is None or self._config.endprobs is None:
             for i in range(self._config.n_components):
                 random_line = torch.rand(self._config.n_components + 1)
                 random_line = random_line / torch.sum(random_line)
@@ -117,17 +100,17 @@ class synthetic_reader(base_reader):
         else:
             self._start_prob = self.generate_param_from_config(self._config.startprobs)
 
-
-
     @property
     def transmat(self):
         return self._transition_mat.numpy()
-
 
     @property
     def means(self):
         return self._mues
 
+    @property
+    def covs(self):
+        return self._sigmas
 
     @property
     def startprob(self):

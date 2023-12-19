@@ -5,20 +5,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5816c4f2-9dc7-4ace-9705-7042f2d839c3" name="Changes" comment="Finished Basic flow: Tests creating readers, omitters and pipelines. Loading and dumping accordingly. Not fully tested yet">
+      <change afterPath="$PROJECT_DIR$/Data/Params/close_means" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/Params/sigma03" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/#formats.lyx#" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/Config.py" beforeDir="false" afterPath="$PROJECT_DIR$/Config/Config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Readers/brown_corpus_reader.py" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Readers/brown_corpus_reader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Readers/stocks_reader.py" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Readers/stocks_reader.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Data/Readers/synthetic_reader.py" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Readers/synthetic_reader.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Evaluations/Tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/Evaluations/Tests.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Evaluations/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Evaluations/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Experiments/Cache/omitters/base_omitter_config(Name='Pass All')" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Experiments/Cache/readers/synthetic_reader_config(Name='Synthetic', n_features=1, n_components=3, is_tagged=False, n_samples=10000)" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Experiments/Config.JSON" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/Config.JSON" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Experiments/Creators/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/Creators/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Experiments/Evaluations.JSON" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Experiments/experiment.py" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/experiment.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Experiments/profile_results.prof" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/profile_results.prof" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Pipelines/gibbs_sampler_pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pipelines/gibbs_sampler_pipeline.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pipelines/hmmlearn_pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pipelines/hmmlearn_pipeline.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Pipelines/matrix_pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pipelines/matrix_pipeline.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pipelines/pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pipelines/pipeline.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Pipelines/pome_pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pipelines/pome_pipeline.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/playground.py" beforeDir="false" afterPath="$PROJECT_DIR$/playground.py" afterDir="false" />
     </list>
@@ -51,15 +52,18 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/liadm/Code/HMMOP&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PythonContentEntriesConfigurable&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "last_opened_file_path": "C:/Users/liadm/Code/HMMOP-no-concurrent-observations/Data/Params",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PythonContentEntriesConfigurable"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\liadm\Code\HMMOP-no-concurrent-observations\Data\Params" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\liadm\Code\HMMOP-no-concurrent-observations\Experiments\Creators" />
     </key>
@@ -152,9 +156,9 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Pipelines/hmmlearn_pipeline.py</url>
-          <line>53</line>
-          <option name="timeStamp" value="66" />
+          <url>file://$PROJECT_DIR$/Pipelines/gibbs_sampler_pipeline.py</url>
+          <line>31</line>
+          <option name="timeStamp" value="127" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

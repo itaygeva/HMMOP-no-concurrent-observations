@@ -45,17 +45,22 @@ class gibbs_sampler_pipeline(pipeline):
         """
         sentences_lengths = [sentence.shape[0] for sentence in data]
 
-        known_mues = None
+        #known_mues = None
+        #known_mues = [1,2,3]
+        known_mues = self.reader.means
 
-        sigmas = [random.uniform(1, 2) for i in range(self._config.n_components)]
+        #sigmas = [random.uniform(1, 2) for i in range(self._config.n_components)]
+        #sigmas = [0.3 for i in range(self._config.n_components)]
+        sigmas = self.reader.covs
         sigmas_dict = {str((sigma, i)): sigma for i, sigma in enumerate(sigmas)}
+        mues_dict = {str((sigma, i)): known_mues[i] for i, sigma in enumerate(sigmas)}
         start_probs = {state: random.random() for state in sigmas_dict.keys()}
         sum_start_probs = sum(start_probs.values())
         start_probs = {state: prob / sum_start_probs for state, prob in start_probs.items()}
 
         data = [np.squeeze(sentence) for sentence in data]  # is this needed?
 
-        return data, known_mues, sigmas_dict, start_probs, sentences_lengths
+        return data, mues_dict, sigmas_dict, start_probs, sentences_lengths
 
     def create_startprob_list(self, all_transitions):
         """

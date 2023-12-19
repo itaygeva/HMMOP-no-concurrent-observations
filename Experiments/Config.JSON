@@ -36,6 +36,16 @@
       "n_features": 1,
 	  "sigma": "sigma001"
     },
+	{
+      "Name": "Synthetic Hard",
+      "Class": "synthetic_reader",
+      "n_components": 10,
+      "n_samples": 1000,
+      "is_tagged": false,
+      "n_features": 1,
+	  "mues": "close_means",
+	  "sigma": "sigma03"
+    },
     {
       "Name": "HMM - Synthetic",
       "Class": "hmm_synthetic_reader",
@@ -72,7 +82,7 @@
       "Name": "Pomegranate - Synthetic1",
       "Class": "pome_pipeline",
       "distribution": "Gaussian",
-      "n_components": 3,
+      "n_components": 10,
       "n_features": 1,
       "freeze_distributions": false
     },
@@ -80,7 +90,7 @@
       "Name": "Pomegranate - Synthetic2",
       "Class": "pome_pipeline",
       "distribution": "Gaussian",
-      "n_components": 3,
+      "n_components": 10,
       "n_features": 1,
       "freeze_distributions": false
     },
@@ -88,7 +98,7 @@
       "Name": "Pomegranate - Synthetic3",
       "Class": "pome_pipeline",
       "distribution": "Gaussian",
-      "n_components": 3,
+      "n_components": 10,
       "n_features": 1,
       "freeze_distributions": false
     },
@@ -96,7 +106,7 @@
       "Name": "Pomegranate - Synthetic4",
       "Class": "pome_pipeline",
       "distribution": "Gaussian",
-      "n_components": 3,
+      "n_components": 10,
       "n_features": 1,
       "freeze_distributions": false
     },
@@ -104,7 +114,7 @@
       "Name": "Pomegranate - Synthetic5",
       "Class": "pome_pipeline",
       "distribution": "Gaussian",
-      "n_components": 3,
+      "n_components": 10,
       "n_features": 1,
       "freeze_distributions": false
     },
@@ -126,56 +136,56 @@
     {
       "Name": "Ground Truth1",
       "Class": "matrix_pipeline",
-      "n_components": 3
+      "n_components": 10
     },
 	{
       "Name": "Ground Truth2",
       "Class": "matrix_pipeline",
-      "n_components": 3
+      "n_components": 10
     },
 	{
       "Name": "Ground Truth3",
       "Class": "matrix_pipeline",
-      "n_components": 3
+      "n_components": 10
     },
 	{
       "Name": "Ground Truth4",
       "Class": "matrix_pipeline",
-      "n_components": 3
+      "n_components": 10
     },
 	{
       "Name": "Ground Truth5",
       "Class": "matrix_pipeline",
-      "n_components": 3
+      "n_components": 10
     },
     {
       "Name": "Gibbs Sampler1",
       "Class": "gibbs_sampler_pipeline",
-      "n_components": 3,
+      "n_components": 10,
 	  "n_iter": 20
     },
 	{
       "Name": "Gibbs Sampler2",
       "Class": "gibbs_sampler_pipeline",
-      "n_components": 3,
+      "n_components": 10,
 	  "n_iter": 20
     },
 	{
       "Name": "Gibbs Sampler3",
       "Class": "gibbs_sampler_pipeline",
-      "n_components": 3,
+      "n_components": 10,
 	  "n_iter": 20
     },
 	{
       "Name": "Gibbs Sampler4",
       "Class": "gibbs_sampler_pipeline",
-      "n_components": 3,
+      "n_components": 10,
 	  "n_iter": 20
     },
 	{
       "Name": "Gibbs Sampler5",
       "Class": "gibbs_sampler_pipeline",
-      "n_components": 3,
+      "n_components": 10,
 	  "n_iter": 20
 	  
     },
@@ -215,7 +225,7 @@
     "Reinitialize": false,
     "raw_dir": "..\\Data\\Raw",
 	"params_dir": "..\\Data\\Params",
-    "n_iter": 50,
+    "n_iter": 20,
     "sigma": null,
     "startprobs": null,
     "endprobs": null,

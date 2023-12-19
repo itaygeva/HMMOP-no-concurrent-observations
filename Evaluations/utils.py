@@ -60,7 +60,7 @@ def compare_mat_l1_norm(matrix1, matrix2):
     :param matrix1: torch tensor
     :param matrix2: a torch tensor to compare
     """
-    return find_mat_diff(matrix1, matrix2) / matrix1.shape[0]
+    return np.average(np.abs(matrix1 - matrix2))
 
 
 def find_temporal_info_ratio(matrix):

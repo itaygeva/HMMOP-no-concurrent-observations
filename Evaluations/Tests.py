@@ -143,7 +143,7 @@ def compare_hmm_synthetic_transmat():
 
 
 def compare_pipelines_for_different_sigmas():
-    readers = ["Synthetic 001"]
+    readers = ["Synthetic Hard"]
     num_of_iter = 5
     results = np.empty((2, 1, num_of_iter))
     fig, ax = plt.subplots(num_of_iter, 1, sharex=True, sharey=True, figsize=(10, 6))
@@ -160,7 +160,7 @@ def compare_pipelines_for_different_sigmas():
 
             print("matrices compared l1 norm")
             pome_perm = find_optimal_permutation(pipeline_pome_syn.means, pipeline_gt_syn.means)
-            #hmm_perm = find_optimal_permutation(pipeline_hmm_syn.means, pipeline_gt_syn.means)
+            # hmm_perm = find_optimal_permutation(pipeline_hmm_syn.means, pipeline_gt_syn.means)
             gibbs_perm = find_optimal_permutation(pipeline_gibbs_syn.means, pipeline_gt_syn.means)
 
             results[0, i, j - 1] = find_mat_diff(pipeline_gt_syn.transmat,
@@ -172,7 +172,6 @@ def compare_pipelines_for_different_sigmas():
             results[1, i, j - 1] = find_mat_diff(pipeline_gt_syn.transmat, pipeline_gibbs_syn.transmat) / \
                                    pipeline_gt_syn.transmat.shape[
                                        0]  # we don't change the orientation of the gibbs matrix
-
 
         x = [0.01]
         ax[j - 1].plot(x, results[0, :, j - 1], marker='D', label="pome", linestyle=":")
@@ -200,73 +199,60 @@ def compare_pipelines_for_different_sigmas():
     print(pipeline_gt_syn.reader.dataset['lengths'])
 
 
-def compare_pipelines_vs_iter():
-    readers = ["Synthetic 1", "Synthetic 01", "Synthetic 001"]
-    reader = readers[-1]
-    num_of_iter = 5
-    results = np.empty((2, num_of_iter, 50))
-    means_results = np.empty((2,num_of_iter, 50, 3))
-    for j in range(1, num_of_iter + 1):
-        pipeline_pome_syn: pipeline = create_pipeline(reader, "Pass All", "Pomegranate - Synthetic" + str(j))
+def compare_pipelines_vs_iter(n_components, n_experiments, n_iter):
+    reader = "Synthetic Hard"
+    results = np.empty((2, n_experiments, n_iter + 1))
+    means_results = np.empty((2, n_experiments, n_iter + 1, n_components))
+    for j in range(n_experiments):
+        pipeline_pome_syn: pipeline = create_pipeline(reader, "Pass All", "Pomegranate - Synthetic" + str(j + 1))
         print(f"finished creating {pipeline_pome_syn}")
-        """pipeline_hmm_syn: pipeline = create_pipeline(reader, "Pass All", "Hmmlearn" + str(j))
-        print(f"finished creating {pipeline_hmm_syn}")"""
-        pipeline_gibbs_syn: pipeline = create_pipeline(reader, "Pass All", "Gibbs Sampler" + str(j))
+        pipeline_gibbs_syn: pipeline = create_pipeline(reader, "Pass All", "Gibbs Sampler" + str(j + 1))
         print(f"finished creating {pipeline_gibbs_syn}")
-        pipeline_gt_syn: pipeline = create_pipeline(reader, "Pass All", "Ground Truth" + str(j))
+        pipeline_gt_syn: pipeline = create_pipeline(reader, "Pass All", "Ground Truth" + str(j + 1))
         print(f"finished creating {pipeline_gt_syn}")
 
         print("matrices compared l1 norm")
-        pome_perm_list = find_optimal_permutation_list(pipeline_pome_syn.means_list, pipeline_gt_syn.means_list)
-        #hmm_perm_list = find_optimal_permutation_list(pipeline_hmm_syn.means_list, pipeline_gt_syn.means_list)
+        # pome_perm_list = find_optimal_permutation_list(pipeline_pome_syn.means_list, pipeline_gt_syn.means_list)
 
-        results[0, j - 1, :] = np.array(compare_mat_l1_norm_for_list(pipeline_gt_syn.transmat_list,
-                                                                     reorient_matrix_list(
-                                                                         pipeline_pome_syn.transmat_list,
-                                                                         pome_perm_list)))
-        means_results[0, j-1, :, :] = np.array(pipeline_pome_syn.means_list)
+        results[0, j, :] = np.array(
+            compare_mat_l1_norm_for_list(pipeline_gt_syn.transmat_list, pipeline_pome_syn.transmat_list))
+        means_results[0, j, :, :] = np.array(pipeline_pome_syn.means_list)
         """results[1, j - 1, :] = np.array(compare_mat_l1_norm_for_list(pipeline_gt_syn.transmat_list,
                                                                      reorient_matrix_list(
                                                                          pipeline_hmm_syn.transmat_list,
                                                                          hmm_perm_list)))"""
-        results[1, j - 1, 0:19] = np.array(compare_mat_l1_norm_for_list(pipeline_gt_syn.transmat_list[0:19],
-                                                                     pipeline_gibbs_syn.transmat_list))
-        means_results[1, j - 1, 0:21, :] = np.array(pipeline_gibbs_syn.means_list)
+        results[1, j, :] = np.array(
+            compare_mat_l1_norm_for_list(pipeline_gt_syn.transmat_list, pipeline_gibbs_syn.transmat_list))
+        means_results[1, j, :, :] = np.array(pipeline_gibbs_syn.means_list)
 
-        x = np.arange(1, 51)
+        x = np.arange(n_iter + 1)
         plt.figure(1)
-        plt.plot(x, results[0, j - 1, :], marker='.', label=f"iter #{j}", linestyle=":")
+        plt.plot(x, results[0, j, :], marker='.', label=f"iter #{j}", linestyle=":")
         """plt.figure(2)
         plt.plot(x, results[1, j - 1, :], marker='D', label=f"iter #{j}", linestyle=":")"""
         plt.figure(2)
-        plt.plot(x[0:19], results[1, j - 1, 0:19], marker='.', label=f"iter #{j}", linestyle=":")
+        plt.plot(x, results[1, j, :], marker='.', label=f"iter #{j}", linestyle=":")
 
-        plt.figure(1+2*j)
-        plt.plot(x, means_results[0, j - 1, :, :], marker='.', label=f"iter #{j}", linestyle="")
+        plt.figure(3 + 2 * j)
+        plt.plot(x, means_results[0, j, :, :], marker='.', label=f"iter #{j}", linestyle="")
         plt.title(f"Pome iter #{j}")
-        plt.axhline(y=0, color='r', linestyle=':')
-        plt.axhline(y=10, color='r', linestyle=':')
-        plt.axhline(y=20, color='r', linestyle=':')
+        plt.axhline(y=1, color='r', linestyle=':')
+        plt.axhline(y=2, color='r', linestyle=':')
+        plt.axhline(y=3, color='r', linestyle=':')
         """plt.figure(2)
         plt.plot(x, results[1, j - 1, :], marker='D', label=f"iter #{j}", linestyle=":")"""
-        plt.figure(2+2*j)
-        plt.plot(x[0:21], means_results[1, j - 1, 0:21, :], marker='.', label=f"iter #{j}", linestyle="")
+        plt.figure(4 + 2 * j)
+        plt.plot(x, means_results[1, j, :, :], marker='.', label=f"iter #{j}", linestyle="")
         plt.title(f"Gibbs iter #{j}")
-        plt.axhline(y=0, color='r', linestyle=':')
-        plt.axhline(y=10, color='r', linestyle=':')
-        plt.axhline(y=20, color='r', linestyle=':')
-
+        plt.axhline(y=1, color='r', linestyle=':')
+        plt.axhline(y=2, color='r', linestyle=':')
+        plt.axhline(y=3, color='r', linestyle=':')
 
     plt.figure(1)
     plt.title("Pome")
     plt.xlabel("iter #")
     plt.ylabel("L1 Norm")
     plt.legend()
-    """plt.figure(2)
-    plt.title("HMMLearn")
-    plt.xlabel("iter #")
-    plt.ylabel("L1 Norm")
-    plt.legend()"""
     plt.figure(2)
     plt.title("Gibbs")
     plt.xlabel("iter #")
@@ -274,9 +260,6 @@ def compare_pipelines_vs_iter():
     plt.legend()
 
     plt.show()
-
-
-
 
 
 def compare_pipelines_for_different_bernoulli_prob():
