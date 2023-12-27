@@ -43,16 +43,28 @@
       "n_samples": 1000,
       "is_tagged": false,
       "n_features": 1,
-	  "mues": "close_means",
-	  "sigma": "sigma03"
+	  "mues": "close_means10",
+	  "sigma": "sigma03-10"
     },
     {
       "Name": "HMM - Synthetic",
       "Class": "hmm_synthetic_reader",
-      "n_components": 3,
-      "n_samples": 10000,
+      "n_components": 10,
+      "n_samples": 1000,
       "is_tagged": false,
-      "n_features": 1
+      "n_features": 1,
+	  "mues": "close_means10",
+	  "sigma": "sigma03-10"
+    },
+	    {
+      "Name": "My Synthetic",
+      "Class": "my_synthetic_reader",
+      "n_components": 10,
+      "n_samples": 1000,
+      "is_tagged": false,
+      "n_features": 1,
+	  "mues": "close_means10",
+	  "sigma": "sigma03-10"
     },
     {
       "Name": "Stocks",
@@ -75,6 +87,21 @@
       "Name": "Bernoulli",
       "Class": "bernoulli_omitter",
       "prob_of_observation": 0.7
+    },
+	{
+      "Name": "Geometric",
+      "Class": "geometric_omitter",
+      "prob_of_observation": 0.7
+    },
+	{
+      "Name": "Consecutive Bernoulli",
+      "Class": "consecutive_bernoulli_omitter",
+      "prob_of_observation": 0.7
+    },
+	{
+      "Name": "Markov Chain",
+      "Class": "markov_chain_omitter",
+      "prob_of_observation": 0
     }
   ],
   "models": [
@@ -135,58 +162,48 @@
     },
     {
       "Name": "Ground Truth1",
-      "Class": "matrix_pipeline",
-      "n_components": 10
+      "Class": "matrix_pipeline"
     },
 	{
       "Name": "Ground Truth2",
-      "Class": "matrix_pipeline",
-      "n_components": 10
+      "Class": "matrix_pipeline"
     },
 	{
       "Name": "Ground Truth3",
-      "Class": "matrix_pipeline",
-      "n_components": 10
+      "Class": "matrix_pipeline"
     },
 	{
       "Name": "Ground Truth4",
-      "Class": "matrix_pipeline",
-      "n_components": 10
+      "Class": "matrix_pipeline"
     },
 	{
       "Name": "Ground Truth5",
-      "Class": "matrix_pipeline",
-      "n_components": 10
+      "Class": "matrix_pipeline"
     },
     {
       "Name": "Gibbs Sampler1",
       "Class": "gibbs_sampler_pipeline",
-      "n_components": 10,
-	  "n_iter": 20
+      "n_components": 10
     },
 	{
       "Name": "Gibbs Sampler2",
       "Class": "gibbs_sampler_pipeline",
-      "n_components": 10,
-	  "n_iter": 20
+      "n_components": 10
     },
 	{
       "Name": "Gibbs Sampler3",
       "Class": "gibbs_sampler_pipeline",
-      "n_components": 10,
-	  "n_iter": 20
+      "n_components": 10
     },
 	{
       "Name": "Gibbs Sampler4",
       "Class": "gibbs_sampler_pipeline",
-      "n_components": 10,
-	  "n_iter": 20
+      "n_components": 10
     },
 	{
       "Name": "Gibbs Sampler5",
       "Class": "gibbs_sampler_pipeline",
-      "n_components": 10,
-	  "n_iter": 20
+      "n_components": 10
 	  
     },
 	
@@ -226,10 +243,12 @@
     "raw_dir": "..\\Data\\Raw",
 	"params_dir": "..\\Data\\Params",
     "n_iter": 20,
+	"n_components": 10,
     "sigma": null,
     "startprobs": null,
     "endprobs": null,
     "mues": null,
-    "transmat": null
+    "transmat": null,
+	"sentence_length": 20
   }
 }

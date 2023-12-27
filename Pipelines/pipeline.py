@@ -22,8 +22,9 @@ class pipeline:
     @property
     def transmat(self):
         try:
+            # return the last of the transition matrices, normalized
             return self._transmat_list[-1] / np.sum(self._transmat_list[-1], axis=1,
-                                                    keepdims=True)  # return the last of the transition matrices
+                                                    keepdims=True)
         except AttributeError as e:
             print(f"Model not initialized with fit, exception was raised: {e}")
 
@@ -34,7 +35,7 @@ class pipeline:
     @property
     def means(self):
         try:
-            return self._means_list[-1] # return the last of the means matrices
+            return self._means_list[-1]  # return the last of the means matrices
         except AttributeError as e:
             print(f"Model not initialized with fit, exception was raised: {e}")
 

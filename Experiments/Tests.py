@@ -1,13 +1,12 @@
 import matplotlib.pyplot as plt
-
-from Experiments.Creators.utils import create_config_dataclass_objects as create_config
-from Experiments.Creators.utils import create_and_fit_pipeline as create_pipeline
-from Experiments.Creators.utils import load_or_initialize_pipeline as create_pipeline_from_configs
-from Pipelines.pipeline import pipeline
-from Pipelines.pome_pipeline import pome_pipeline
-from Pipelines.matrix_pipeline import matrix_pipeline
 import numpy as np
-from Evaluations.utils import *
+
+import Config.Config
+from Experiments.utils import create_config_dataclass_objects as create_config
+from Experiments.utils import create_and_fit_pipeline as create_pipeline
+from Experiments.utils import load_or_initialize_pipeline as create_pipeline_from_configs
+from Pipelines.pipeline import pipeline
+from Experiments.evalUtils import *
 from Config.Config import *
 
 
@@ -199,8 +198,8 @@ def compare_pipelines_for_different_sigmas():
     print(pipeline_gt_syn.reader.dataset['lengths'])
 
 
-def compare_pipelines_vs_iter(n_components, n_experiments, n_iter):
-    reader = "Synthetic Hard"
+def compare_pipelines_vs_iter_pass_all(n_components, n_experiments, n_iter, show=True):
+    reader = "My Synthetic"
     results = np.empty((2, n_experiments, n_iter + 1))
     means_results = np.empty((2, n_experiments, n_iter + 1, n_components))
     for j in range(n_experiments):
@@ -212,24 +211,16 @@ def compare_pipelines_vs_iter(n_components, n_experiments, n_iter):
         print(f"finished creating {pipeline_gt_syn}")
 
         print("matrices compared l1 norm")
-        # pome_perm_list = find_optimal_permutation_list(pipeline_pome_syn.means_list, pipeline_gt_syn.means_list)
 
         results[0, j, :] = np.array(
             compare_mat_l1_norm_for_list(pipeline_gt_syn.transmat_list, pipeline_pome_syn.transmat_list))
         means_results[0, j, :, :] = np.array(pipeline_pome_syn.means_list)
-        """results[1, j - 1, :] = np.array(compare_mat_l1_norm_for_list(pipeline_gt_syn.transmat_list,
-                                                                     reorient_matrix_list(
-                                                                         pipeline_hmm_syn.transmat_list,
-                                                                         hmm_perm_list)))"""
         results[1, j, :] = np.array(
             compare_mat_l1_norm_for_list(pipeline_gt_syn.transmat_list, pipeline_gibbs_syn.transmat_list))
         means_results[1, j, :, :] = np.array(pipeline_gibbs_syn.means_list)
-
         x = np.arange(n_iter + 1)
         plt.figure(1)
         plt.plot(x, results[0, j, :], marker='.', label=f"iter #{j}", linestyle=":")
-        """plt.figure(2)
-        plt.plot(x, results[1, j - 1, :], marker='D', label=f"iter #{j}", linestyle=":")"""
         plt.figure(2)
         plt.plot(x, results[1, j, :], marker='.', label=f"iter #{j}", linestyle=":")
 
@@ -239,14 +230,10 @@ def compare_pipelines_vs_iter(n_components, n_experiments, n_iter):
         plt.axhline(y=1, color='r', linestyle=':')
         plt.axhline(y=2, color='r', linestyle=':')
         plt.axhline(y=3, color='r', linestyle=':')
-        """plt.figure(2)
-        plt.plot(x, results[1, j - 1, :], marker='D', label=f"iter #{j}", linestyle=":")"""
         plt.figure(4 + 2 * j)
         plt.plot(x, means_results[1, j, :, :], marker='.', label=f"iter #{j}", linestyle="")
         plt.title(f"Gibbs iter #{j}")
-        plt.axhline(y=1, color='r', linestyle=':')
-        plt.axhline(y=2, color='r', linestyle=':')
-        plt.axhline(y=3, color='r', linestyle=':')
+        print(np.sum(pipeline_gt_syn.reader.dataset['lengths']))
 
     plt.figure(1)
     plt.title("Pome")
@@ -259,57 +246,178 @@ def compare_pipelines_vs_iter(n_components, n_experiments, n_iter):
     plt.ylabel("L1 Norm")
     plt.legend()
 
-    plt.show()
+    if show:
+        plt.show()
 
 
-def compare_pipelines_for_different_bernoulli_prob():
-    bernoulli_probabilities = np.linspace(0.2, 1, 5)
-    results = np.empty((2, 5))
-    for i, p in enumerate(bernoulli_probabilities):
-        omitter_bernoulli_config: bernoulli_omitter_config
-        reader_config, omitter_bernoulli_config, pipeline_pome_config = create_config(
-            "Synthetic 001", "Bernoulli",
-            "Pomegranate - Synthetic1")
-        _, _, pipeline_gibbs_config = create_config("Synthetic 001", "Bernoulli",
-                                                    "Gibbs Sampler1")
-        _, omitter_pass_config, pipeline_gt_config = create_config("Synthetic 001", "Pass All",
-                                                                   "Ground Truth1")
+def compare_pipelines_for_different_prob(omitter, n_experiments, n_probabilities=None, probabilities=None, show=True):
+    if n_probabilities is None:
+        n_probabilities = len(probabilities)
+    if probabilities is None:
+        probabilities = np.linspace(0.1, 1, n_probabilities)
+    results = np.empty((2, n_experiments, n_probabilities))
+    reader = "My Synthetic"
+    for j in range(n_experiments):
+        for i, p in enumerate(probabilities):
+            omitter_bernoulli_config: bernoulli_omitter_config
+            reader_config, omitter_bernoulli_config, pipeline_pome_config = create_config(
+                reader, omitter,
+                "Pomegranate - Synthetic" + str(j + 1))
+            _, _, pipeline_gibbs_config = create_config(reader, "Bernoulli",
+                                                        "Gibbs Sampler" + str(j + 1))
+            _, omitter_pass_config, pipeline_gt_config = create_config(reader, "Pass All",
+                                                                       "Ground Truth" + str(j + 1))
 
-        omitter_bernoulli_config.prob_of_observation = p  # change the prob
-        pipeline_pome_syn: pipeline = create_pipeline_from_configs(reader_config, omitter_bernoulli_config,
-                                                                   pipeline_pome_config)
-        print(f"finished creating {pipeline_pome_syn}")
-        pipeline_gibbs_syn: pipeline = create_pipeline_from_configs(reader_config, omitter_bernoulli_config,
-                                                                    pipeline_gibbs_config)
-        print(f"finished creating {pipeline_gibbs_syn}")
-        pipeline_gt_syn: pipeline = create_pipeline_from_configs(reader_config, omitter_pass_config,
-                                                                 pipeline_gt_config)
-        print(f"finished creating {pipeline_gt_syn}")
+            omitter_bernoulli_config.prob_of_observation = p  # change the prob
+            pipeline_pome_syn: pipeline = create_pipeline_from_configs(reader_config, omitter_bernoulli_config,
+                                                                       pipeline_pome_config)
+            print(f"finished creating {pipeline_pome_syn}")
+            pipeline_gibbs_syn: pipeline = create_pipeline_from_configs(reader_config, omitter_bernoulli_config,
+                                                                        pipeline_gibbs_config)
+            print(f"finished creating {pipeline_gibbs_syn}")
+            pipeline_gt_syn: pipeline = create_pipeline_from_configs(reader_config, omitter_pass_config,
+                                                                     pipeline_gt_config)
+            print(f"finished creating {pipeline_gt_syn}")
 
-        print("matrices compared l1 norm")
-        pome_perm = find_optimal_permutation(pipeline_pome_syn.means, pipeline_gt_syn.means)
-        gibbs_perm = find_optimal_permutation(pipeline_gibbs_syn.means, pipeline_gt_syn.means)
-
-        results[0, i] = find_mat_diff(pipeline_gt_syn.transmat,
-                                      reorient_matrix(pipeline_pome_syn.transmat, pome_perm)) / \
-                        pipeline_gt_syn.transmat.shape[0]
-        results[1, i] = find_mat_diff(pipeline_gt_syn.transmat, pipeline_gibbs_syn.transmat) / \
-                        pipeline_gt_syn.transmat.shape[0]  # we don't change the orientation of the gibbs matrix
-
-        print(pipeline_pome_syn.transmat)
-        print(pipeline_gibbs_syn.transmat)
-        print(pipeline_gt_syn.transmat)
-        print(find_mat_diff(pipeline_gt_syn.transmat, pipeline_pome_syn.transmat) / \
-              pipeline_gt_syn.transmat.shape[0])
-        print(results[0, i])
-        print(find_mat_diff(pipeline_gt_syn.transmat, pipeline_gibbs_syn.transmat) / \
-              pipeline_gt_syn.transmat.shape[0])
-        print(results[1, i])
+            print("matrices compared l1 norm")
+            results[0, j, i] = np.array(
+                compare_mat_l1_norm(pipeline_gt_syn.transmat, pipeline_pome_syn.transmat))
+            results[1, j, i] = np.array(
+                compare_mat_l1_norm(pipeline_gt_syn.transmat, pipeline_gibbs_syn.transmat))
+        plt.figure(1)
+        plt.plot(probabilities, results[0, j, :], marker='.', label=f"iter #{j}", linestyle=":")
+        plt.figure(2)
+        plt.plot(probabilities, results[1, j, :], marker='.', label=f"iter #{j}", linestyle=":")
 
     plt.figure(1)
-    plt.plot(p, results[0], marker='o', label="pome")
-    plt.plot(p, results[1], marker='o', label="gibbs")
-    plt.ylabel("L1 normalized")
-    plt.xlabel("probability of ")
+    plt.title("Pome " + omitter)
+    plt.xlabel("probability of seeing emission")
+    plt.ylabel("L1 Norm")
     plt.legend()
-    plt.show()
+    plt.figure(2)
+    plt.title("Gibbs " + omitter)
+    plt.xlabel("iter #")
+    plt.ylabel("L1 Norm")
+    plt.legend()
+
+    if show:
+        plt.show()
+
+
+def compare_pipelines_vs_iter_pass_all_different_sample_len(n_experiments, n_iter, n_samples_arr, sentence_length_arr,
+                                                            n_components=10, show=True):
+    n_sample_len = len(n_samples_arr)
+    if len(sentence_length_arr) != n_sample_len:
+        raise ValueError(
+            f"Sentence Length Array:{sentence_length_arr} does not have the same number of elements as the Number of Samples Array: {n_samples_arr} ")
+    reader = "My Synthetic"
+    results = np.empty((2, n_sample_len, n_experiments, n_iter + 1))
+    for i, (n_samples, sentence_length) in enumerate(zip(n_samples_arr, sentence_length_arr)):
+        for j in range(n_experiments):
+            reader_config: my_synthetic_reader_config
+            reader_config, omitter_config, pipeline_pome_config = create_config(reader, "Pass All",
+                                                                                "Pomegranate - Synthetic" + str(j + 1))
+            _, _, pipeline_gibbs_config = create_config(reader, "Pass All",
+                                                        "Gibbs Sampler" + str(j + 1))
+            _, _, pipeline_gt_config = create_config(reader, "Pass All",
+                                                     "Ground Truth" + str(j + 1))
+
+            reader_config.n_samples = n_samples
+            reader_config.sentence_length = sentence_length
+            pipeline_pome_syn: pipeline = create_pipeline_from_configs(reader_config, omitter_config,
+                                                                       pipeline_pome_config)
+            print(f"finished creating {pipeline_pome_syn}")
+            pipeline_gibbs_syn: pipeline = create_pipeline_from_configs(reader_config, omitter_config,
+                                                                        pipeline_gibbs_config)
+            print(f"finished creating {pipeline_gibbs_syn}")
+            pipeline_gt_syn: pipeline = create_pipeline_from_configs(reader_config, omitter_config,
+                                                                     pipeline_gt_config)
+            print(f"finished creating {pipeline_gt_syn}")
+            print("matrices compared l1 norm")
+
+            results[0, i, j] = np.array(
+                compare_mat_l1_norm_for_list(pipeline_gt_syn.transmat_list, pipeline_pome_syn.transmat_list))
+            results[1, i, j] = np.array(
+                compare_mat_l1_norm_for_list(pipeline_gt_syn.transmat_list, pipeline_gibbs_syn.transmat_list))
+            x = np.arange(n_iter + 1)
+            plt.figure(2 * i)
+            plt.plot(x, results[0, i, j], marker='.', label=f"iter #{j}", linestyle=":")
+            plt.figure(2 * i + 1)
+            plt.plot(x, results[1, i, j], marker='.', label=f"iter #{j}", linestyle=":")
+        plt.figure(2 * i)
+        plt.title(f"Pome - Sentence Length:{sentence_length}, Number of Samples: {n_samples}")
+        plt.xlabel("iter #")
+        plt.ylabel("L1 Norm")
+        plt.legend()
+        plt.figure(2 * i + 1)
+        plt.title(f"Gibbs - Sentence Length:{sentence_length}, Number of Samples: {n_samples}")
+        plt.plot(x, results[1, i, j], marker='.', label=f"iter #{j}", linestyle=":")
+        plt.xlabel("iter #")
+        plt.ylabel("L1 Norm")
+        plt.legend()
+
+    if show:
+        plt.show()
+
+
+def compare_pipelines_for_different_prob_vs_iter(omitter, n_experiments, n_iter, n_probabilities=None,
+                                                 probabilities=None, show=True):
+    if n_probabilities is None:
+        n_probabilities = len(probabilities)
+    if probabilities is None:
+        probabilities = np.linspace(0.1, 1, n_probabilities)
+    results = np.empty((2, n_experiments, n_probabilities, n_iter + 1))
+
+    fig1, axes1 = plt.subplots(n_probabilities, 1, sharex=True, sharey=True, figsize=(10, 6))
+
+    fig2, axes2 = plt.subplots(n_probabilities, 1, sharex=True, sharey=True, figsize=(10, 6))
+    reader = "My Synthetic"
+    for j in range(n_experiments):
+        for i, p in enumerate(probabilities):
+            omitter_bernoulli_config: bernoulli_omitter_config
+            reader_config, omitter_bernoulli_config, pipeline_pome_config = create_config(
+                reader, omitter,
+                "Pomegranate - Synthetic" + str(j + 1))
+            _, _, pipeline_gibbs_config = create_config(reader, "Bernoulli",
+                                                        "Gibbs Sampler" + str(j + 1))
+            _, omitter_pass_config, pipeline_gt_config = create_config(reader, "Pass All",
+                                                                       "Ground Truth" + str(j + 1))
+
+            omitter_bernoulli_config.prob_of_observation = p  # change the prob
+            pipeline_pome_syn: pipeline = create_pipeline_from_configs(reader_config, omitter_bernoulli_config,
+                                                                       pipeline_pome_config)
+            print(f"finished creating {pipeline_pome_syn}")
+            pipeline_gibbs_syn: pipeline = create_pipeline_from_configs(reader_config, omitter_bernoulli_config,
+                                                                        pipeline_gibbs_config)
+            print(f"finished creating {pipeline_gibbs_syn}")
+            pipeline_gt_syn: pipeline = create_pipeline_from_configs(reader_config, omitter_pass_config,
+                                                                     pipeline_gt_config)
+            print(f"finished creating {pipeline_gt_syn}")
+
+            print("matrices compared l1 norm")
+            results[0, j, i] = np.array(
+                compare_mat_l1_norm_for_list(pipeline_gt_syn.transmat_list, pipeline_pome_syn.transmat_list))
+            results[1, j, i] = np.array(
+                compare_mat_l1_norm_for_list(pipeline_gt_syn.transmat_list, pipeline_gibbs_syn.transmat_list))
+            x = np.arange(n_iter + 1)
+
+            axes1[i].plot(x, results[0, j, i], marker='.', label=f"iter #{j}", linestyle=":")
+            axes1[i].set_title(f"p={p}")
+
+            axes2[i].plot(x, results[1, j, i], marker='.', label=f"iter #{j}", linestyle=":")
+            axes2[i].set_title(f"p={p}")
+
+
+
+    handles, labels = axes1[0].get_legend_handles_labels()
+    fig1.legend(handles, labels, loc='lower left')
+    fig1.suptitle("Pome " + omitter)
+    fig1.subplots_adjust(hspace=0.6)
+    fig1.supxlabel("Iter #")
+    handles, labels = axes2[0].get_legend_handles_labels()
+    fig2.legend(handles, labels, loc='lower left')
+    fig2.suptitle("Gibbs " + omitter)
+    fig2.subplots_adjust(hspace=0.6)
+    fig2.supxlabel("Iter #")
+    if show:
+        plt.show()

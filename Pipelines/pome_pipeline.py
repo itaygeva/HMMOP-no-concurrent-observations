@@ -180,7 +180,8 @@ class pome_pipeline(pipeline):
             means = self.reader.means
             sigmas = self.reader.covs
             return [
-                distributions.Normal([float(mu)], [float(sigmas[i])], 'diag', frozen=self._config.freeze_distributions)
+                distributions.Normal(np.atleast_1d(mu).astype(float), np.atleast_2d(sigmas[i]).astype(float),
+                                     frozen=self._config.freeze_distributions)
                 for
                 i, mu in enumerate(means)]
         else:

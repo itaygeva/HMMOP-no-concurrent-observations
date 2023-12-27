@@ -1,27 +1,42 @@
-from dataclasses import dataclass, fields, field
-import json
-import numpy as np
-import pomegranate.hmm as hmm
-import pomegranate.distributions as distributions
-from Data.Readers.brown_corpus_reader import brown_corpus_reader
-import Omitters.utils as omitter
-from Pipelines.hmmlearn_pipeline import hmmlearn_pipeline
-from Evaluations import utils as evaluations
-import torch
-from torch.masked import MaskedTensor
-from Data.Readers.utils import *
-from numpy import random
-import itertools
-from Data.Readers.stocks_reader import stocks_reader
-import inspect
-from hmmlearn import hmm
 import matplotlib.pyplot as plt
-from itertools import permutations
-
+import torch
+from numpy import random
+from pomegranate import distributions
 import numpy as np
 
 
-print(random.uniform(1, 2))
+
+
+"""sigma = [[[0.3,0],[0,0.3]], [[2,0],[0,2]]]
+mues = [[3,1], [1,3]]
+print(mues[0])
+print(sigma[0])
+dist = distributions.Normal(np.atleast_1d(mues[1]).astype(float), np.atleast_2d(sigma[1]).astype(float))
+
+print(dist.sample(5))"""
+"""
+for i in range(10):
+    a10 = np.random.rand(30,30)
+    a10_sums = np.sum(a10, axis=0)
+    a10 /= a10_sums.reshape(-1,1)
+
+    b10 = np.random.rand(30,30)
+    b10_sums = np.sum(b10, axis=0)
+    b10 /= b10_sums.reshape(-1,1)
+
+    a3 = np.random.rand(3,3)
+    a3_sums = np.sum(a3, axis=0)
+    a3 /= a3_sums.reshape(-1,1)
+
+    b3 = np.random.rand(3,3)
+    b3_sums = np.sum(b3, axis=0)
+    b3 /= b3_sums.reshape(-1,1)
+
+    print(f"for {a10.shape[0]} states: {np.sum(np.abs(a10-b10)) / a10.shape[0]}")
+
+    print(f"for {a3.shape[0]} states: {np.sum(np.abs(a3-b3)) / a3.shape[0]}")
+"""
+
 """
 # creating the hmm samples from random
 model = hmm.GaussianHMM(n_components=3 ,n_iter=20, covariance_type="full")

@@ -1,6 +1,5 @@
 import numpy as np
 import pomegranate
-import torch
 from pomegranate.hmm import DenseHMM
 import os
 
@@ -8,25 +7,43 @@ from Config.Config import synthetic_reader_config
 from Data.Readers.base_reader import base_reader
 
 
-class synthetic_reader(base_reader):
+class my_synthetic_reader(base_reader):
 
     def __init__(self, config: synthetic_reader_config):
         super().__init__(config)
         self._tag_dict = {}
         self._word_dict = {}
-        self._transition_mat = torch.zeros([self._config.n_components, self._config.n_components])
-        self._end_probs = torch.zeros([self._config.n_components, 1])
-        self._start_prob = None
-        self._distributions = None
         self._init_hmm_model()
         self._generate_samples()
 
     def _generate_samples(self):
-        self.dataset['sentences'] = self._model.sample(self._config.n_samples)
-        self.dataset['sentences'] = [sentence.numpy() for sentence in self.dataset['sentences']]
-        self.dataset['lengths'] = [sample.shape[0] for sample in self.dataset['sentences']]
-        self.delete_one_word_sentences()  # this is so we won't get an error in the gibbs sampler
+        # %% create markov chain
+        self.dataset['lengths'] = [self._config.sentence_length] * self._config.n_samples
+        sentences = []
+        for sentence_len in self.dataset['lengths']:
+            sentence = []
+            initial_state = np.random.choice(np.arange(self._config.n_components), p=self._start_prob)
+            current_state = initial_state
 
+            for _ in range(sentence_len):
+                sentence.append(current_state)
+                current_state = np.random.choice(np.arange(self._config.n_components),
+                                                 p=self._transition_mat[current_state])
+            sentences.append(sentence)
+
+        # %% create observations
+        self.dataset['sentences'] = []
+
+        for sentence in sentences:
+
+            observations = []
+
+            for word in sentence:
+                observation = np.random.normal(self._mues[word], self._sigmas[word])
+                observations.append(observation)
+            self.dataset['sentences'].append(np.array(observations))
+
+        self.delete_one_word_sentences()  # this is so we won't get an error in the gibbs sampler
 
     def _init_hmm_model(self):
         """
@@ -39,14 +56,10 @@ class synthetic_reader(base_reader):
         # generating distributions
         self.generate_mues()
         self.generate_sigmas()
-        self.generate_transmat_and_endprobs()
+        self.generate_transmat()
         self.generate_startprobs()
 
         # generating model
-        self._distributions = np.array(
-            [pomegranate.distributions.Normal([float(mu)], [float(self._sigmas[i])], 'diag') for i, mu in
-             enumerate(self._mues)])
-        self._model = DenseHMM(self._distributions, self._transition_mat, self._start_prob, self._end_probs)
 
     def delete_one_word_sentences(self):
         no_one_word_data = [(length, sentences) for (length, sentences) in
@@ -71,29 +84,24 @@ class synthetic_reader(base_reader):
         else:
             self._sigmas = self.generate_param_from_config(self._config.sigma)
 
-    def generate_transmat_and_endprobs(self):
-        if self._config.transmat is None or self._config.endprobs is None:
-            for i in range(self._config.n_components):
-                random_line = torch.rand(self._config.n_components + 1)
-                random_line = random_line / torch.sum(random_line)
-                self._transition_mat[i, :] = random_line[:-1]
-                self._end_probs[i] = random_line[-1]
-
-            self._end_probs = self._end_probs.squeeze()  # why is this needed?
+    def generate_transmat(self):
+        if self._config.transmat is None:
+            self._transition_mat = np.random.rand(self._config.n_components, self._config.n_components)
+            for line in self._transition_mat:
+                line /= np.sum(line)
         else:
             self._transition_mat = self.generate_param_from_config(self._config.transmat)
-            self._end_probs = self.generate_param_from_config(self._config.endprobs)
 
     def generate_startprobs(self):
         if self._config.startprobs is None:
-            self._start_prob = torch.rand(self._config.n_components)
-            self._start_prob = self._start_prob / torch.sum(self._start_prob)
+            self._start_prob = np.random.rand(self._config.n_components)
+            self._start_prob = self._start_prob / np.sum(self._start_prob)
         else:
             self._start_prob = self.generate_param_from_config(self._config.startprobs)
 
     @property
     def transmat(self):
-        return self._transition_mat.numpy()
+        return self._transition_mat
 
     @property
     def means(self):
@@ -105,4 +113,4 @@ class synthetic_reader(base_reader):
 
     @property
     def startprob(self):
-        return self._start_prob.numpy()
+        return self._start_prob

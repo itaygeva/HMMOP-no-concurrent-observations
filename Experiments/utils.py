@@ -24,7 +24,7 @@ def get_value_or_default(var_name, config, default):
 
 def load_initialized_class(file_path):
     with open(file_path, 'rb') as file:  # we already checked that the file exists
-        instance = pickle.load(file)
+            instance = pickle.load(file)
     return instance
 
 
@@ -42,7 +42,11 @@ def get_configs_from_json(reader_name, omitter_name, model_name):
     reader_config = [reader_config for reader_config in config["readers"] if reader_config["Name"] == reader_name][0]
     omitter_config = \
         [omitter_config for omitter_config in config["omitters"] if omitter_config["Name"] == omitter_name][0]
-    model_config = [model_config for model_config in config["models"] if model_config["Name"] == model_name][0]
+    try:
+        model_config = [model_config for model_config in config["models"] if model_config["Name"] == model_name][0]
+    except IndexError as e:
+        raise IndexError(f"No model named {model_name} has been found. Exception raised: " + str(e))
+
     default_config = config["default"]
     return reader_config, omitter_config, model_config, default_config
 

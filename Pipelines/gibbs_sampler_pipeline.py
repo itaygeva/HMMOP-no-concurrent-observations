@@ -28,29 +28,32 @@ class gibbs_sampler_pipeline(pipeline):
          with single feature sentences.
         """
         data, ws = self.omitter.omit(self.reader.get_obs())
-        data, known_mues, sigmas, start_probs, sentences_lengths = self.generate_initial_parameters(data)
+        data, known_mues, sigmas, start_probs, sentences_lengths, ws = self.generate_initial_parameters(data, ws)
         all_states, all_observations_sum, all_sampled_transitions, all_mues, all_ws, all_transitions, all_omitting_probs \
-            = self.model_.sample(data, start_probs, known_mues, sigmas, self._config.n_iter, N=sentences_lengths)
+            = self.model_.sample_known_W(data, start_probs, known_mues, sigmas, self._config.n_iter, ws,
+                                         N=sentences_lengths)
         self._means_list = self.create_means_list(all_mues)
         self._transmat_list = self.create_transmat_list(all_transitions)
         # TODO: Implement startprob
         self._startprob_list = self.create_startprob_list(all_transitions)
 
-    def generate_initial_parameters(self, data):
+    def generate_initial_parameters(self, data, ws):
         """
         Generates random initial parameters for the gibbs sampler.
         :param data: list of hidden markovian sentences. Currently, supports gaussian emissions,
         :return: return the initial parameters for the gibbs sampler:
         data, known_mues, sigmas_dict, start_probs, sentences_lengths
         """
-        sentences_lengths = [sentence.shape[0] for sentence in data]
+        sentences_lengths = self.reader.dataset['lengths']
+        if ws is None:
+            ws = [list(np.arange(length)) for length in sentences_lengths]
 
-        #known_mues = None
-        #known_mues = [1,2,3]
+        # known_mues = None
+        # known_mues = [1,2,3]
         known_mues = self.reader.means
 
-        #sigmas = [random.uniform(1, 2) for i in range(self._config.n_components)]
-        #sigmas = [0.3 for i in range(self._config.n_components)]
+        # sigmas = [random.uniform(1, 2) for i in range(self._config.n_components)]
+        # sigmas = [0.3 for i in range(self._config.n_components)]
         sigmas = self.reader.covs
         sigmas_dict = {str((sigma, i)): sigma for i, sigma in enumerate(sigmas)}
         mues_dict = {str((sigma, i)): known_mues[i] for i, sigma in enumerate(sigmas)}
@@ -60,7 +63,7 @@ class gibbs_sampler_pipeline(pipeline):
 
         data = [np.squeeze(sentence) for sentence in data]  # is this needed?
 
-        return data, mues_dict, sigmas_dict, start_probs, sentences_lengths
+        return data, mues_dict, sigmas_dict, start_probs, sentences_lengths, ws
 
     def create_startprob_list(self, all_transitions):
         """
@@ -83,7 +86,6 @@ class gibbs_sampler_pipeline(pipeline):
             startprob = startprob / np.sum(startprob)
             startprob_list.append(startprob)
         return startprob_list
-
 
     def create_transmat_list(self, all_transitions):
         """
@@ -108,4 +110,3 @@ class gibbs_sampler_pipeline(pipeline):
 
     def create_means_list(self, all_mues):
         return [np.array(list(mues.values())) for mues in all_mues]
-

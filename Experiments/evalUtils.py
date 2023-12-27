@@ -28,8 +28,10 @@ def reorient_matrix(matrix, perm):
     matrix = matrix[:, perm]
     return matrix
 
+
 def reorient_matrix_list(matrix_list, perm_list):
     return [reorient_matrix(matrix_list[i], perm_list[i]) for i in range(len(matrix_list))]
+
 
 def find_mat_diff(matrix1, matrix2):
     """
@@ -60,7 +62,7 @@ def compare_mat_l1_norm(matrix1, matrix2):
     :param matrix1: torch tensor
     :param matrix2: a torch tensor to compare
     """
-    return np.average(np.abs(matrix1 - matrix2))
+    return np.sum(np.abs(matrix1 - matrix2)) / matrix1.shape[0]
 
 
 def find_temporal_info_ratio(matrix):
@@ -73,3 +75,13 @@ def find_temporal_info_ratio(matrix):
     eigenvalues = np.linalg.eigvals(matrix)
     number_of_ones = np.sum(np.count_nonzero(eigenvalues == 1))
     return number_of_ones / np.sum(np.abs(eigenvalues))
+
+
+def get_static_matrix(matrix):
+    eigenvalues, eigenvectors = np.linalg.eig(matrix)
+    eigenvalues = np.where(np.real(eigenvalues) > 0.99, eigenvalues, np.zeros_like(eigenvalues))
+
+    matrix = np.real(eigenvectors @ np.diag(eigenvalues) @ np.linalg.inv(eigenvectors))
+    matrix /= np.sum(matrix, axis=1, keepdims=True)
+    print(np.sum(matrix, axis=1))
+    return matrix
