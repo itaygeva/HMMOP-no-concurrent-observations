@@ -16,6 +16,17 @@ class my_synthetic_reader(base_reader):
         self._init_hmm_model()
         self._generate_samples()
 
+    def generate_near_biased_matrix(self):
+        stochastic_matrix = np.empty((self._config.n_components, self._config.n_components))
+        for i in range(self._config.n_components):
+            for j in range(self._config.n_components):
+                # Example: Higher probability for transitions between nearby states
+                stochastic_matrix[i, j] = np.exp(-abs(i - j)) / np.sum(np.exp(-np.abs(np.arange(self._config.n_components) - i)))
+
+        # Ensure rows sum to 1
+        stochastic_matrix /= stochastic_matrix.sum(axis=1, keepdims=True)
+        return np.linalg.matrix_power(stochastic_matrix, self._config.matrix_power)
+
     def _generate_samples(self):
         # %% create markov chain
         self.dataset['lengths'] = [self._config.sentence_length] * self._config.n_samples
@@ -85,7 +96,9 @@ class my_synthetic_reader(base_reader):
             self._sigmas = self.generate_param_from_config(self._config.sigma)
 
     def generate_transmat(self):
-        if self._config.transmat is None:
+        if self._config.set_temporal:
+            self._transition_mat = self.generate_near_biased_matrix()
+        elif self._config.transmat is None:
             self._transition_mat = np.random.rand(self._config.n_components, self._config.n_components)
             for line in self._transition_mat:
                 line /= np.sum(line)

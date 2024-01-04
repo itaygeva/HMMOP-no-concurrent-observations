@@ -5,6 +5,9 @@ import torch
 
 from Config.Config import *
 from Pipelines.pipeline import pipeline
+import sys
+sys.path.append('C:/Users/liadm/Code')
+import transmatpwr
 
 
 def is_positive_definite(matrix):
@@ -65,9 +68,9 @@ class pome_pipeline(pipeline):
         self._startprob_list.append(starts.numpy())
 
     def create_masked_tensor(self, sentence, ws):
-        sentence_with_zeros = torch.full((max(ws) + 1,), 0)
+        sentence_with_zeros = torch.full((self.reader._config.sentence_length,), 0, dtype=torch.double)
         sentence_with_zeros[ws] = sentence
-        mask = torch.full((max(ws) + 1,), False)
+        mask = torch.full((self.reader._config.sentence_length,), False, dtype=torch.bool)
         mask[ws] = True
         return torch.masked.MaskedTensor(sentence_with_zeros, mask)
 
@@ -116,7 +119,6 @@ class pome_pipeline(pipeline):
     def fit(self):
         data, ws = self.omitter.omit(self.reader.get_obs())
         ## TODO: Take care of omission_idx later.
-        ws = None
         data = [torch.from_numpy(sentence) for sentence in data]
 
         self._iter_fit_alt(data, self._config.n_iter, ws)
@@ -180,8 +182,8 @@ class pome_pipeline(pipeline):
             means = self.reader.means
             sigmas = self.reader.covs
             return [
-                distributions.Normal(np.atleast_1d(mu).astype(float), np.atleast_2d(sigmas[i]).astype(float),
-                                     frozen=self._config.freeze_distributions)
+                distributions.Normal(np.atleast_1d(mu).astype(float), np.atleast_1d(sigmas[i]).astype(float),
+                                     frozen=self._config.freeze_distributions, covariance_type='diag')
                 for
                 i, mu in enumerate(means)]
         else:
@@ -238,3 +240,4 @@ class pome_pipeline(pipeline):
             ends[i] = ends[i] / sum_row
             edges[i] = edges[i] / sum_row
         return ends, edges
+

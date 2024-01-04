@@ -65,6 +65,8 @@ class my_synthetic_reader_config(base_reader_config):
     sigma: str = field(default="", repr=False)
     mues: str = field(default="", repr=False)
     params_dir: str = field(default="", repr=False)
+    matrix_power: int = 0
+    set_temporal: bool = False
 
 
 # endregion
@@ -88,6 +90,11 @@ class consecutive_bernoulli_omitter_config(Config):
 @dataclass
 class markov_chain_omitter_config(Config):
     prob_of_observation: float = 0.5
+
+@dataclass
+class uniform_skips_omitter_config(Config):
+    n_skips: int = 4
+
 # endregion
 
 # region models configs

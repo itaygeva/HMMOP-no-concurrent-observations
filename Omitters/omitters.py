@@ -45,3 +45,19 @@ class markov_chain_omitter(base_omitter):
     # TODO: check if this works with all datasets
     def omit(self, data):
         return markov_chain_experiments(self._config.prob_of_observation, data)
+
+class markov_chain_omitter(base_omitter):
+    def __init__(self, config: bernoulli_omitter_config):
+        super().__init__(config)
+
+    # TODO: check if this works with all datasets
+    def omit(self, data):
+        return markov_chain_experiments(self._config.prob_of_observation, data)
+
+class uniform_skips_omitter(base_omitter):
+    def __init__(self, config: bernoulli_omitter_config):
+        super().__init__(config)
+
+    # TODO: check if this works with all datasets
+    def omit(self, data):
+        return uniform_skips_experiment(self._config.n_skips, data)

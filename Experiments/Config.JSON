@@ -64,7 +64,9 @@
       "is_tagged": false,
       "n_features": 1,
 	  "mues": "close_means10",
-	  "sigma": "sigma03-10"
+	  "sigma": "sigma03-10",
+	  "set_temporal": false,
+	  "matrix_power": 1
     },
     {
       "Name": "Stocks",
@@ -86,7 +88,7 @@
     {
       "Name": "Bernoulli",
       "Class": "bernoulli_omitter",
-      "prob_of_observation": 0.7
+      "prob_of_observation": 0.05
     },
 	{
       "Name": "Geometric",
@@ -102,6 +104,11 @@
       "Name": "Markov Chain",
       "Class": "markov_chain_omitter",
       "prob_of_observation": 0
+    },
+	{
+      "Name": "Uniform Skips",
+      "Class": "uniform_skips_omitter",
+      "n_skips": 4
     }
   ],
   "models": [

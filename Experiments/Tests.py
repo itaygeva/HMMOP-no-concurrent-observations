@@ -143,10 +143,10 @@ def compare_hmm_synthetic_transmat():
 
 def compare_pipelines_for_different_sigmas():
     readers = ["Synthetic Hard"]
-    num_of_iter = 5
-    results = np.empty((2, 1, num_of_iter))
-    fig, ax = plt.subplots(num_of_iter, 1, sharex=True, sharey=True, figsize=(10, 6))
-    for j in range(1, num_of_iter + 1):
+    num_of_run = 5
+    results = np.empty((2, 1, num_of_run))
+    fig, ax = plt.subplots(num_of_run, 1, sharex=True, sharey=True, figsize=(10, 6))
+    for j in range(1, num_of_run + 1):
         for i, reader in enumerate(readers):
             pipeline_pome_syn: pipeline = create_pipeline(reader, "Pass All", "Pomegranate - Synthetic" + str(j))
             print(f"finished creating {pipeline_pome_syn}")
@@ -175,7 +175,7 @@ def compare_pipelines_for_different_sigmas():
         x = [0.01]
         ax[j - 1].plot(x, results[0, :, j - 1], marker='D', label="pome", linestyle=":")
         ax[j - 1].plot(x, results[1, :, j - 1], marker='D', label="gibbs", linestyle=":")
-        ax[j - 1].set_title(f"Iteration #{j}")
+        ax[j - 1].set_title(f"Run  #{j}")
         ax[j - 1].set_xscale('log')
         ax[j - 1].yaxis.set_major_locator(plt.MaxNLocator(5))
 
@@ -198,11 +198,11 @@ def compare_pipelines_for_different_sigmas():
     print(pipeline_gt_syn.reader.dataset['lengths'])
 
 
-def compare_pipelines_vs_iter_pass_all(n_components, n_experiments, n_iter, show=True):
+def compare_pipelines_vs_iter_pass_all(n_components, n_run, n_iter, show=True):
     reader = "My Synthetic"
-    results = np.empty((2, n_experiments, n_iter + 1))
-    means_results = np.empty((2, n_experiments, n_iter + 1, n_components))
-    for j in range(n_experiments):
+    results = np.empty((2, n_run, n_iter + 1))
+    means_results = np.empty((2, n_run, n_iter + 1, n_components))
+    for j in range(n_run):
         pipeline_pome_syn: pipeline = create_pipeline(reader, "Pass All", "Pomegranate - Synthetic" + str(j + 1))
         print(f"finished creating {pipeline_pome_syn}")
         pipeline_gibbs_syn: pipeline = create_pipeline(reader, "Pass All", "Gibbs Sampler" + str(j + 1))
@@ -220,19 +220,19 @@ def compare_pipelines_vs_iter_pass_all(n_components, n_experiments, n_iter, show
         means_results[1, j, :, :] = np.array(pipeline_gibbs_syn.means_list)
         x = np.arange(n_iter + 1)
         plt.figure(1)
-        plt.plot(x, results[0, j, :], marker='.', label=f"iter #{j}", linestyle=":")
+        plt.plot(x, results[0, j, :], marker='.', label=f"run #{j}", linestyle=":")
         plt.figure(2)
-        plt.plot(x, results[1, j, :], marker='.', label=f"iter #{j}", linestyle=":")
+        plt.plot(x, results[1, j, :], marker='.', label=f"run #{j}", linestyle=":")
 
         plt.figure(3 + 2 * j)
-        plt.plot(x, means_results[0, j, :, :], marker='.', label=f"iter #{j}", linestyle="")
-        plt.title(f"Pome iter #{j}")
+        plt.plot(x, means_results[0, j, :, :], marker='.', label=f"run #{j}", linestyle="")
+        plt.title(f"Pome run #{j}")
         plt.axhline(y=1, color='r', linestyle=':')
         plt.axhline(y=2, color='r', linestyle=':')
         plt.axhline(y=3, color='r', linestyle=':')
         plt.figure(4 + 2 * j)
-        plt.plot(x, means_results[1, j, :, :], marker='.', label=f"iter #{j}", linestyle="")
-        plt.title(f"Gibbs iter #{j}")
+        plt.plot(x, means_results[1, j, :, :], marker='.', label=f"run #{j}", linestyle="")
+        plt.title(f"Gibbs run #{j}")
         print(np.sum(pipeline_gt_syn.reader.dataset['lengths']))
 
     plt.figure(1)
@@ -250,14 +250,14 @@ def compare_pipelines_vs_iter_pass_all(n_components, n_experiments, n_iter, show
         plt.show()
 
 
-def compare_pipelines_for_different_prob(omitter, n_experiments, n_probabilities=None, probabilities=None, show=True):
+def compare_pipelines_for_different_prob(omitter, n_run, n_probabilities=None, probabilities=None, show=True):
     if n_probabilities is None:
         n_probabilities = len(probabilities)
     if probabilities is None:
         probabilities = np.linspace(0.1, 1, n_probabilities)
-    results = np.empty((2, n_experiments, n_probabilities))
+    results = np.empty((2, n_run, n_probabilities))
     reader = "My Synthetic"
-    for j in range(n_experiments):
+    for j in range(n_run):
         for i, p in enumerate(probabilities):
             omitter_bernoulli_config: bernoulli_omitter_config
             reader_config, omitter_bernoulli_config, pipeline_pome_config = create_config(
@@ -285,9 +285,9 @@ def compare_pipelines_for_different_prob(omitter, n_experiments, n_probabilities
             results[1, j, i] = np.array(
                 compare_mat_l1_norm(pipeline_gt_syn.transmat, pipeline_gibbs_syn.transmat))
         plt.figure(1)
-        plt.plot(probabilities, results[0, j, :], marker='.', label=f"iter #{j}", linestyle=":")
+        plt.plot(probabilities, results[0, j, :], marker='.', label=f"run #{j}", linestyle=":")
         plt.figure(2)
-        plt.plot(probabilities, results[1, j, :], marker='.', label=f"iter #{j}", linestyle=":")
+        plt.plot(probabilities, results[1, j, :], marker='.', label=f"run #{j}", linestyle=":")
 
     plt.figure(1)
     plt.title("Pome " + omitter)
@@ -296,7 +296,7 @@ def compare_pipelines_for_different_prob(omitter, n_experiments, n_probabilities
     plt.legend()
     plt.figure(2)
     plt.title("Gibbs " + omitter)
-    plt.xlabel("iter #")
+    plt.xlabel("probability of seeing emission")
     plt.ylabel("L1 Norm")
     plt.legend()
 
@@ -304,16 +304,16 @@ def compare_pipelines_for_different_prob(omitter, n_experiments, n_probabilities
         plt.show()
 
 
-def compare_pipelines_vs_iter_pass_all_different_sample_len(n_experiments, n_iter, n_samples_arr, sentence_length_arr,
+def compare_pipelines_vs_iter_pass_all_different_sample_len(n_run, n_iter, n_samples_arr, sentence_length_arr,
                                                             n_components=10, show=True):
     n_sample_len = len(n_samples_arr)
     if len(sentence_length_arr) != n_sample_len:
         raise ValueError(
             f"Sentence Length Array:{sentence_length_arr} does not have the same number of elements as the Number of Samples Array: {n_samples_arr} ")
     reader = "My Synthetic"
-    results = np.empty((2, n_sample_len, n_experiments, n_iter + 1))
+    results = np.empty((2, n_sample_len, n_run, n_iter + 1))
     for i, (n_samples, sentence_length) in enumerate(zip(n_samples_arr, sentence_length_arr)):
-        for j in range(n_experiments):
+        for j in range(n_run):
             reader_config: my_synthetic_reader_config
             reader_config, omitter_config, pipeline_pome_config = create_config(reader, "Pass All",
                                                                                 "Pomegranate - Synthetic" + str(j + 1))
@@ -341,9 +341,9 @@ def compare_pipelines_vs_iter_pass_all_different_sample_len(n_experiments, n_ite
                 compare_mat_l1_norm_for_list(pipeline_gt_syn.transmat_list, pipeline_gibbs_syn.transmat_list))
             x = np.arange(n_iter + 1)
             plt.figure(2 * i)
-            plt.plot(x, results[0, i, j], marker='.', label=f"iter #{j}", linestyle=":")
+            plt.plot(x, results[0, i, j], marker='.', label=f"run #{j}", linestyle=":")
             plt.figure(2 * i + 1)
-            plt.plot(x, results[1, i, j], marker='.', label=f"iter #{j}", linestyle=":")
+            plt.plot(x, results[1, i, j], marker='.', label=f"run #{j}", linestyle=":")
         plt.figure(2 * i)
         plt.title(f"Pome - Sentence Length:{sentence_length}, Number of Samples: {n_samples}")
         plt.xlabel("iter #")
@@ -351,7 +351,7 @@ def compare_pipelines_vs_iter_pass_all_different_sample_len(n_experiments, n_ite
         plt.legend()
         plt.figure(2 * i + 1)
         plt.title(f"Gibbs - Sentence Length:{sentence_length}, Number of Samples: {n_samples}")
-        plt.plot(x, results[1, i, j], marker='.', label=f"iter #{j}", linestyle=":")
+        plt.plot(x, results[1, i, j], marker='.', label=f"run #{j}", linestyle=":")
         plt.xlabel("iter #")
         plt.ylabel("L1 Norm")
         plt.legend()
@@ -360,19 +360,19 @@ def compare_pipelines_vs_iter_pass_all_different_sample_len(n_experiments, n_ite
         plt.show()
 
 
-def compare_pipelines_for_different_prob_vs_iter(omitter, n_experiments, n_iter, n_probabilities=None,
+def compare_pipelines_for_different_prob_vs_iter(omitter, n_run, n_iter, n_probabilities=None,
                                                  probabilities=None, show=True):
     if n_probabilities is None:
         n_probabilities = len(probabilities)
     if probabilities is None:
         probabilities = np.linspace(0.1, 1, n_probabilities)
-    results = np.empty((2, n_experiments, n_probabilities, n_iter + 1))
+    results = np.empty((2, n_run, n_probabilities, n_iter + 1))
 
     fig1, axes1 = plt.subplots(n_probabilities, 1, sharex=True, sharey=True, figsize=(10, 6))
 
     fig2, axes2 = plt.subplots(n_probabilities, 1, sharex=True, sharey=True, figsize=(10, 6))
     reader = "My Synthetic"
-    for j in range(n_experiments):
+    for j in range(n_run):
         for i, p in enumerate(probabilities):
             omitter_bernoulli_config: bernoulli_omitter_config
             reader_config, omitter_bernoulli_config, pipeline_pome_config = create_config(
@@ -401,10 +401,10 @@ def compare_pipelines_for_different_prob_vs_iter(omitter, n_experiments, n_iter,
                 compare_mat_l1_norm_for_list(pipeline_gt_syn.transmat_list, pipeline_gibbs_syn.transmat_list))
             x = np.arange(n_iter + 1)
 
-            axes1[i].plot(x, results[0, j, i], marker='.', label=f"iter #{j}", linestyle=":")
+            axes1[i].plot(x, results[0, j, i], marker='.', label=f"run #{j}", linestyle=":")
             axes1[i].set_title(f"p={p}")
 
-            axes2[i].plot(x, results[1, j, i], marker='.', label=f"iter #{j}", linestyle=":")
+            axes2[i].plot(x, results[1, j, i], marker='.', label=f"run #{j}", linestyle=":")
             axes2[i].set_title(f"p={p}")
 
 
@@ -421,3 +421,79 @@ def compare_pipelines_for_different_prob_vs_iter(omitter, n_experiments, n_iter,
     fig2.supxlabel("Iter #")
     if show:
         plt.show()
+
+
+def compare_pipelines_for_different_prob_vs_temporal_info(omitter, n_run, powers, n_probabilities=None,
+                                                 probabilities=None, show=True):
+    if n_probabilities is None:
+        n_probabilities = len(probabilities)
+    if probabilities is None:
+        probabilities = np.linspace(0.1, 1, n_probabilities)
+    results = np.empty((2, n_run, n_probabilities, len(powers)))
+
+    fig1, axes1 = plt.subplots(n_probabilities, 1, sharex=True, sharey=True, figsize=(10, 6))
+
+    fig2, axes2 = plt.subplots(n_probabilities, 1, sharex=True, sharey=True, figsize=(10, 6))
+    reader = "My Synthetic"
+    for j in range(n_run):
+        omitter_bernoulli_config: bernoulli_omitter_config
+        reader_config: my_synthetic_reader_config
+        reader_config, omitter_bernoulli_config, pipeline_pome_config = create_config(
+            reader, omitter,
+            "Pomegranate - Synthetic" + str(j + 1))
+        _, _, pipeline_gibbs_config = create_config(reader, "Bernoulli",
+                                                    "Gibbs Sampler" + str(j + 1))
+        _, omitter_pass_config, pipeline_gt_config = create_config(reader, "Pass All",
+                                                                   "Ground Truth" + str(j + 1))
+
+
+        for i, p in enumerate(probabilities):
+            omitter_bernoulli_config.prob_of_observation = p  # change the prob
+            x = []
+            for k, power in enumerate(powers):
+
+                reader_config.set_temporal = True
+                reader_config.matrix_power = power
+
+                pipeline_pome_syn: pipeline = create_pipeline_from_configs(reader_config, omitter_bernoulli_config,
+                                                                           pipeline_pome_config)
+                print(f"finished creating {pipeline_pome_syn}")
+                pipeline_gibbs_syn: pipeline = create_pipeline_from_configs(reader_config, omitter_bernoulli_config,
+                                                                            pipeline_gibbs_config)
+                print(f"finished creating {pipeline_gibbs_syn}")
+                pipeline_gt_syn: pipeline = create_pipeline_from_configs(reader_config, omitter_pass_config,
+                                                                         pipeline_gt_config)
+                print(f"finished creating {pipeline_gt_syn}")
+
+                print("matrices compared l1 norm")
+                results[0, j, i, k-1] = compare_mat_l1_norm(pipeline_gt_syn.transmat, pipeline_pome_syn.transmat)
+                results[1, j, i, k-1] = compare_mat_l1_norm(pipeline_gt_syn.transmat, pipeline_gibbs_syn.transmat)
+                x.append(find_temporal_info_ratio(pipeline_gt_syn.transmat))
+
+            axes1[i].plot(x, results[0, j, i, :], marker='.', label=f"run #{j}", linestyle=":")
+            axes1[i].set_title(f"p={p}")
+
+            axes2[i].plot(x, results[1, j, i, :], marker='.', label=f"run #{j}", linestyle=":")
+            axes2[i].set_title(f"p={p}")
+
+
+
+
+    handles, labels = axes1[0].get_legend_handles_labels()
+    fig1.legend(handles, labels, loc='lower left')
+    fig1.suptitle("Pome " + omitter)
+    fig1.subplots_adjust(hspace=0.6)
+    fig1.supxlabel("Temporal Info Ratio")
+    handles, labels = axes2[0].get_legend_handles_labels()
+    fig2.legend(handles, labels, loc='lower left')
+    fig2.suptitle("Gibbs " + omitter)
+    fig2.subplots_adjust(hspace=0.6)
+    fig2.supxlabel("Temporal Info Ratio")
+    if show:
+        plt.show()
+
+
+def run_simple_test(reader_name, omitter_name, pipeline_name):
+    fitted_pipeline : pipeline = create_pipeline(reader_name, omitter_name, pipeline_name)
+    print(f"finished creating {fitted_pipeline}")
+    print(fitted_pipeline.transmat)

@@ -3,15 +3,80 @@ import torch
 from numpy import random
 from pomegranate import distributions
 import numpy as np
+import numpy as np
+from scipy.linalg import block_diag
 
 
+def find_temporal_info_ratio(matrix):
+    """
+    return the ratio of the sum of eigenvalues of value 1/ the sum of all eigenvalues.
+    The larger this ratio is, the less temporal information is in the matrix.
+    :param matrix: a matrix
+    :return: the temporal ratio
+    """
+    eigenvalues = np.linalg.eigvals(matrix)
+    temporal_eigenvalues_sum = np.sum(np.where(eigenvalues > 0.99, 0, np.abs(eigenvalues)))
+    return temporal_eigenvalues_sum / np.sum(np.abs(eigenvalues))
 
+
+def generate_stochastic_matrix(n_states):
+    stochastic_matrix = np.random.rand(n_states, n_states)
+    for line in stochastic_matrix:
+        line /= np.sum(line)
+    return stochastic_matrix
+
+
+def generate_block_diag_matrix(n_states, size_block):
+    blocks = []
+    for i in range(n_states // size_block):
+        blocks.append(generate_stochastic_matrix(size_block))
+
+    # Create a block diagonal matrix
+    return block_diag(*blocks)
+
+
+def generate_near_biased_matrix(n_states):
+    stochastic_matrix = np.empty((n_states, n_states))
+    for i in range(n_states):
+        for j in range(n_states):
+            # Example: Higher probability for transitions between nearby states
+            stochastic_matrix[i, j] = np.exp(-abs(i - j)) / np.sum(np.exp(-np.abs(np.arange(n_states) - i)))
+
+    # Ensure rows sum to 1
+    stochastic_matrix /= stochastic_matrix.sum(axis=1, keepdims=True)
+    return stochastic_matrix
+
+
+def print_temporal_info_for_power_matrix(stochastic_matrix):
+    for i in range(1, 30):
+        stochastic_matrix_power = np.linalg.matrix_power(stochastic_matrix, i)
+        print(f"Info in iter:{i} = {find_temporal_info_ratio(stochastic_matrix_power)}")
+
+
+print(np.linalg.eigvals((generate_stochastic_matrix(10))))
+
+"""# Assign transition probabilities
+
+stochastic_matrix = np.empty((num_states, num_states))
+for i in range(num_states):
+    for j in range(num_states):
+        # Example: Higher probability for transitions between nearby states
+        stochastic_matrix[i, j] = np.exp(-abs(i - j)) / np.sum(np.exp(-np.abs(np.arange(num_states) - i)))
+
+# Ensure rows sum to 1
+stochastic_matrix /= stochastic_matrix.sum(axis=1, keepdims=True)
+"""
 
 """sigma = [[[0.3,0],[0,0.3]], [[2,0],[0,2]]]
 mues = [[3,1], [1,3]]
 print(mues[0])
 print(sigma[0])
 dist = distributions.Normal(np.atleast_1d(mues[1]).astype(float), np.atleast_2d(sigma[1]).astype(float))
+
+
+
+
+
 
 print(dist.sample(5))"""
 """

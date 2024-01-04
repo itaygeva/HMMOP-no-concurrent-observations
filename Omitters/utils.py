@@ -141,3 +141,33 @@ def markov_chain_omission(epsilon, sentence):
             return np.array(omitted_sentence), w
         else:
             return np.vstack(omitted_sentence), w
+
+
+def uniform_skips_experiment(num_of_skips, data):
+    ws = []
+    omitted_data = []
+    for sentence in data:
+        omitted_sentence, w = uniform_skips_omission(num_of_skips, sentence)
+        ws.append(w)
+        omitted_data.append(omitted_sentence)
+    return omitted_data, ws
+
+
+def uniform_skips_omission(num_of_skips, sentence):
+    skips = np.random.randint(low=1, high=num_of_skips + 1, size=sentence.shape)
+    skips[0] -= 2  # this is so we can start at 0
+    skips += np.ones_like(skips)
+    indexes = np.cumsum(skips)  # this is to get the indexes
+
+    w = indexes[indexes < len(sentence)]
+    omitted_sentence = sentence[w]
+
+    if len(sentence) < 3:
+        return np.array(sentence), np.arange(len(sentence))
+    elif len(w) < 2:
+        return geometric_omission(num_of_skips, sentence)
+    else:
+        if sentence.ndim == 1:
+            return np.array(omitted_sentence), w
+        else:
+            return np.vstack(omitted_sentence), w

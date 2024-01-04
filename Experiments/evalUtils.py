@@ -73,8 +73,9 @@ def find_temporal_info_ratio(matrix):
     :return: the temporal ratio
     """
     eigenvalues = np.linalg.eigvals(matrix)
-    number_of_ones = np.sum(np.count_nonzero(eigenvalues == 1))
-    return number_of_ones / np.sum(np.abs(eigenvalues))
+    temporal_eigenvalues_sum = np.sum(np.where(eigenvalues > 0.99, 0, np.abs(eigenvalues)))
+    return temporal_eigenvalues_sum / np.sum(np.abs(eigenvalues))
+
 
 
 def get_static_matrix(matrix):
