@@ -407,8 +407,6 @@ def compare_pipelines_for_different_prob_vs_iter(omitter, n_run, n_iter, n_proba
             axes2[i].plot(x, results[1, j, i], marker='.', label=f"run #{j}", linestyle=":")
             axes2[i].set_title(f"p={p}")
 
-
-
     handles, labels = axes1[0].get_legend_handles_labels()
     fig1.legend(handles, labels, loc='lower left')
     fig1.suptitle("Pome " + omitter)
@@ -424,7 +422,7 @@ def compare_pipelines_for_different_prob_vs_iter(omitter, n_run, n_iter, n_proba
 
 
 def compare_pipelines_for_different_prob_vs_temporal_info(omitter, n_run, powers, n_probabilities=None,
-                                                 probabilities=None, show=True):
+                                                          probabilities=None, show=True):
     if n_probabilities is None:
         n_probabilities = len(probabilities)
     if probabilities is None:
@@ -446,12 +444,10 @@ def compare_pipelines_for_different_prob_vs_temporal_info(omitter, n_run, powers
         _, omitter_pass_config, pipeline_gt_config = create_config(reader, "Pass All",
                                                                    "Ground Truth" + str(j + 1))
 
-
         for i, p in enumerate(probabilities):
             omitter_bernoulli_config.prob_of_observation = p  # change the prob
             x = []
             for k, power in enumerate(powers):
-
                 reader_config.set_temporal = True
                 reader_config.matrix_power = power
 
@@ -466,8 +462,8 @@ def compare_pipelines_for_different_prob_vs_temporal_info(omitter, n_run, powers
                 print(f"finished creating {pipeline_gt_syn}")
 
                 print("matrices compared l1 norm")
-                results[0, j, i, k-1] = compare_mat_l1_norm(pipeline_gt_syn.transmat, pipeline_pome_syn.transmat)
-                results[1, j, i, k-1] = compare_mat_l1_norm(pipeline_gt_syn.transmat, pipeline_gibbs_syn.transmat)
+                results[0, j, i, k - 1] = compare_mat_l1_norm(pipeline_gt_syn.transmat, pipeline_pome_syn.transmat)
+                results[1, j, i, k - 1] = compare_mat_l1_norm(pipeline_gt_syn.transmat, pipeline_gibbs_syn.transmat)
                 x.append(find_temporal_info_ratio(pipeline_gt_syn.transmat))
 
             axes1[i].plot(x, results[0, j, i, :], marker='.', label=f"run #{j}", linestyle=":")
@@ -475,9 +471,6 @@ def compare_pipelines_for_different_prob_vs_temporal_info(omitter, n_run, powers
 
             axes2[i].plot(x, results[1, j, i, :], marker='.', label=f"run #{j}", linestyle=":")
             axes2[i].set_title(f"p={p}")
-
-
-
 
     handles, labels = axes1[0].get_legend_handles_labels()
     fig1.legend(handles, labels, loc='lower left')
@@ -493,7 +486,82 @@ def compare_pipelines_for_different_prob_vs_temporal_info(omitter, n_run, powers
         plt.show()
 
 
+def compare_pipelines_for_different_prob_transmat_mode_vs_temporal_info(omitter, n_run, powers, transmat_mode=None,
+                                                                        n_probabilities=None, probabilities=None,
+                                                                        show=True):
+    if n_probabilities is None:
+        n_probabilities = len(probabilities)
+    if probabilities is None:
+        probabilities = np.linspace(0.1, 1, n_probabilities)
+    results = np.empty((2, n_run, n_probabilities, len(powers)))
+
+    fig1, axes1 = plt.subplots(n_probabilities, 1, sharex=True, sharey=True, figsize=(10, 6))
+
+    fig2, axes2 = plt.subplots(n_probabilities, 1, sharex=True, sharey=True, figsize=(10, 6))
+    reader = "My Synthetic"
+    for j in range(n_run):
+        omitter_bernoulli_config: bernoulli_omitter_config
+        reader_config: my_synthetic_reader_config
+        reader_config, omitter_bernoulli_config, pipeline_pome_config = create_config(
+            reader, omitter,
+            "Pomegranate - Synthetic" + str(j + 1))
+        _, _, pipeline_gibbs_config = create_config(reader, "Bernoulli",
+                                                    "Gibbs Sampler" + str(j + 1))
+        _, omitter_pass_config, pipeline_gt_config = create_config(reader, "Pass All",
+                                                                   "Ground Truth" + str(j + 1))
+        reader_config.transmat_mode = transmat_mode
+
+        for i, p in enumerate(probabilities):
+            omitter_bernoulli_config.prob_of_observation = p  # change the prob
+            x = []
+            for k, power in enumerate(powers):
+                reader_config.set_temporal = True
+                reader_config.matrix_power = power
+
+                pipeline_pome_syn: pipeline = create_pipeline_from_configs(reader_config, omitter_bernoulli_config,
+                                                                           pipeline_pome_config)
+                print(f"finished creating {pipeline_pome_syn}")
+                pipeline_gibbs_syn: pipeline = create_pipeline_from_configs(reader_config, omitter_bernoulli_config,
+                                                                            pipeline_gibbs_config)
+                print(f"finished creating {pipeline_gibbs_syn}")
+                pipeline_gt_syn: pipeline = create_pipeline_from_configs(reader_config, omitter_pass_config,
+                                                                         pipeline_gt_config)
+                print(f"finished creating {pipeline_gt_syn}")
+
+                print("matrices compared l1 norm")
+                results[0, j, i, k - 1] = compare_mat_l1_norm(pipeline_gt_syn.transmat, pipeline_pome_syn.transmat)
+                results[1, j, i, k - 1] = compare_mat_l1_norm(pipeline_gt_syn.transmat, pipeline_gibbs_syn.transmat)
+                x.append(find_temporal_info_ratio(pipeline_gt_syn.transmat))
+
+            axes1[i].plot(x, results[0, j, i, :], marker='.', label=f"run #{j}", linestyle=":")
+            axes1[i].set_title(f"p={p}")
+
+            axes2[i].plot(x, results[1, j, i, :], marker='.', label=f"run #{j}", linestyle=":")
+            axes2[i].set_title(f"p={p}")
+
+    handles, labels = axes1[0].get_legend_handles_labels()
+    fig1.legend(handles, labels, loc='lower left')
+    fig1.suptitle("Pome " + omitter + " " + transmat_mode)
+    fig1.subplots_adjust(hspace=0.6)
+    fig1.supxlabel("Temporal Info Ratio")
+    handles, labels = axes2[0].get_legend_handles_labels()
+    fig2.legend(handles, labels, loc='lower left')
+    fig2.suptitle("Gibbs " + omitter + " " + transmat_mode)
+    fig2.subplots_adjust(hspace=0.6)
+    fig2.supxlabel("Temporal Info Ratio")
+    if show:
+        plt.show()
+
+
 def run_simple_test(reader_name, omitter_name, pipeline_name):
-    fitted_pipeline : pipeline = create_pipeline(reader_name, omitter_name, pipeline_name)
+    fitted_pipeline: pipeline = create_pipeline(reader_name, omitter_name, pipeline_name)
+    print(f"finished creating {fitted_pipeline}")
+    print(fitted_pipeline.transmat)
+
+
+def run_simple_test_transmat_mode(reader_name, omitter_name, pipeline_name, transmat_mode):
+    reader_config, omitter_config, pipeline_config = create_config(reader_name, omitter_name, pipeline_name)
+    reader_config.transmat_mode = transmat_mode
+    fitted_pipeline: pipeline = create_pipeline_from_configs(reader_config, omitter_config, pipeline_config)
     print(f"finished creating {fitted_pipeline}")
     print(fitted_pipeline.transmat)

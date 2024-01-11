@@ -13,6 +13,9 @@ class Config:
     Class: str = field(default="Undefined", repr=False)
     Reinitialize: bool = field(default=False, repr=False, compare=False)
 
+
+# region readers configs
+
 @dataclass
 class base_reader_config(Config):
     n_features: int = 1
@@ -21,7 +24,6 @@ class base_reader_config(Config):
     raw_dir: str = field(default_factory=default_raw_data, repr=False)
 
 
-# region readers configs
 @dataclass
 class brown_corpus_reader_config(base_reader_config):
     path_to_data: str = field(default="", repr=False)
@@ -46,6 +48,7 @@ class synthetic_reader_config(base_reader_config):
     mues: str = field(default="", repr=False)
     params_dir: str = field(default="", repr=False)
 
+
 @dataclass
 class hmm_synthetic_reader_config(base_reader_config):
     n_samples: int = 0
@@ -56,6 +59,7 @@ class hmm_synthetic_reader_config(base_reader_config):
     mues: str = field(default="", repr=False)
     params_dir: str = field(default="", repr=False)
 
+
 @dataclass
 class my_synthetic_reader_config(base_reader_config):
     n_samples: int = 0
@@ -65,8 +69,10 @@ class my_synthetic_reader_config(base_reader_config):
     sigma: str = field(default="", repr=False)
     mues: str = field(default="", repr=False)
     params_dir: str = field(default="", repr=False)
-    matrix_power: int = 0
+    transmat_mode: str = field(default="")
+    n_edges: int = 0
     set_temporal: bool = False
+    matrix_power: int = 0
 
 
 # endregion
@@ -80,20 +86,27 @@ class base_omitter_config(Config):
 @dataclass
 class bernoulli_omitter_config(Config):
     prob_of_observation: float = 0.5
+
+
 @dataclass
 class geometric_omitter_config(Config):
     prob_of_observation: float = 0.5
 
+
 @dataclass
 class consecutive_bernoulli_omitter_config(Config):
     prob_of_observation: float = 0.5
+
+
 @dataclass
 class markov_chain_omitter_config(Config):
     prob_of_observation: float = 0.5
 
+
 @dataclass
 class uniform_skips_omitter_config(Config):
     n_skips: int = 4
+
 
 # endregion
 

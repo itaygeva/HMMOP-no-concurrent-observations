@@ -16,16 +16,29 @@ class my_synthetic_reader(base_reader):
         self._init_hmm_model()
         self._generate_samples()
 
-    def generate_near_biased_matrix(self):
-        stochastic_matrix = np.empty((self._config.n_components, self._config.n_components))
-        for i in range(self._config.n_components):
-            for j in range(self._config.n_components):
-                # Example: Higher probability for transitions between nearby states
-                stochastic_matrix[i, j] = np.exp(-abs(i - j)) / np.sum(np.exp(-np.abs(np.arange(self._config.n_components) - i)))
+    def _normalize_stochastic_matrix(self, matrix):
+        for row in matrix:
+            row /= np.sum(row)
+        return matrix
 
-        # Ensure rows sum to 1
-        stochastic_matrix /= stochastic_matrix.sum(axis=1, keepdims=True)
-        return np.linalg.matrix_power(stochastic_matrix, self._config.matrix_power)
+    def generate_near_biased_matrix(self):
+        rows = np.arange(self._config.n_components)
+        # Create a 2D array with repeated rows to represent the column indices
+        columns = np.tile(rows, (self._config.n_components, 1))
+        # Calculate the absolute differences element-wise
+        distance_matrix = -1 * np.abs(rows - columns.T)
+        stochastic_matrix = np.exp(distance_matrix)
+
+        return self._normalize_stochastic_matrix(stochastic_matrix)
+
+    def generate_n_edges_matrix(self, n_edges):
+        stochastic_matrix = np.zeros((self._config.n_components, self._config.n_components))
+        for row in stochastic_matrix:
+            edges_idx = np.random.choice(self._config.n_components, size=(n_edges), replace=False)
+            edges_values = np.random.random(n_edges)
+            row[edges_idx] = edges_values
+
+        return self._normalize_stochastic_matrix(stochastic_matrix)
 
     def _generate_samples(self):
         # %% create markov chain
@@ -96,14 +109,18 @@ class my_synthetic_reader(base_reader):
             self._sigmas = self.generate_param_from_config(self._config.sigma)
 
     def generate_transmat(self):
-        if self._config.set_temporal:
+        if self._config.transmat_mode == "Near Neighbors":
             self._transition_mat = self.generate_near_biased_matrix()
-        elif self._config.transmat is None:
-            self._transition_mat = np.random.rand(self._config.n_components, self._config.n_components)
-            for line in self._transition_mat:
-                line /= np.sum(line)
-        else:
+        elif self._config.transmat_mode == "N Edges":
+            self._transition_mat = self.generate_n_edges_matrix(self._config.n_edges)
+        elif self._config.transmat_mode == "Config":
             self._transition_mat = self.generate_param_from_config(self._config.transmat)
+        else:
+            self._transition_mat = np.random.rand(self._config.n_components, self._config.n_components)
+            self._transition_mat = self._normalize_stochastic_matrix(self._transition_mat)
+
+        if self._config.set_temporal:
+            self._transition_mat = np.linalg.matrix_power(self._transition_mat, self._config.matrix_power)
 
     def generate_startprobs(self):
         if self._config.startprobs is None:

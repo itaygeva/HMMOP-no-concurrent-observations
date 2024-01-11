@@ -1,35 +1,56 @@
+import numpy as np
+
 from Experiments import Tests
 # test variables - temp
 import cProfile
 
 
 def your_function_to_profile():
-    show_graph = True
-    """Tests.compare_pipelines_vs_iter_pass_all(10, 5, 20, show=show_graph)
-    Tests.compare_pipelines_for_different_prob("Bernoulli", 5, probabilities=[0.05, 0.1, 0.325, 0.55, 0.775, 1],
-                                               show=show_graph)
-    Tests.compare_pipelines_for_different_prob("Geometric", 5, probabilities=[0.1, 0.325, 0.55, 0.775, 1],
-                                               show=show_graph)
-    Tests.compare_pipelines_for_different_prob("Consecutive Bernoulli", 5,
-                                               probabilities=[0, 0.05, 0.1, 0.325, 0.55, 0.775, 1], show=show_graph)
-    Tests.compare_pipelines_for_different_prob("Markov Chain", 5,
-                                               probabilities=[-0.4, -0.25, 0, 0.25, 0.4], show=show_graph)
-    Tests.compare_pipelines_vs_iter_pass_all_different_sample_len(5, 20, sentence_length_arr=[20, 10, 5, 100],
-                                                                  n_samples_arr=[1000, 2000, 4000, 200],
-                                                                  show=show_graph)"""
+    show_graph = False
+    NN_Powers = np.array([1, 3, 6, 15, 100])
+    N_edges_powers = np.array([1, 2, 3, 4, 100])
+    Tests.compare_pipelines_for_different_prob_transmat_mode_vs_temporal_info("Markov Chain", 3,
+                                                                              transmat_mode="Near Neighbors",
+                                                                              probabilities=np.linspace(-0.45, 0.45,
+                                                                                                        10),
+                                                                              powers=NN_Powers,
+                                                                              show=show_graph)
+    Tests.compare_pipelines_for_different_prob_transmat_mode_vs_temporal_info("Bernoulli", 3,
+                                                                              transmat_mode="Near Neighbors",
+                                                                              probabilities=np.linspace(0.25, 1, 4),
+                                                                              powers=NN_Powers,
+                                                                              show=show_graph)
+    Tests.compare_pipelines_for_different_prob_transmat_mode_vs_temporal_info("Consecutive Bernoulli", 3,
+                                                                              transmat_mode="Near Neighbors",
+                                                                              probabilities=np.linspace(0, 1, 5),
+                                                                              powers=NN_Powers,
+                                                                              show=show_graph)
+    Tests.compare_pipelines_for_different_prob_transmat_mode_vs_temporal_info("Uniform Skips", 3,
+                                                                              transmat_mode="Near Neighbors",
+                                                                              probabilities=[-0.4, -0.25, 0, 0.25, 0.4],
+                                                                              powers=NN_Powers,
+                                                                              show=show_graph)
 
-    """Tests.compare_pipelines_for_different_prob_vs_iter("Bernoulli", 5,n_run=20, probabilities=[0.05, 0.1, 0.325, 0.55, 0.775, 1],
-                                               show=show_graph)
-    Tests.compare_pipelines_for_different_prob_vs_iter("Geometric", 5, n_run=20,probabilities=[0.05, 0.1, 0.325, 0.55, 0.775, 1],
-                                               show=show_graph)
-    Tests.compare_pipelines_for_different_prob_vs_iter("Consecutive Bernoulli", 5, n_run=20,
-                                               probabilities=[0, 0.05, 0.1, 0.325, 0.55, 0.775, 1], show=show_graph)
-    Tests.compare_pipelines_for_different_prob_vs_iter("Markov Chain", 5, n_run=20,
-                                               probabilities=[-0.5, -0.25, 0, 0.25, 0.5], show=show_graph)"""
-    """Tests.compare_pipelines_for_different_prob_vs_temporal_info("Bernoulli", 5, powers=[1, 4, 10, 20],
-                                                                probabilities=[0.05, 0.1, 0.325, 0.55, 0.775, 1],
-                                                                show=show_graph)"""
-    Tests.run_simple_test("My Synthetic", "Bernoulli", "Pomegranate - Synthetic2")
+    Tests.compare_pipelines_for_different_prob_transmat_mode_vs_temporal_info("Markov Chain", 3,
+                                                                              transmat_mode="N Edges",
+                                                                              probabilities=np.linspace(-0.45, 0.45,
+                                                                                                        10),
+                                                                              powers=N_edges_powers,
+                                                                              show=show_graph)
+    Tests.compare_pipelines_for_different_prob_transmat_mode_vs_temporal_info("Bernoulli", 3, transmat_mode="N Edges",
+                                                                              probabilities=np.linspace(0.25, 1, 4),
+                                                                              powers=N_edges_powers,
+                                                                              show=show_graph)
+    Tests.compare_pipelines_for_different_prob_transmat_mode_vs_temporal_info("Consecutive Bernoulli", 3,
+                                                                              transmat_mode="N Edges",
+                                                                              probabilities=np.linspace(0, 1, 5),
+                                                                              powers=N_edges_powers,
+                                                                              show=show_graph)
+    Tests.compare_pipelines_for_different_prob_transmat_mode_vs_temporal_info("Uniform Skips", 3,
+                                                                              transmat_mode="N Edges",
+                                                                              probabilities=[-0.4, -0.25, 0, 0.25, 0.4],
+                                                                              powers=N_edges_powers,
+                                                                              show=show_graph)
 
 
 if __name__ == '__main__':

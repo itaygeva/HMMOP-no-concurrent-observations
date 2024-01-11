@@ -4,20 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5816c4f2-9dc7-4ace-9705-7042f2d839c3" name="Changes" comment="Finished Basic flow: Tests creating readers, omitters and pipelines. Loading and dumping accordingly. Not fully tested yet">
-      <change afterPath="$PROJECT_DIR$/eq_solve_tester.py" afterDir="false" />
+    <list default="true" id="5816c4f2-9dc7-4ace-9705-7042f2d839c3" name="Changes" comment="Small fixes to pipelines and readers. More testing is still needed to verify formats">
+      <change afterPath="$PROJECT_DIR$/alg2_tester.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/alg3_tester.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/alg_tester.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Config/Config.py" beforeDir="false" afterPath="$PROJECT_DIR$/Config/Config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Params/sigma03-10" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Params/sigma03-10" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Data/Readers/my_synthetic_reader.py" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Readers/my_synthetic_reader.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Experiments/Config.JSON" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/Config.JSON" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Experiments/Tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/Tests.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Experiments/evalUtils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/evalUtils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Experiments/experiment.py" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/experiment.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Experiments/profile_results.prof" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/profile_results.prof" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Omitters/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/Omitters/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Omitters/omitters.py" beforeDir="false" afterPath="$PROJECT_DIR$/Omitters/omitters.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Omitters/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Omitters/utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pipelines/pome_pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pipelines/pome_pipeline.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eq_solve_tester.py" beforeDir="false" afterPath="$PROJECT_DIR$/eq_solve_tester.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/playground.py" beforeDir="false" afterPath="$PROJECT_DIR$/playground.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../HMMOP/who_cell/models/gibbs_sampler.py" beforeDir="false" afterPath="$PROJECT_DIR$/../HMMOP/who_cell/models/gibbs_sampler.py" afterDir="false" />
     </list>
@@ -50,16 +50,17 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "C:/Users/liadm/Code/HMMOP-no-concurrent-observations/Pipelines",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PythonContentEntriesConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/liadm/Code/HMMOP-no-concurrent-observations&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PythonContentEntriesConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\liadm\Code\HMMOP-no-concurrent-observations" />
       <recent name="C:\Users\liadm\Code\HMMOP-no-concurrent-observations\Pipelines" />
       <recent name="C:\Users\liadm\Code\HMMOP-no-concurrent-observations\Data\Readers" />
       <recent name="C:\Users\liadm\Code\HMMOP-no-concurrent-observations\Data\Params" />
@@ -69,7 +70,70 @@
       <recent name="C:\Users\liadm\Code\HMMOP-no-concurrent-observations\Experiments\Creators" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.experiment">
+  <component name="RunManager" selected="Python.playground">
+    <configuration name="alg2_tester" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="HMMOP-no-concurrent-observations" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/alg2_tester.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="alg3_tester" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="HMMOP-no-concurrent-observations" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/alg3_tester.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="alg_tester" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="HMMOP-no-concurrent-observations" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/alg_tester.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="eq_solve_tester" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="HMMOP-no-concurrent-observations" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -136,6 +200,9 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="Python.alg2_tester" />
+      <item itemvalue="Python.alg3_tester" />
+      <item itemvalue="Python.alg_tester" />
       <item itemvalue="Python.eq_solve_tester" />
       <item itemvalue="Python.experiment" />
       <item itemvalue="Python.playground" />
@@ -174,31 +241,5 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Finished Basic flow: Tests creating readers, omitters and pipelines. Loading and dumping accordingly. Not fully tested yet" />
     <option name="LAST_COMMIT_MESSAGE" value="Finished Basic flow: Tests creating readers, omitters and pipelines. Loading and dumping accordingly. Not fully tested yet" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$USER_HOME$/anaconda3/Lib/site-packages/pomegranate/hmm/dense_hmm.py</url>
-          <line>545</line>
-          <option name="timeStamp" value="148" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$USER_HOME$/anaconda3/Lib/site-packages/pomegranate/hmm/dense_hmm.py</url>
-          <line>542</line>
-          <option name="timeStamp" value="153" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$USER_HOME$/anaconda3/Lib/site-packages/pomegranate/hmm/_base.py</url>
-          <line>580</line>
-          <option name="timeStamp" value="158" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/eq_solve_tester.py</url>
-          <line>37</line>
-          <option name="timeStamp" value="160" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>

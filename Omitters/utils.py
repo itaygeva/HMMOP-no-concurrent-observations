@@ -123,7 +123,7 @@ def markov_chain_experiments(epsilon, data):
 
 
 def markov_chain_omission(epsilon, sentence):
-    transmat = np.array([[0.5 - epsilon, 0.5 + epsilon], [0.5 + epsilon, 0.5 - epsilon]])
+    transmat = np.array([[0.5 - epsilon, 0.5 + epsilon], [0.5 - epsilon, 0.5 + epsilon]])
     state = np.random.choice([0, 1], p=[0.5 - epsilon, 0.5 + epsilon])
     w = []
     for i in range(len(sentence)):

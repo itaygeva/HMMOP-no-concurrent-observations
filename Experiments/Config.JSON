@@ -60,7 +60,7 @@
       "Name": "My Synthetic",
       "Class": "my_synthetic_reader",
       "n_components": 10,
-      "n_samples": 1000,
+      "n_samples": 200,
       "is_tagged": false,
       "n_features": 1,
 	  "mues": "close_means10",
@@ -117,40 +117,35 @@
       "Class": "pome_pipeline",
       "distribution": "Gaussian",
       "n_components": 10,
-      "n_features": 1,
-      "freeze_distributions": false
+      "n_features": 1
     },
 	{
       "Name": "Pomegranate - Synthetic2",
       "Class": "pome_pipeline",
       "distribution": "Gaussian",
       "n_components": 10,
-      "n_features": 1,
-      "freeze_distributions": false
+      "n_features": 1
     },
 	{
       "Name": "Pomegranate - Synthetic3",
       "Class": "pome_pipeline",
       "distribution": "Gaussian",
       "n_components": 10,
-      "n_features": 1,
-      "freeze_distributions": false
+      "n_features": 1
     },
 	{
       "Name": "Pomegranate - Synthetic4",
       "Class": "pome_pipeline",
       "distribution": "Gaussian",
       "n_components": 10,
-      "n_features": 1,
-      "freeze_distributions": false
+      "n_features": 1
     },
 	{
       "Name": "Pomegranate - Synthetic5",
       "Class": "pome_pipeline",
       "distribution": "Gaussian",
       "n_components": 10,
-      "n_features": 1,
-      "freeze_distributions": false
+      "n_features": 1
     },
     {
       "Name": "Pomegranate - Brown",
@@ -164,8 +159,7 @@
       "Class": "pome_pipeline",
       "distribution": "Gaussian",
       "n_components": 3,
-      "n_features": 3,
-      "freeze_distributions": false
+      "n_features": 3
     },
     {
       "Name": "Ground Truth1",
@@ -247,15 +241,18 @@
   ],
   "default": {
     "Reinitialize": false,
-    "raw_dir": "..\\Data\\Raw",
-	"params_dir": "..\\Data\\Params",
-    "n_iter": 20,
+    "raw_dir": "../Data/Raw",
+	"params_dir": "../Data/Params",
+    "n_iter": 30,
 	"n_components": 10,
     "sigma": null,
     "startprobs": null,
     "endprobs": null,
     "mues": null,
     "transmat": null,
-	"sentence_length": 20
+	"sentence_length": 100,
+    "freeze_distributions": true,
+	"transmat_mode": null,	
+    "n_edges": 3
   }
 }

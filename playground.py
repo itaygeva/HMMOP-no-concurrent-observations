@@ -19,6 +19,14 @@ def find_temporal_info_ratio(matrix):
     return temporal_eigenvalues_sum / np.sum(np.abs(eigenvalues))
 
 
+def generate_stochastic_matrix_with_seed(n_states, seed):
+    np.random.seed(seed)
+    stochastic_matrix = np.random.rand(n_states, n_states)
+    for line in stochastic_matrix:
+        line /= np.sum(line)
+    return stochastic_matrix
+
+
 def generate_stochastic_matrix(n_states):
     stochastic_matrix = np.random.rand(n_states, n_states)
     for line in stochastic_matrix:
@@ -46,6 +54,19 @@ def generate_near_biased_matrix(n_states):
     stochastic_matrix /= stochastic_matrix.sum(axis=1, keepdims=True)
     return stochastic_matrix
 
+def normalize_stochastic_matrix(stochastic_matrix):
+        for row in stochastic_matrix:
+            row /= np.sum(row)
+        return stochastic_matrix
+def generate_near_biased_matrix_imporved(n_states):
+    rows = np.arange(n_states)
+    # Create a 2D array with repeated rows to represent the column indices
+    columns = np.tile(rows, (n_states, 1))
+    # Calculate the absolute differences element-wise
+    distance_matrix = -1 * np.abs(rows - columns.T)
+    stochastic_matrix = np.exp(distance_matrix)
+
+    return normalize_stochastic_matrix(stochastic_matrix)
 
 def print_temporal_info_for_power_matrix(stochastic_matrix):
     for i in range(1, 30):
@@ -53,7 +74,11 @@ def print_temporal_info_for_power_matrix(stochastic_matrix):
         print(f"Info in iter:{i} = {find_temporal_info_ratio(stochastic_matrix_power)}")
 
 
-print(np.linalg.eigvals((generate_stochastic_matrix(10))))
+n_components = 10
+print_temporal_info_for_power_matrix(generate_near_biased_matrix_imporved(10))
+print_temporal_info_for_power_matrix(generate_near_biased_matrix_imporved(10))
+
+
 
 """# Assign transition probabilities
 
