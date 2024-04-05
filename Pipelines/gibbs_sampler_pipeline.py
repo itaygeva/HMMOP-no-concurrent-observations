@@ -10,9 +10,9 @@ from who_cell.models import gibbs_sampler
 class gibbs_sampler_pipeline(pipeline):
     def __init__(self, reader, omitter, config: gibbs_sampler_pipeline_config):
         """
-        Currently supports only Gaussian distributions
-        :param n_components: the number of states the HMM has
-        :param n_iter: the number of iterations to have the fit do
+        :param reader: the initialized reader
+        :param omitter: the initialized reader
+        :param config: the config
         """
         super().__init__(reader, omitter, config)
 
@@ -22,10 +22,7 @@ class gibbs_sampler_pipeline(pipeline):
 
     def fit(self):
         """
-        Fits the gibbs-sampler based HMM model to the given data.
-        Finds the model parameters such as the transition matrix.
-        :param data: list of hidden markovian sentences. Currently, supports gaussian emissions,
-         with single feature sentences.
+        Fits the model on the omitted data, and creates the transmat, startprob and means list.
         """
         data, ws = self.omitter.omit(self.reader.get_obs())
         data, known_mues, sigmas, start_probs, sentences_lengths, ws = self.generate_initial_parameters(data, ws)
@@ -34,26 +31,23 @@ class gibbs_sampler_pipeline(pipeline):
                                          N=sentences_lengths)
         self._means_list = self.create_means_list(all_mues)
         self._transmat_list = self.create_transmat_list(all_transitions)
-        # TODO: Implement startprob
         self._startprob_list = self.create_startprob_list(all_transitions)
 
     def generate_initial_parameters(self, data, ws):
         """
-        Generates random initial parameters for the gibbs sampler.
-        :param data: list of hidden markovian sentences. Currently, supports gaussian emissions,
-        :return: return the initial parameters for the gibbs sampler:
-        data, known_mues, sigmas_dict, start_probs, sentences_lengths
+        Generates the initial parameteres of the model using information on the original data from the reader
+        and information on the known omission locations from the omission. Also prepares the data.
+        :param data: the omitted data to prepare
+        :param ws: the seen emission locations
+        :return: data - the prepared data, mues_dict - the dictionary of state-mu , sigmas_dict - the dictionary of state-sigma,
+        start_probs - the starting probability, ws - the seen emission locations
         """
         sentences_lengths = self.reader.dataset['lengths']
         if ws is None:
             ws = [list(np.arange(length)) for length in sentences_lengths]
 
-        # known_mues = None
-        # known_mues = [1,2,3]
         known_mues = self.reader.means
 
-        # sigmas = [random.uniform(1, 2) for i in range(self._config.n_components)]
-        # sigmas = [0.3 for i in range(self._config.n_components)]
         sigmas = self.reader.covs
         sigmas_dict = {str((sigma, i)): sigma for i, sigma in enumerate(sigmas)}
         mues_dict = {str((sigma, i)): known_mues[i] for i, sigma in enumerate(sigmas)}
@@ -67,10 +61,9 @@ class gibbs_sampler_pipeline(pipeline):
 
     def create_startprob_list(self, all_transitions):
         """
-        Creates a transition matrix of our format (torch tenor of shape (n_states, n_states))
-        from the last element of the gibbs_sampler all_transitions parameter
-        :param all_transitions:  A list of n_iter length of the dictionary of found edges weights.
-        :return: The final transition matrix
+        Creates a list of starting probabilities from the gibbs_sampler all_transitions parameter
+        :param all_transitions: A list of n_iter length of the dictionary of found edges weights.
+        :return: a list of the fitted starting probabilities
         """
         # # TODO: There seems to maybe a bug in Benny's code, where after the first iteration (the initialization),
         #  the start prob is zero for all states. We can see that this is because in the walk, we don't start with the 'start' state, and therefore we don't count the transitions from it.
@@ -89,10 +82,10 @@ class gibbs_sampler_pipeline(pipeline):
 
     def create_transmat_list(self, all_transitions):
         """
-        Creates a transition matrix of our format (torch tenor of shape (n_states, n_states))
-        from the last element of the gibbs_sampler all_transitions parameter
-        :param all_transitions:  A list of n_iter length of the dictionary of found edges weights.
-        :return: The final transition matrix
+        Creates a list of transition matrices of our format list(torch tenor of shape (n_states, n_states))
+        from the gibbs_sampler all_transitions parameter
+        :param all_transitions: A list of n_iter length of the dictionary of found edges weights.
+        :return: a list of the fitted transition matrices
         """
         transmat_list = []
         for transition_matrix in all_transitions:

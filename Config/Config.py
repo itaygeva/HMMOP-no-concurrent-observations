@@ -6,6 +6,10 @@ def default_raw_data():
     data_dir = "../Data"
     return os.path.join(data_dir, 'Raw')
 
+"""
+Here are defined data classes for the readers', omitters', and models' configs.
+"""
+
 
 @dataclass
 class Config:

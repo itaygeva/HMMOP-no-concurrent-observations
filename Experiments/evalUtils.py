@@ -44,6 +44,12 @@ def find_mat_diff(matrix1, matrix2):
 
 
 def compare_mat_l1_norm_for_list(list_of_matrix1, list_of_matrix2):
+    """
+    finds the l1 distance between the all matrix-elements of the lists
+    :param list_of_matrix1: A list of matrices
+    :param list_of_matrix2: Another list of matrices
+    :return: A list of l1 distances
+    """
     return [compare_mat_l1_norm(list_of_matrix1[i], list_of_matrix2[i]) for i in range(len(list_of_matrix1))]
 
 
@@ -67,8 +73,8 @@ def compare_mat_l1_norm(matrix1, matrix2):
 
 def find_temporal_info_ratio(matrix):
     """
-    return the ratio of the sum of eigenvalues of value 1/ the sum of all eigenvalues.
-    The larger this ratio is, the less temporal information is in the matrix.
+    return the ratio of the sum of eigenvalues of value different to 1 over the sum of all eigenvalues.
+    The larger this ratio is, the more temporal information is in the matrix.
     :param matrix: a matrix
     :return: the temporal ratio
     """
@@ -77,12 +83,3 @@ def find_temporal_info_ratio(matrix):
     return temporal_eigenvalues_sum / np.sum(np.abs(eigenvalues))
 
 
-
-def get_static_matrix(matrix):
-    eigenvalues, eigenvectors = np.linalg.eig(matrix)
-    eigenvalues = np.where(np.real(eigenvalues) > 0.99, eigenvalues, np.zeros_like(eigenvalues))
-
-    matrix = np.real(eigenvectors @ np.diag(eigenvalues) @ np.linalg.inv(eigenvectors))
-    matrix /= np.sum(matrix, axis=1, keepdims=True)
-    print(np.sum(matrix, axis=1))
-    return matrix

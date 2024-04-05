@@ -5,6 +5,12 @@ import numpy as np
 class pipeline:
 
     def __init__(self, reader, omitter, config: pipeline_config, **kwargs):
+        """
+        :param reader: the initialized reader
+        :param omitter: the initialized omitter
+        :param config: the configuration
+        :param kwargs: Not used
+        """
         self.reader = reader
         self.omitter = omitter
         self._config = config
@@ -13,6 +19,9 @@ class pipeline:
         self._means_list = []
 
     def fit(self):
+        """
+        fits the model
+        """
         raise NotImplementedError("Must use an implementation of pipeline")
 
     @property

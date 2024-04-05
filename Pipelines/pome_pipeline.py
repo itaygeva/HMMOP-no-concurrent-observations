@@ -6,8 +6,6 @@ import torch
 from Config.Config import *
 from Pipelines.pipeline import pipeline
 import sys
-sys.path.append('C:/Users/liadm/Code')
-import transmatpwr
 
 
 def is_positive_definite(matrix):
@@ -21,16 +19,19 @@ def is_positive_definite(matrix):
 
 
 class pome_pipeline(pipeline):
-    # TODO: Test support of multivariate data
-    # TODO: Fix emission Prob (now I dont think it supports getting it in the framework. It should still work in pome)
     def __init__(self, reader, omitter, config: pome_pipeline_config):
-        # TODO: get rid of the need for n_features. Seems like it is needed in order to initialize the means and covs.
+        """
+        :param reader: the initialized reader
+        :param omitter: the initialized reader
+        :param config: the config
+        """
         super().__init__(reader, omitter, config)
 
     def generate_initial_random_model(self, n_iter):
         """
-                Generates random parameters for the pomegranate model
-                """
+        Generates random parameters for the pomegranate model
+        :param n_iter: the number of iterations the model should perform
+        """
         dists = self.create_random_distributions()
 
         tensor_type = torch.float32
@@ -49,8 +50,9 @@ class pome_pipeline(pipeline):
 
     def generate_initial_model(self, n_iter):
         """
-                Generates random parameters for the pomegranate model
-                """
+        Generates random parameters for the pomegranate model, except for the distributions which are taken from the reader
+        :param n_iter: the number of iterations the model should perform
+        """
         dists = self.create_distributions()
 
         tensor_type = torch.float32
@@ -68,37 +70,30 @@ class pome_pipeline(pipeline):
         self._startprob_list.append(starts.numpy())
 
     def create_masked_tensor(self, sentence, ws):
+        """
+        Creates a torch.masked.MaskedTensor using the data in sentence and the mask in ws after pre-processing
+        :param sentence: the seen emissions data
+        :param ws: the original locations of the seen emissions
+        :return: a maskedTensor of the data
+        """
         sentence_with_zeros = torch.full((self.reader._config.sentence_length,), 0, dtype=torch.double)
         sentence_with_zeros[ws] = sentence
         mask = torch.full((self.reader._config.sentence_length,), False, dtype=torch.bool)
         mask[ws] = True
         return torch.masked.MaskedTensor(sentence_with_zeros, mask)
 
-    def _iter_fit(self, data, n_iter, ws=None):
-
-        self.generate_initial_model(n_iter)
-        #  TODO: Support multivariate data (n_features>1)
-        if ws is not None:
-            #  TODO: Export this to a method
-            masked_data = []
-            for sentence, ws in zip(data, ws):
-                masked_data.append(self.create_masked_tensor(sentence, ws))
-            data = masked_data
-
-        if data[0].ndim == 1:
-            data = [arr.reshape(-1, 1) for arr in data]  # adding dimension to 1 dimensional array
-
-        data = self.partition_sequences(
-            data)  # We need to do this ourselves in order to bypass a bug in pomegranate 1.0.3
-        self._model.fit(X=data)
-        means = [dist.means.item() for dist in self._model.distributions]
-        return torch.exp(self._model.edges), torch.exp(self._model.starts), means
-
     def _iter_fit_alt(self, data, n_iter, ws):
+        """
+        Fits the data one iteration at a time. After each iteration, saves the transmat, startprob and means
+        :param data: the data to fit
+        :param n_iter: the number of iteration
+        :param ws: the original location of the seen emissions
+        """
+
         self.generate_initial_model(n_iter)
-        #  TODO: Support multivariate data (n_features>1)
+
+        # Prepares data
         if ws is not None:
-            #  TODO: Export this to a method
             masked_data = []
             for sentence, ws in zip(data, ws):
                 masked_data.append(self.create_masked_tensor(sentence, ws))
@@ -106,9 +101,10 @@ class pome_pipeline(pipeline):
 
         if data[0].ndim == 1:
             data = [arr.reshape(-1, 1) for arr in data]  # adding dimension to 1 dimensional array
-
         data = self.partition_sequences(
             data)  # We need to do this ourselves in order to bypass a bug in pomegranate 1.0.3
+
+        # perform fit saves the results after each iter
         for i in range(n_iter):
             self._model.fit(X=data)
             means = [dist.means.item() for dist in self._model.distributions]
@@ -117,18 +113,15 @@ class pome_pipeline(pipeline):
             self._means_list.append(means)
 
     def fit(self):
+        """
+        Creates the omitted datam and fits the model to the data
+        """
         data, ws = self.omitter.omit(self.reader.get_obs())
         ## TODO: Take care of omission_idx later.
         data = [torch.from_numpy(sentence) for sentence in data]
 
         self._iter_fit_alt(data, self._config.n_iter, ws)
 
-        """for i in range(1, self._config.n_iter + 1):
-            #transmat, start_prob, means = self._iter_fit(data, i, ws)
-            transmat, start_prob, means = self._iter_fit_alt(data, i, ws)
-            self._transmat_list.append(transmat.numpy())
-            self._startprob_list.append(start_prob.numpy())
-            self._means_list.append(means)"""
 
     @property
     def emissionprob(self):
@@ -147,8 +140,6 @@ class pome_pipeline(pipeline):
         return np.vstack(emission_prob)
 
     def partition_sequences(self, data):
-        # TODO: test of this supports multivariate data
-        # TODO: check if maybe we can use itertools.groupby instead
         """
         groups sentences of the same length together.
         :param data: list of tensors or masked tensors of shape (n_obs,n_features)
@@ -168,13 +159,12 @@ class pome_pipeline(pipeline):
     def create_distributions(self):
         """
         Creates the distributions for the pomegranate model based on the distribution type.
-        Currently, supports - Gaussian, Categorical.
+        The distributions are generated with params extracted from the reader
         TAKE NOTICE: We have to initialize the distributions with data
         (e.g. emissions_prob in Categorical, means and covs in Gaussian) in order to bypass a bug in pomegranate 1.0.3
         :return: the initialized distributions
         """
         if self._config.distribution == 'Categorical':
-            ## TODO: support categorical and emission_prob
             return [distributions.Categorical(torch.from_numpy(np.atleast_2d(dist)),
                                               frozen=self._config.freeze_distributions)
                     for dist in self.reader.get_emission_prob()]
@@ -192,13 +182,12 @@ class pome_pipeline(pipeline):
     def create_random_distributions(self):
         """
         Creates the distributions for the pomegranate model based on the distribution type.
-        Currently, supports - Gaussian, Categorical.
+        The distributions are generated with random params
         TAKE NOTICE: We have to initialize the distributions with data
         (e.g. emissions_prob in Categorical, means and covs in Gaussian) in order to bypass a bug in pomegranate 1.0.3
         :return: the initialized distributions
         """
         if self._config.distribution == 'Categorical':
-            ## TODO: support categorical and emission_prob
             return [distributions.Categorical(torch.from_numpy(np.atleast_2d(dist)),
                                               frozen=self._config.freeze_distributions)
                     for dist in self.reader.get_emission_prob()]
@@ -212,8 +201,8 @@ class pome_pipeline(pipeline):
 
     def generate_initial_normal_params(self):
         """
-        Generates the initial params for the normal distributions
-        :return:
+        Generates the initial params for the normal dist.
+        :return: the means and the cov matrices
         """
         tensor_type = torch.float32
         means = [torch.rand(self._config.n_features, dtype=tensor_type) for i in range(self._config.n_components)]
@@ -222,12 +211,8 @@ class pome_pipeline(pipeline):
 
         # This ensures that the cov matrix is a legal cov matrix
         covariance_matrices = [torch.mm(random_matrix, random_matrix.t()) for i in range(self._config.n_components)]
-        """covariance_matrices = [covariance_matrix / torch.diag(covariance_matrix).sqrt().view(-1, 1) for
-                               covariance_matrix in covariance_matrices]
-        covariance_matrices = [covariance_matrix / torch.diag(covariance_matrix).sqrt().view(1, -1) for
-                               covariance_matrix in covariance_matrices]"""
 
-        # This is just because i wanted to check if the cov is actually positive definite
+        # This is just because I wanted to check if the cov is actually positive definite
         test = [is_positive_definite(covariance_matrix) for
                 covariance_matrix in covariance_matrices]
         if not np.any(test):
@@ -235,9 +220,14 @@ class pome_pipeline(pipeline):
         return means, covariance_matrices
 
     def normalize_edges_and_ends(self, ends, edges):
+        """
+        Normalizes the edges and ends probabilities so that each row sums to 1
+        :param ends: the end probabilities
+        :param edges: the edges probabilities
+        :return: the normalized ends and edges probabilities
+        """
         for i in range(ends.shape[0]):
             sum_row = ends[i] + torch.sum(edges[i])
             ends[i] = ends[i] / sum_row
             edges[i] = edges[i] / sum_row
         return ends, edges
-

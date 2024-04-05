@@ -60,7 +60,7 @@
       "Name": "My Synthetic",
       "Class": "my_synthetic_reader",
       "n_components": 10,
-      "n_samples": 200,
+      "n_samples": 500,
       "is_tagged": false,
       "n_features": 1,
 	  "mues": "close_means10",

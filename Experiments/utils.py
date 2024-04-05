@@ -10,9 +10,16 @@ from Data.Readers import *
 from Omitters import *
 from Pipelines import *
 
-## TODO: See if we can import in runtime
 
 def get_value_or_default(var_name, config, default):
+    """
+    Gets the value of a config variable from the config element.
+    If it doesn't exist there returns the default value of the config variable.
+    :param var_name: the config variable name
+    :param config: the config element to find the value in
+    :param default: the default config
+    :return: the value of the config variable
+    """
     if var_name in config.keys():
         return config[var_name]
     elif var_name in default.keys():
@@ -23,12 +30,22 @@ def get_value_or_default(var_name, config, default):
 
 
 def load_initialized_class(file_path):
+    """
+    Load a pickle file
+    :param file_path: the pickle file
+    :return: the loaded pickled class instance
+    """
     with open(file_path, 'rb') as file:  # we already checked that the file exists
             instance = pickle.load(file)
     return instance
 
 
 def dump_initialized_class(file_path, instance):
+    """
+    Dumps a class instance into a pickle file
+    :param file_path: the pickle file path to use
+    :param instance: the class instance to pickle
+    """
     file_directory = os.path.dirname(file_path)
     os.makedirs(file_directory, exist_ok=True)
     with open(file_path, 'wb') as file:
@@ -36,6 +53,13 @@ def dump_initialized_class(file_path, instance):
 
 
 def get_configs_from_json(reader_name, omitter_name, model_name):
+    """
+    Loads the config elements of the reader, omitter, model, and default configuration from the JSON config file
+    :param reader_name: the name of the reader
+    :param omitter_name: the name of the omitter
+    :param model_name: the name of the model
+    :return: the configs
+    """
     config_path = CONFIG_PATH
     with open(config_path, "r") as json_file:
         config = json.load(json_file)
@@ -52,6 +76,12 @@ def get_configs_from_json(reader_name, omitter_name, model_name):
 
 
 def create_config(instance_config, default_config):
+    """
+    Creates and returns the relevant config class instance using the instance config JSON element and the default config JSON element.
+    :param instance_config: the instance config JSON element
+    :param default_config:the default config JSON element
+    :return: the relevant config class instance, populated with values from the element config or the default config
+    """
     fields_list = fields(eval(instance_config["Class"] + "_config"))
     fields_names = [field_inst.name for field_inst in fields_list]
     config = {}
@@ -62,6 +92,13 @@ def create_config(instance_config, default_config):
 
 
 def create_config_dataclass_objects(reader_name, omitter_name, model_name):
+    """
+    Creates the config instances for the reader, omitter, and model
+    :param reader_name: the name of the reader as defined in the JSON config file
+    :param omitter_name: the name of the omitter as defined in the JSON config file
+    :param model_name: the name of the pipeline as defined in the JSON config file
+    :return: the configs instances
+    """
     reader_config, omitter_config, model_config, default_config = get_configs_from_json(reader_name, omitter_name,
                                                                                         model_name)
 
@@ -73,6 +110,16 @@ def create_config_dataclass_objects(reader_name, omitter_name, model_name):
 
 
 def load_or_initialize_pipeline(reader_config, omitter_config, model_config):
+    """
+    Loads the reader, omitter and pipeline, or generates them. The pipeline will be fitted with the omitted data.
+    The function will generate them if it doesn't find a correct pickle file to load them from, based on their configuration,
+    or if it is explicitly requested to reinitialize them in the configuration.
+    If either the reader or the omitter is initialized/reinitialized, the pipeline will be too.
+    :param reader_config: the reader config instance
+    :param omitter_config: the omitter config instance
+    :param model_config: the pipeline config instance
+    :return: return the reader, omitter and pipeline instances, after fitting
+    """
     parent_dir = os.path.dirname(inspect.getfile(Experiments.experiment))
     cache_dir = os.path.join(parent_dir, 'Cache')
     readers_dir = os.path.join(cache_dir, "readers")
@@ -117,6 +164,13 @@ def load_or_initialize_pipeline(reader_config, omitter_config, model_config):
 
 
 def create_and_fit_pipeline(reader_name, omitter_name, model_name):
+    """
+    Creates the reader, omitter, and pipeline based on their names, and fits the pipeline with the omitted data
+    :param reader_name: the reader name
+    :param omitter_name: the omitter name
+    :param model_name: the pipeline name
+    :return: the fitted pipeline
+    """
     reader_config, omitter_config, model_config = create_config_dataclass_objects(reader_name, omitter_name, model_name)
     pipeline = load_or_initialize_pipeline(reader_config, omitter_config, model_config)
     return pipeline

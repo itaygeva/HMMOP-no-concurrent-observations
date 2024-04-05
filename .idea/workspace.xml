@@ -5,19 +5,28 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5816c4f2-9dc7-4ace-9705-7042f2d839c3" name="Changes" comment="Small fixes to pipelines and readers. More testing is still needed to verify formats">
-      <change afterPath="$PROJECT_DIR$/alg2_tester.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/alg3_tester.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/alg_tester.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Config/Config.py" beforeDir="false" afterPath="$PROJECT_DIR$/Config/Config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Params/sigma03-10" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Params/sigma03-10" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Readers/base_reader.py" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Readers/base_reader.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Data/Readers/my_synthetic_reader.py" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Readers/my_synthetic_reader.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Experiments/Config.JSON" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/Config.JSON" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Experiments/Tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/Tests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Experiments/evalUtils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/evalUtils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Experiments/experiment.py" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/experiment.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Experiments/profile_results.prof" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/profile_results.prof" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Experiments/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Omitters/omitters.py" beforeDir="false" afterPath="$PROJECT_DIR$/Omitters/omitters.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Omitters/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Omitters/utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eq_solve_tester.py" beforeDir="false" afterPath="$PROJECT_DIR$/eq_solve_tester.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pipelines/gibbs_sampler_pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pipelines/gibbs_sampler_pipeline.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pipelines/matrix_pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pipelines/matrix_pipeline.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pipelines/pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pipelines/pipeline.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pipelines/pome_pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pipelines/pome_pipeline.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ReconstructionAlgorithm.lyx" beforeDir="false" afterPath="$PROJECT_DIR$/ReconstructionAlgorithm.lyx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ReconstructionAlgorithm.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/ReconstructionAlgorithm.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/alg2_tester.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alg3_tester.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alg_tester.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/eq_solve_tester.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/playground.py" beforeDir="false" afterPath="$PROJECT_DIR$/playground.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../HMMOP/who_cell/models/gibbs_sampler.py" beforeDir="false" afterPath="$PROJECT_DIR$/../HMMOP/who_cell/models/gibbs_sampler.py" afterDir="false" />
     </list>
@@ -54,6 +63,7 @@
   &quot;keyToString&quot;: {
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;ToolWindowRun.ShowToolbar&quot;: &quot;false&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/liadm/Code/HMMOP-no-concurrent-observations&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PythonContentEntriesConfigurable&quot;
   }
@@ -241,5 +251,13 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Finished Basic flow: Tests creating readers, omitters and pipelines. Loading and dumping accordingly. Not fully tested yet" />
     <option name="LAST_COMMIT_MESSAGE" value="Finished Basic flow: Tests creating readers, omitters and pipelines. Loading and dumping accordingly. Not fully tested yet" />
+  </component>
+  <component name="XDebuggerManager">
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="self.ends" language="Python" />
+        <watch expression="torch.sum(torch.sum(t,axis=1), axis=1)" language="Python" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>
