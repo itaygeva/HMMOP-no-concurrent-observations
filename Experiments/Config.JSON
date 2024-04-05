@@ -2,17 +2,82 @@
   "readers": [
     {
       "Name": "Brown Corpus",
-      "Class": "brown_corpus_reader"
+      "Class": "brown_corpus_reader",
+      "n_components": 11,
+      "is_tagged": true,
+      "path_to_data": "brown-universal.txt",
+      "path_to_tags": "tags-universal.txt",
+      "n_features": 1
     },
     {
-      "Name": "Synthetic",
+      "Name": "Synthetic 1",
       "Class": "synthetic_reader",
-      "Number of States for Generation": 3,
-      "Number of Samples": 10000
+      "n_components": 3,
+      "n_samples": 10000,
+      "is_tagged": false,
+      "n_features": 1,
+	  "sigma": "sigma1"
+    },
+	{
+      "Name": "Synthetic 01",
+      "Class": "synthetic_reader",
+      "n_components": 3,
+      "n_samples": 10000,
+      "is_tagged": false,
+      "n_features": 1,
+	  "sigma": "sigma01"
+    },
+	{
+      "Name": "Synthetic 001",
+      "Class": "synthetic_reader",
+      "n_components": 3,
+      "n_samples": 1000,
+      "is_tagged": false,
+      "n_features": 1,
+	  "sigma": "sigma001"
+    },
+	{
+      "Name": "Synthetic Hard",
+      "Class": "synthetic_reader",
+      "n_components": 10,
+      "n_samples": 1000,
+      "is_tagged": false,
+      "n_features": 1,
+	  "mues": "close_means10",
+	  "sigma": "sigma03-10"
+    },
+    {
+      "Name": "HMM - Synthetic",
+      "Class": "hmm_synthetic_reader",
+      "n_components": 10,
+      "n_samples": 1000,
+      "is_tagged": false,
+      "n_features": 1,
+	  "mues": "close_means10",
+	  "sigma": "sigma03-10"
+    },
+	    {
+      "Name": "My Synthetic",
+      "Class": "my_synthetic_reader",
+      "n_components": 10,
+      "n_samples": 500,
+      "is_tagged": false,
+      "n_features": 1,
+	  "mues": "close_means10",
+	  "sigma": "sigma03-10",
+	  "set_temporal": false,
+	  "matrix_power": 1
     },
     {
       "Name": "Stocks",
-      "Class": "stocks_reader"
+      "Class": "stocks_reader",
+      "company": "AAL",
+      "min_length": 10,
+      "max_length": 30,
+      "n_components": 3,
+      "is_tagged": false,
+      "n_features": 3,
+      "path_to_data" : "all_stocks_5yr.csv"
     }
   ],
   "omitters": [
@@ -23,34 +88,171 @@
     {
       "Name": "Bernoulli",
       "Class": "bernoulli_omitter",
-      "Probability of Observation": 0.7
+      "prob_of_observation": 0.05
+    },
+	{
+      "Name": "Geometric",
+      "Class": "geometric_omitter",
+      "prob_of_observation": 0.7
+    },
+	{
+      "Name": "Consecutive Bernoulli",
+      "Class": "consecutive_bernoulli_omitter",
+      "prob_of_observation": 0.7
+    },
+	{
+      "Name": "Markov Chain",
+      "Class": "markov_chain_omitter",
+      "prob_of_observation": 0
+    },
+	{
+      "Name": "Uniform Skips",
+      "Class": "uniform_skips_omitter",
+      "n_skips": 4
     }
   ],
   "models": [
     {
-      "Name": "Synthetic BW - No Omissions",
-      "Class": "pome_wrapper",
-      "Reader": "Synthetic",
-      "Number of Features": 1
+      "Name": "Pomegranate - Synthetic1",
+      "Class": "pome_pipeline",
+      "distribution": "Gaussian",
+      "n_components": 10,
+      "n_features": 1
+    },
+	{
+      "Name": "Pomegranate - Synthetic2",
+      "Class": "pome_pipeline",
+      "distribution": "Gaussian",
+      "n_components": 10,
+      "n_features": 1
+    },
+	{
+      "Name": "Pomegranate - Synthetic3",
+      "Class": "pome_pipeline",
+      "distribution": "Gaussian",
+      "n_components": 10,
+      "n_features": 1
+    },
+	{
+      "Name": "Pomegranate - Synthetic4",
+      "Class": "pome_pipeline",
+      "distribution": "Gaussian",
+      "n_components": 10,
+      "n_features": 1
+    },
+	{
+      "Name": "Pomegranate - Synthetic5",
+      "Class": "pome_pipeline",
+      "distribution": "Gaussian",
+      "n_components": 10,
+      "n_features": 1
     },
     {
-      "Name": "Synthetic Ground Truth",
-      "Class": "matrix_wrapper",
-      "Reader": "Synthetic"
+      "Name": "Pomegranate - Brown",
+      "Class": "pome_pipeline",
+      "distribution": "Categorical",
+      "n_components": 11,
+      "n_features": 1
     },
     {
-      "Name": "Synthetic Gibbs - No Omissions",
-      "Class": "gibbs_sampler_wrapper",
-      "Reader": "Synthetic"
+      "Name": "Pomegranate - Stocks",
+      "Class": "pome_pipeline",
+      "distribution": "Gaussian",
+      "n_components": 3,
+      "n_features": 3
+    },
+    {
+      "Name": "Ground Truth1",
+      "Class": "matrix_pipeline"
+    },
+	{
+      "Name": "Ground Truth2",
+      "Class": "matrix_pipeline"
+    },
+	{
+      "Name": "Ground Truth3",
+      "Class": "matrix_pipeline"
+    },
+	{
+      "Name": "Ground Truth4",
+      "Class": "matrix_pipeline"
+    },
+	{
+      "Name": "Ground Truth5",
+      "Class": "matrix_pipeline"
+    },
+    {
+      "Name": "Gibbs Sampler1",
+      "Class": "gibbs_sampler_pipeline",
+      "n_components": 10
+    },
+	{
+      "Name": "Gibbs Sampler2",
+      "Class": "gibbs_sampler_pipeline",
+      "n_components": 10
+    },
+	{
+      "Name": "Gibbs Sampler3",
+      "Class": "gibbs_sampler_pipeline",
+      "n_components": 10
+    },
+	{
+      "Name": "Gibbs Sampler4",
+      "Class": "gibbs_sampler_pipeline",
+      "n_components": 10
+    },
+	{
+      "Name": "Gibbs Sampler5",
+      "Class": "gibbs_sampler_pipeline",
+      "n_components": 10
+	  
+    },
+	
+    {
+      "Name": "Hmmlearn1",
+      "Class": "hmmlearn_pipeline",
+      "n_components": 3,
+      "distribution": "Gaussian"
+    },
+	{
+      "Name": "Hmmlearn2",
+      "Class": "hmmlearn_pipeline",
+      "n_components": 3,
+      "distribution": "Gaussian"
+    },
+	{
+      "Name": "Hmmlearn3",
+      "Class": "hmmlearn_pipeline",
+      "n_components": 3,
+      "distribution": "Gaussian"
+    },
+	{
+      "Name": "Hmmlearn4",
+      "Class": "hmmlearn_pipeline",
+      "n_components": 3,
+      "distribution": "Gaussian"
+    },
+	{
+      "Name": "Hmmlearn5",
+      "Class": "hmmlearn_pipeline",
+      "n_components": 3,
+      "distribution": "Gaussian"
     }
   ],
   "default": {
-    "Number of Iterations": 20,
-    "Omitter": "Pass All",
-    "Distribution Type": "Gaussian",
-    "Pass Emission Probabilities": false,
-    "Freeze Distributions": false,
-    "Number of States": 3,
-    "Reinitialize": false
+    "Reinitialize": false,
+    "raw_dir": "../Data/Raw",
+	"params_dir": "../Data/Params",
+    "n_iter": 30,
+	"n_components": 10,
+    "sigma": null,
+    "startprobs": null,
+    "endprobs": null,
+    "mues": null,
+    "transmat": null,
+	"sentence_length": 100,
+    "freeze_distributions": true,
+	"transmat_mode": null,	
+    "n_edges": 3
   }
 }

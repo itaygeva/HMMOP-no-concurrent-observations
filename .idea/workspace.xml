@@ -4,25 +4,29 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5816c4f2-9dc7-4ace-9705-7042f2d839c3" name="Changes" comment="">
+    <list default="true" id="5816c4f2-9dc7-4ace-9705-7042f2d839c3" name="Changes" comment="Small fixes to pipelines and readers. More testing is still needed to verify formats">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Evaluations/Evaluations_Manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/Evaluations/Evaluations_Manager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Experiments/Cache/models/Synthetic BW - No Omissions.pkl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Experiments/Cache/models/Synthetic Gibbs - No Omissions.pkl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Experiments/Cache/models/Synthetic Ground Truth.pkl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Experiments/Cache/omitters/Bernoulli.pkl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Experiments/Cache/omitters/Pass All.pkl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Experiments/Cache/readers/Brown Corpus.pkl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Experiments/Cache/readers/Stocks.pkl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Experiments/Cache/readers/Synthetic.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Config/Config.py" beforeDir="false" afterPath="$PROJECT_DIR$/Config/Config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Readers/base_reader.py" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Readers/base_reader.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Readers/my_synthetic_reader.py" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Readers/my_synthetic_reader.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Experiments/Config.JSON" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/Config.JSON" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Experiments/Creators/Models_Creator.py" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/Creators/Models_Creator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Experiments/Evaluations.JSON" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/Evaluations.JSON" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Models/gibbs_sampler_wrapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/Models/gibbs_sampler_wrapper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Models/hmmlearn_wrapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/Models/hmmlearn_wrapper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Models/matrix_wrapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/Models/matrix_wrapper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Models/model_wrapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/Models/model_wrapper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Models/pome_wrapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/Models/pome_wrapper.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Experiments/Tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/Tests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Experiments/evalUtils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/evalUtils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Experiments/experiment.py" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/experiment.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Experiments/profile_results.prof" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/profile_results.prof" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Experiments/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Omitters/omitters.py" beforeDir="false" afterPath="$PROJECT_DIR$/Omitters/omitters.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Omitters/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Omitters/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pipelines/gibbs_sampler_pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pipelines/gibbs_sampler_pipeline.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pipelines/matrix_pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pipelines/matrix_pipeline.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pipelines/pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pipelines/pipeline.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pipelines/pome_pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pipelines/pome_pipeline.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ReconstructionAlgorithm.lyx" beforeDir="false" afterPath="$PROJECT_DIR$/ReconstructionAlgorithm.lyx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ReconstructionAlgorithm.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/ReconstructionAlgorithm.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/alg2_tester.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alg3_tester.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alg_tester.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/eq_solve_tester.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/playground.py" beforeDir="false" afterPath="$PROJECT_DIR$/playground.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../HMMOP/who_cell/models/gibbs_sampler.py" beforeDir="false" afterPath="$PROJECT_DIR$/../HMMOP/who_cell/models/gibbs_sampler.py" afterDir="false" />
     </list>
@@ -59,16 +63,108 @@
   &quot;keyToString&quot;: {
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/liadm/Code/HMMOP&quot;,
+    &quot;ToolWindowRun.ShowToolbar&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/liadm/Code/HMMOP-no-concurrent-observations&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PythonContentEntriesConfigurable&quot;
   }
 }</component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\liadm\Code\HMMOP-no-concurrent-observations" />
+      <recent name="C:\Users\liadm\Code\HMMOP-no-concurrent-observations\Pipelines" />
+      <recent name="C:\Users\liadm\Code\HMMOP-no-concurrent-observations\Data\Readers" />
+      <recent name="C:\Users\liadm\Code\HMMOP-no-concurrent-observations\Data\Params" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\liadm\Code\HMMOP-no-concurrent-observations\Experiments" />
       <recent name="C:\Users\liadm\Code\HMMOP-no-concurrent-observations\Experiments\Creators" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.experiment">
+  <component name="RunManager" selected="Python.playground">
+    <configuration name="alg2_tester" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="HMMOP-no-concurrent-observations" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/alg2_tester.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="alg3_tester" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="HMMOP-no-concurrent-observations" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/alg3_tester.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="alg_tester" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="HMMOP-no-concurrent-observations" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/alg_tester.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="eq_solve_tester" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="HMMOP-no-concurrent-observations" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/eq_solve_tester.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="experiment" type="PythonConfigurationType" factoryName="Python">
       <module name="HMMOP-no-concurrent-observations" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -114,6 +210,10 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="Python.alg2_tester" />
+      <item itemvalue="Python.alg3_tester" />
+      <item itemvalue="Python.alg_tester" />
+      <item itemvalue="Python.eq_solve_tester" />
       <item itemvalue="Python.experiment" />
       <item itemvalue="Python.playground" />
     </list>
@@ -127,6 +227,14 @@
       <option name="presentableId" value="Default" />
       <updated>1694648385403</updated>
     </task>
+    <task id="LOCAL-00001" summary="Finished Basic flow: Tests creating readers, omitters and pipelines. Loading and dumping accordingly. Not fully tested yet">
+      <created>1698234288495</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1698234288495</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -141,26 +249,14 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <option name="LAST_COMMIT_MESSAGE" value="" />
+    <MESSAGE value="Finished Basic flow: Tests creating readers, omitters and pipelines. Loading and dumping accordingly. Not fully tested yet" />
+    <option name="LAST_COMMIT_MESSAGE" value="Finished Basic flow: Tests creating readers, omitters and pipelines. Loading and dumping accordingly. Not fully tested yet" />
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Data/Readers/brown_corpus_reader.py</url>
-          <line>85</line>
-          <option name="timeStamp" value="51" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Experiments/experiment.py</url>
-          <line>19</line>
-          <option name="timeStamp" value="52" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
-        <watch expression="instances[instance_config[&quot;Name&quot;]]" language="Python" />
+        <watch expression="self.ends" language="Python" />
+        <watch expression="torch.sum(torch.sum(t,axis=1), axis=1)" language="Python" />
       </configuration>
     </watches-manager>
   </component>
