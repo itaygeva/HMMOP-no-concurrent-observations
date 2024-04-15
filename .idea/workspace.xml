@@ -4,32 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5816c4f2-9dc7-4ace-9705-7042f2d839c3" name="Changes" comment="Small fixes to pipelines and readers. More testing is still needed to verify formats">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/Config.py" beforeDir="false" afterPath="$PROJECT_DIR$/Config/Config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Readers/base_reader.py" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Readers/base_reader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Readers/my_synthetic_reader.py" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Readers/my_synthetic_reader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Experiments/Config.JSON" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/Config.JSON" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Experiments/Tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/Tests.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Experiments/evalUtils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/evalUtils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Experiments/experiment.py" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/experiment.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Experiments/profile_results.prof" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/profile_results.prof" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Experiments/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Experiments/utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Omitters/omitters.py" beforeDir="false" afterPath="$PROJECT_DIR$/Omitters/omitters.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Omitters/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Omitters/utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pipelines/gibbs_sampler_pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pipelines/gibbs_sampler_pipeline.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pipelines/matrix_pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pipelines/matrix_pipeline.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pipelines/pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pipelines/pipeline.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pipelines/pome_pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pipelines/pome_pipeline.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ReconstructionAlgorithm.lyx" beforeDir="false" afterPath="$PROJECT_DIR$/ReconstructionAlgorithm.lyx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ReconstructionAlgorithm.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/ReconstructionAlgorithm.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/alg2_tester.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alg3_tester.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alg_tester.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eq_solve_tester.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/playground.py" beforeDir="false" afterPath="$PROJECT_DIR$/playground.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../HMMOP/who_cell/models/gibbs_sampler.py" beforeDir="false" afterPath="$PROJECT_DIR$/../HMMOP/who_cell/models/gibbs_sampler.py" afterDir="false" />
-    </list>
+    <list default="true" id="5816c4f2-9dc7-4ace-9705-7042f2d839c3" name="Changes" comment="Small fixes to pipelines and readers. More testing is still needed to verify formats" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
